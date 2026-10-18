@@ -1,0 +1,1131 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Helen Transport</title>
+<meta name="theme-color" content="#0b0b0d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Helen Transport">
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQAAAHF0lEQVR4nO3dzWtcVRiA8Zt+hZKZGBIL1UyoSSjWSPET1I176ca1urYupP9AwYX7rgVBdCEFN1KwCi7cCILulPpVUmdMM2ksgdZmZlpq8+FiYAiZyXDvvPe8533vfX7bDjP3nvPMOTcz05mxiYlqAozqUOwDgG8EBBECgggBQYSAIEJAECEgiBAQRAgIIgQEEQKCCAFBhIAgQkAQISCIEBBECAgiBAQRAoIIAUGEgCBCQBA5EvsArPjp46VMt3/l3d8DHYkvYyX8f2FZW0mvhFWVJaBw0RykJDEVPCD9bvoVu6RiBjRCN1mnWeEhXChUQOknNcRcxn30WAoSUJrJ05w2a8cTjvuAhk+VhUmyf4QSjgMaMjE2Z8XdAafhMiDXM+H64Ps5C6gwo1+YE/EU0EGD7mvE9yrAGfkIqAADPYTrs3MQ0MDxdTG4mTg9TesB9Q+r/TGVcHe+dgNy+oyU83XiRgNy90TMnZcRsPiJRC9jF1T/KVv4ZEE/cwFRT4+LhmxtYfsGqLTp7GN5WKwExMIznNnxMbGFmR0dO8xuZ/EDop6UbDYUP6B9qGcIg4MTOSDLl4c27Rui6ItQzICoZzSmGooWEPVI2GkoTkDUI2ekoQgBUU9eLDQU+SKaeoSiD6B2QNH/aig2/eFVDYjNK4S4G5leQNQTTsSG4lwDUU/uYg2pUkBc+ihTG3CNgNi8dETZyLS3MOoJSn94gwfE5hWRwuCrrkAsPwqUBzlsQCw/0YWeAr0ViOVHjeZQBwyI5ceIoBOhtAKx/ChTG/BQAbH8mBJuOjRWIJafKHSGPUhALD8GBZqU4CsQy09ECoPv++eeLrzzzIW3z+R7n8srm2+8993Af3rr3PyH7z+f78Nt7+w+fe5KvvepKf8VaO9SyfIT3d4pCLGLmfufqfDF9xZ2+ev6r8t3F+eqC3PVxVp1oVaZmjyW9U4e/rf9961OfbX112qr3mz/Ub930C2/+X5t7fb9hbnq4lx1ca6yUKvOTI1nfbitrZ2V9U692a43W/XV1o2braz3YErOX+8Sff+afmz8paXpjz54Nc2NP/+q/smXN9Zu39/Z3R3t4SYnjp4+NfnFpdfT3PjbH25d+uy3lfXO9vaIDzeycPPiewXqd+few2vL/6a88cqtzuo/HcnDbXYe/Xz9Tsobr288qDfbkocziGsgiOQZEK8fupDvNIVagfgD3pRw08EWBhECgkhuAXEB5EiOkxVkBeICyKBAk8IWBhECgggBQYSAIEJAEMknoOhvwiONEB8uYwWCCAFBhIAgQkAQISCIEBBECAgiRftQfSYXz5+9eP5s7KPwjRUIIgQEEQKCSKmvgRpr7fWNB8I7GRtLXnvuRC7H41GpA7p8tfHplRvCOzl8eOz61TfzOByX2MIgQkAQySeg0N9ihFyE+NgWKxBECAgiBAQRAoIIAUGEb6ovC+vfVM//5nEkx8liC4MIAUGE3wsrBR+/F8ZlkAv5ThNbGEQICCI5B8Tb8gYF/e4UViCIEBBE8g+IXcyU0N/9xQoEkeABKS9CM1PjZ09PpbzxqScn5k5OHD40NvLDTVWPvXBmOuWNnzhxfKFWOXJE70mrMPg5/2Jhj863Jp58/PiLS9Pzs5WFWvWp2cp8rTI5cTTrnTza2rm53qk3241mu9Fs/dnYvLZ8d+AtZ6bGX352Zr5WmZ+tzs9WRvuFze3t3ebt+421VqPZbqy16832j79sZL2TlBRmQSOgJNjR87PfQ+hMAb8XVgrufy+MP8eUqQ14qC2si++PjkVt5Av1FwG6NIc6bECsOtGFngLVFxJZhBQoD3LwgFiEIlIYfO23MliEgtIfXo2A9j0PaCgQnVcO91FagdjIlKkNeJx341mEchdrSPUCYiMLJ8rm1aW6AtFQCBHrSfS3MC6GgtIf3sifSGQREoo+gBECYiPLS9zNqyvOCkRDchbqSSJuYTQkYaSeJO41EA2Nxk49SfSLaBrKylQ9SfSA+tHQEAYHJ35A/c8hg8NkQf+wRF9+EgsBJTSUgs16ktAfqs/K2gZvhOVhsRVQYvipFoX90TCxhe3FdtZjv57EYEAJDSVJ4qSexOAW1jMwGpuDmC9fJ243oC4vT8S8uDtf6wEl3p6RI3N6mg4CSg6+BrI/vmm4PjsfAXW5HuiBCnBGngJKhv455mjQkwKdiLOAulyPvuuD7+cyoC53M+HugNNwHFDX8NcYLUyM/SOUcB9QV5qXqjWnytrxhFOQgLrSv+MRYvLiPnoshQqoZ4T3zrJOqsJDuFDMgHosvAtbyG56Ch5Qj35Jxe6mpywB7RUuppJEs1cZAxooa1UlbGUgAoKIxU8kwhECgggBQYSAIEJAECEgiBAQRAgIIgQEEQKCCAFBhIAgQkAQISCIEBBECAgiBAQRAoIIAUGEgCBCQBAhIIj8D/cfsHAmzINwAAAAAElFTkSuQmCC">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQAAAHF0lEQVR4nO3dzWtcVRiA8Zt+hZKZGBIL1UyoSSjWSPET1I176ca1urYupP9AwYX7rgVBdCEFN1KwCi7cCILulPpVUmdMM2ksgdZmZlpq8+FiYAiZyXDvvPe8533vfX7bDjP3nvPMOTcz05mxiYlqAozqUOwDgG8EBBECgggBQYSAIEJAECEgiBAQRAgIIgQEEQKCCAFBhIAgQkAQISCIEBBECAgiBAQRAoIIAUGEgCBCQBA5EvsArPjp46VMt3/l3d8DHYkvYyX8f2FZW0mvhFWVJaBw0RykJDEVPCD9bvoVu6RiBjRCN1mnWeEhXChUQOknNcRcxn30WAoSUJrJ05w2a8cTjvuAhk+VhUmyf4QSjgMaMjE2Z8XdAafhMiDXM+H64Ps5C6gwo1+YE/EU0EGD7mvE9yrAGfkIqAADPYTrs3MQ0MDxdTG4mTg9TesB9Q+r/TGVcHe+dgNy+oyU83XiRgNy90TMnZcRsPiJRC9jF1T/KVv4ZEE/cwFRT4+LhmxtYfsGqLTp7GN5WKwExMIznNnxMbGFmR0dO8xuZ/EDop6UbDYUP6B9qGcIg4MTOSDLl4c27Rui6ItQzICoZzSmGooWEPVI2GkoTkDUI2ekoQgBUU9eLDQU+SKaeoSiD6B2QNH/aig2/eFVDYjNK4S4G5leQNQTTsSG4lwDUU/uYg2pUkBc+ihTG3CNgNi8dETZyLS3MOoJSn94gwfE5hWRwuCrrkAsPwqUBzlsQCw/0YWeAr0ViOVHjeZQBwyI5ceIoBOhtAKx/ChTG/BQAbH8mBJuOjRWIJafKHSGPUhALD8GBZqU4CsQy09ECoPv++eeLrzzzIW3z+R7n8srm2+8993Af3rr3PyH7z+f78Nt7+w+fe5KvvepKf8VaO9SyfIT3d4pCLGLmfufqfDF9xZ2+ev6r8t3F+eqC3PVxVp1oVaZmjyW9U4e/rf9961OfbX112qr3mz/Ub930C2/+X5t7fb9hbnq4lx1ca6yUKvOTI1nfbitrZ2V9U692a43W/XV1o2braz3YErOX+8Sff+afmz8paXpjz54Nc2NP/+q/smXN9Zu39/Z3R3t4SYnjp4+NfnFpdfT3PjbH25d+uy3lfXO9vaIDzeycPPiewXqd+few2vL/6a88cqtzuo/HcnDbXYe/Xz9Tsobr288qDfbkocziGsgiOQZEK8fupDvNIVagfgD3pRw08EWBhECgkhuAXEB5EiOkxVkBeICyKBAk8IWBhECgggBQYSAIEJAEMknoOhvwiONEB8uYwWCCAFBhIAgQkAQISCIEBBECAgiRftQfSYXz5+9eP5s7KPwjRUIIgQEEQKCSKmvgRpr7fWNB8I7GRtLXnvuRC7H41GpA7p8tfHplRvCOzl8eOz61TfzOByX2MIgQkAQySeg0N9ihFyE+NgWKxBECAgiBAQRAoIIAUGEb6ovC+vfVM//5nEkx8liC4MIAUGE3wsrBR+/F8ZlkAv5ThNbGEQICCI5B8Tb8gYF/e4UViCIEBBE8g+IXcyU0N/9xQoEkeABKS9CM1PjZ09PpbzxqScn5k5OHD40NvLDTVWPvXBmOuWNnzhxfKFWOXJE70mrMPg5/2Jhj863Jp58/PiLS9Pzs5WFWvWp2cp8rTI5cTTrnTza2rm53qk3241mu9Fs/dnYvLZ8d+AtZ6bGX352Zr5WmZ+tzs9WRvuFze3t3ebt+421VqPZbqy16832j79sZL2TlBRmQSOgJNjR87PfQ+hMAb8XVgrufy+MP8eUqQ14qC2si++PjkVt5Av1FwG6NIc6bECsOtGFngLVFxJZhBQoD3LwgFiEIlIYfO23MliEgtIfXo2A9j0PaCgQnVcO91FagdjIlKkNeJx341mEchdrSPUCYiMLJ8rm1aW6AtFQCBHrSfS3MC6GgtIf3sifSGQREoo+gBECYiPLS9zNqyvOCkRDchbqSSJuYTQkYaSeJO41EA2Nxk49SfSLaBrKylQ9SfSA+tHQEAYHJ35A/c8hg8NkQf+wRF9+EgsBJTSUgs16ktAfqs/K2gZvhOVhsRVQYvipFoX90TCxhe3FdtZjv57EYEAJDSVJ4qSexOAW1jMwGpuDmC9fJ243oC4vT8S8uDtf6wEl3p6RI3N6mg4CSg6+BrI/vmm4PjsfAXW5HuiBCnBGngJKhv455mjQkwKdiLOAulyPvuuD7+cyoC53M+HugNNwHFDX8NcYLUyM/SOUcB9QV5qXqjWnytrxhFOQgLrSv+MRYvLiPnoshQqoZ4T3zrJOqsJDuFDMgHosvAtbyG56Ch5Qj35Jxe6mpywB7RUuppJEs1cZAxooa1UlbGUgAoKIxU8kwhECgggBQYSAIEJAECEgiBAQRAgIIgQEEQKCCAFBhIAgQkAQISCIEBBECAgiBAQRAoIIAUGEgCBCQBAhIIj8D/cfsHAmzINwAAAAAElFTkSuQmCC">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Black and gold, the Helen Transport Services brand. Phone-first: sticky header, bottom tabs, bottom sheets. */
+:root{
+  --bg:#0b0b0d; --panel:#16161a; --panel2:#1d1d22; --line:#2c2c33; --ink:#f3efe6; --muted:#a9a397;
+  --gold:#d4a537; --gold2:#f0cf7a; --gold-ink:#1a1305;
+  --good:#4cc283; --warn:#e8a04c; --bad:#ef6b61; --info:#6aa8ff;
+  --good-bg:#14301f; --warn-bg:#3a2a12; --bad-bg:#3d1b18; --idle-bg:#24242a; --info-bg:#162638;
+  --serif:"Cinzel",Georgia,serif; --cond:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45}
+body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+img{max-width:100%}
+[hidden]{display:none!important}
+a{color:var(--gold2)}
+button,input,select,textarea{font:inherit}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{position:sticky;top:0;z-index:20;background:rgba(11,11,13,.96);backdrop-filter:blur(8px);border-bottom:1px solid #3a2f14}
+header.top .wrap{display:flex;align-items:center;gap:12px;padding-block:10px}
+.logo{width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;border:2px solid var(--gold);color:var(--gold);font:700 20px var(--serif);background:#000;overflow:hidden}
+.logo img{width:100%;height:100%;object-fit:contain;background:#fff}
+.brand{min-width:0;flex:1}
+.brand b{display:block;font:700 18px var(--serif);letter-spacing:.06em;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand span{display:block;font-size:12px;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iconbtn{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:8px 10px;cursor:pointer;font-weight:600;font-size:13px}
+main{padding-block:16px 110px}
+.stack{display:flex;flex-direction:column;gap:12px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.between{justify-content:space-between}
+h1,h2{font-family:var(--cond);text-transform:uppercase;letter-spacing:.03em;margin:0;line-height:1.05}
+h1{font-size:28px} h2{font-size:22px}
+h3{font-family:var(--cond);font-size:16px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);margin:8px 0 0}
+.muted,.note{color:var(--muted);font-size:14px}
+.note{margin:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card.tap{cursor:pointer;text-align:left;color:inherit;font:inherit;width:100%}
+.sev{border-left:5px solid var(--line)}
+.sev.bad{border-left-color:var(--bad)} .sev.warn{border-left-color:var(--warn)} .sev.good{border-left-color:var(--good)} .sev.gold{border-left-color:var(--gold)}
+.top2{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.route{font-weight:700;overflow-wrap:anywhere}
+.money{font-family:var(--mono);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;flex:0 1 auto;max-width:50%}
+.money .muted{white-space:normal;font-size:12px}
+.top2>div:first-child{flex:1 1 auto}
+.pill{display:inline-block;font:700 12px var(--body);padding:3px 9px;border-radius:999px;white-space:nowrap;background:var(--idle-bg);color:var(--muted)}
+.p-good{background:var(--good-bg);color:var(--good)} .p-warn{background:var(--warn-bg);color:var(--warn)} .p-bad{background:var(--bad-bg);color:var(--bad)} .p-info{background:var(--info-bg);color:var(--info)} .p-gold{background:#2e2410;color:var(--gold2)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:12px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);font-weight:700;padding:11px 16px;cursor:pointer;text-decoration:none;font-size:15px}
+.btn.gold{background:linear-gradient(180deg,var(--gold2),var(--gold));color:var(--gold-ink);border-color:var(--gold)}
+.btn.bad{color:var(--bad);border-color:#5a2a26}
+.btn.sm{padding:7px 11px;font-size:13px;border-radius:10px}
+.btn.wide{width:100%}
+.btn:disabled{opacity:.5;cursor:default}
+.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.iconbtn:focus-visible{outline:3px solid var(--gold);outline-offset:1px}
+label.f{display:flex;flex-direction:column;gap:5px;min-width:0;font-size:13px;font-weight:600;color:var(--muted)}
+input,select,textarea{background:#0f0f12;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:11px 12px;width:100%;min-width:0;font-size:16px}
+input[type=checkbox]{width:22px;height:22px;accent-color:var(--gold)}
+textarea{min-height:90px;resize:vertical}
+label.chk{display:flex;gap:10px;align-items:center;font-size:15px;color:var(--ink)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.full{grid-column:1/-1}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;min-width:0}
+.stat b{display:block;font:500 19px var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.hero{background:radial-gradient(120% 140% at 0% 0%,#2a210c 0%,#121214 60%);border:1px solid #3a2f14;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.hero .big{font:500 34px var(--mono);color:var(--gold2)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:7px 12px;font-weight:600;font-size:13px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--gold);color:var(--gold-ink);border-color:var(--gold)}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(15,15,18,.97);border-top:1px solid #3a2f14;display:grid;
+  padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.tabs button{background:none;border:0;color:var(--muted);font:600 12px var(--body);padding:10px 2px 12px;cursor:pointer;border-top:3px solid transparent;position:relative}
+nav.tabs button[aria-selected="true"]{color:var(--gold2);border-top-color:var(--gold)}
+nav.tabs .dot{position:absolute;top:4px;left:calc(50% + 10px);min-width:17px;height:17px;border-radius:9px;background:var(--bad);color:#fff;font-size:10px;line-height:17px;padding:0 4px}
+.sheet{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center}
+.sheet .panel{background:var(--bg);border-top:1px solid #3a2f14;width:100%;max-width:860px;max-height:94%;overflow:auto;border-radius:18px 18px 0 0;
+  padding:18px max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 20px) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:12px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 90px);background:var(--gold);color:var(--gold-ink);font-weight:700;padding:11px 16px;border-radius:12px;z-index:90;max-width:calc(100% - 32px);text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.toast.err{background:var(--bad);color:#fff}
+.upl{position:relative;overflow:hidden}
+.upl input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:200px}
+.files{display:flex;flex-direction:column;gap:6px}
+.file{display:flex;justify-content:space-between;gap:8px;align-items:center;background:#0f0f12;border:1px solid var(--line);border-radius:10px;padding:7px 10px;font-size:14px;min-width:0}
+.file span,.file a{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap}
+.thumbs img{width:84px;height:84px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+.tbl table{border-collapse:collapse;width:100%;min-width:520px;font-size:14px}
+.tbl th,.tbl td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.tbl th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.empty{border:2px dashed var(--line);border-radius:14px;padding:22px;text-align:center;color:var(--muted)}
+.auth{min-height:100vh;display:grid;place-items:center;padding:24px 16px}
+.auth .box{width:100%;max-width:420px;display:flex;flex-direction:column;gap:14px}
+.auth .seal{width:96px;height:96px;margin:0 auto;border-radius:50%;border:3px solid var(--gold);display:grid;place-items:center;font:700 46px var(--serif);color:var(--gold);background:#000;box-shadow:0 0 40px rgba(212,165,55,.25)}
+.auth h1{text-align:center;font-family:var(--serif);font-size:24px;letter-spacing:.08em}
+.auth .tag{text-align:center;color:var(--gold);letter-spacing:.2em;font-size:12px;text-transform:uppercase}
+.err{color:var(--bad);font-size:14px}
+.calc{display:grid;grid-template-columns:1fr auto;gap:4px 12px;background:#0f0f12;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:14px}
+.calc .m{font-family:var(--mono);text-align:right}
+.ok{color:var(--good)} .low{color:var(--warn)}
+#print{display:none}
+@media (max-width:460px){.g3{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.hero .big{font-size:28px}}
+@media (max-width:380px){.g2{grid-template-columns:1fr}}
+@media print{
+  body{background:#fff;color:#000;padding:0}
+  body > *:not(#print){display:none!important}
+  #print{display:block!important;color:#000;font-family:Arial,sans-serif;font-size:12px}
+  #print h1{font-size:20px;margin:0} #print table{width:100%;border-collapse:collapse;margin-top:10px}
+  #print th,#print td{border-bottom:1px solid #ccc;padding:5px;text-align:left} #print .r{text-align:right}
+  #print .head{display:flex;gap:14px;align-items:center;border-bottom:3px solid #b8892a;padding-bottom:10px;margin-bottom:10px}
+  #print .head img{width:64px;height:64px;object-fit:contain}
+}
+@media (prefers-reduced-motion:no-preference){.sheet .panel{animation:up .18s ease-out}@keyframes up{from{transform:translateY(24px);opacity:.6}}}
+</style>
+</head>
+<body>
+<div id="app"><div class="auth"><div class="box"><div class="seal">H</div><p class="tag">Carregando…</p></div></div></div>
+<div id="print"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+/* Helen Transport Services — configuração.
+   Cole aqui os dois dados do Supabase (Project Settings → API / Data API).
+   A "anon public key" pode ficar aqui: ela é pública por natureza e quem protege os dados são as regras do banco.
+   NUNCA coloque aqui a "service_role" key nem a senha do banco. */
+window.HTS_CONFIG = {
+  supabaseUrl: 'https://xwioljkfbeyrizvcxhff.supabase.co',
+  supabaseAnonKey: 'sb_publishable_0NIsBJ5JZKI1wQUoke7k1w_4y7whapU',
+  whatsapp: '14073760990',
+  dispatchName: 'Helen Transport Services',
+  quickPayPct: 5
+};
+
+</script>
+<script>
+/* Helen Transport Services — base comum (login, utilidades, regras de documentos e datas) */
+'use strict';
+window.HTS = window.HTS || {};
+(function (H) {
+  /* ---------------- configuração ---------------- */
+  const saved = (() => { try { return JSON.parse(localStorage.getItem('hts-config') || 'null') } catch (e) { return null } })();
+  const base = window.HTS_CONFIG || {};
+  H.cfg = {
+    url: (base.supabaseUrl && !base.supabaseUrl.includes('COLE')) ? base.supabaseUrl : (saved && saved.url) || '',
+    key: (base.supabaseAnonKey && !base.supabaseAnonKey.includes('COLE')) ? base.supabaseAnonKey : (saved && saved.key) || '',
+    whatsapp: base.whatsapp || '14073760990',
+    dispatchName: base.dispatchName || 'Helen Transport Services',
+    quickPayPct: base.quickPayPct ?? 5,
+  };
+  H.sb = null;
+
+  /* ---------------- utilidades ---------------- */
+  const $ = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const num = v => (v === '' || v === null || v === undefined || isNaN(+v)) ? 0 : +v;
+  const fmt = n => '$' + num(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const fmtI = n => num(n).toLocaleString('en-US', { maximumFractionDigits: 0 });
+  const pad = n => String(n).padStart(2, '0');
+  const iso = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  const today = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()) };
+  const parseD = s => { if (!s) return null; const [y, m, d] = String(s).slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d) };
+  const brDate = s => { if (!s) return ''; const [y, m, d] = String(s).slice(0, 10).split('-'); return d + '/' + m + '/' + y };
+  const addMonths = (s, n) => { const d = parseD(s); d.setMonth(d.getMonth() + n); return iso(d) };
+  const addDays = (s, n) => { const d = parseD(s); d.setDate(d.getDate() + n); return iso(d) };
+  const daysTo = s => Math.round((parseD(s) - today()) / 864e5);
+  const initials = n => String(n || '?').split(/\s+/).filter(w => /[A-Za-zÀ-ú]/.test(w) && !/^(llc|inc|corp|co)$/i.test(w)).slice(0, 2).map(w => w[0].toUpperCase()).join('') || '?';
+  Object.assign(H, { $, $$, esc, num, fmt, fmtI, iso, today, parseD, brDate, addMonths, addDays, daysTo, initials });
+
+  /* hoje no horário de Nova York */
+  H.nyNow = () => { const p = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false, weekday: 'short' }).formatToParts(new Date()); const g = t => (p.find(x => x.type === t) || {}).value; return { date: `${g('year')}-${g('month')}-${g('day')}`, hour: +g('hour') % 24, minute: +g('minute'), weekday: g('weekday') } };
+
+  /* feriados bancários (Federal Reserve). Feriado no sábado não é compensado na sexta. */
+  H.HOLIDAYS = new Set(['2026-01-01', '2026-01-19', '2026-02-16', '2026-05-25', '2026-06-19', '2026-09-07', '2026-10-12', '2026-11-11', '2026-11-26', '2026-12-25',
+    '2027-01-01', '2027-01-18', '2027-02-15', '2027-05-31', '2027-07-05', '2027-09-06', '2027-10-11', '2027-11-11', '2027-11-25',
+    '2028-01-17', '2028-02-21', '2028-05-29', '2028-06-19', '2028-07-04', '2028-09-04', '2028-10-09', '2028-11-23', '2028-12-25']);
+  H.isBizDay = s => { const d = parseD(s).getDay(); return d !== 0 && d !== 6 && !H.HOLIDAYS.has(s) };
+  H.addBizDays = (s, n) => { let d = s; let k = 0; while (k < n) { d = addDays(d, 1); if (H.isBizDay(d)) k++ } return d };
+  H.quickPayOpen = () => { const n = H.nyNow(); const wk = !['Sat', 'Sun'].includes(n.weekday); return wk && (n.hour < 15 || (n.hour === 15 && n.minute === 0)) };
+
+  /* ---------------- interface ---------------- */
+  let toastT;
+  H.toast = (m, err) => { let t = $('.toast'); if (!t) { t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); document.body.appendChild(t) } t.textContent = m; t.classList.toggle('err', !!err); t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, err ? 4500 : 2600) };
+  H.fail = e => { console.error(e); H.toast(H.errText(e), true) };
+  H.errText = e => { const m = (e && (e.message || e.error_description || e.msg)) || String(e || ''); if (/row-level security|permission denied/i.test(m)) return 'Sem permissão para isso.'; if (/Failed to fetch|NetworkError/i.test(m)) return 'Sem internet. Tente de novo.'; if (/Invalid login/i.test(m)) return 'E-mail ou senha errados.'; if (/Email not confirmed/i.test(m)) return 'Confirme o e-mail primeiro (veja a caixa de entrada).'; if (/already registered/i.test(m)) return 'Esse e-mail já tem conta. Toque em Entrar.'; return m || 'Algo deu errado. Tente de novo.' };
+  H.q = async p => { const r = await p; if (r.error) throw r.error; return r.data };
+
+  H.sheet = (html, onMount) => {
+    const s = document.createElement('div'); s.className = 'sheet';
+    s.innerHTML = `<div class="panel" role="dialog" aria-modal="true">${html}</div>`;
+    const close = () => { s.remove(); document.body.style.overflow = '' };
+    s.addEventListener('click', e => { if (e.target === s) close() });
+    document.body.appendChild(s); document.body.style.overflow = 'hidden';
+    $$('[data-close]', s).forEach(b => b.onclick = close);
+    const api = { el: s.firstElementChild, close };
+    onMount && onMount(api);
+    return api;
+  };
+  H.confirmBtn = (btn, label, fn) => { btn.onclick = async () => { if (!btn.dataset.c) { btn.dataset.c = 1; btn.dataset.l = btn.textContent; btn.textContent = label || 'Confirmar?'; setTimeout(() => { if (btn.isConnected) { delete btn.dataset.c; btn.textContent = btn.dataset.l } }, 4000); return } btn.disabled = true; try { await fn() } catch (e) { H.fail(e) } finally { btn.disabled = false } } };
+  H.busy = async (btn, fn) => { const t = btn.textContent; btn.disabled = true; btn.textContent = '…'; try { return await fn() } catch (e) { H.fail(e) } finally { btn.disabled = false; btn.textContent = t } };
+  H.form = el => { const o = {}; $$('[name]', el).forEach(i => { o[i.name] = i.type === 'checkbox' ? i.checked : i.type === 'number' ? (i.value === '' ? null : +i.value) : (i.value.trim() === '' ? null : i.value.trim()) }); return o };
+  H.wa = (text, num) => 'https://wa.me/' + (num || H.cfg.whatsapp) + '?text=' + encodeURIComponent(text);
+
+  /* ---------------- arquivos ---------------- */
+  const safeName = s => String(s || 'arquivo').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9._-]+/g, '-').slice(-60);
+  async function shrink(file) {
+    if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size < 600e3) return file;
+    try {
+      const bmp = await createImageBitmap(file); const M = 1800, r = Math.min(1, M / Math.max(bmp.width, bmp.height));
+      const c = document.createElement('canvas'); c.width = Math.round(bmp.width * r); c.height = Math.round(bmp.height * r);
+      c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+      const b = await new Promise(ok => c.toBlob(ok, 'image/jpeg', .82));
+      return b && b.size < file.size ? new File([b], file.name.replace(/\.\w+$/, '') + '.jpg', { type: 'image/jpeg' }) : file;
+    } catch (e) { return file }
+  }
+  /* envia e só devolve o caminho depois que o Storage confirmou */
+  H.upload = async (bucket, folder, file) => {
+    const f = await shrink(file);
+    if (f.size > 20e6) throw new Error('Arquivo grande demais (máx. 20 MB).');
+    const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 6)}-${safeName(f.name)}`;
+    await H.q(H.sb.storage.from(bucket).upload(path, f, { contentType: f.type || 'application/octet-stream', upsert: false }));
+    return { path, name: file.name };
+  };
+  const urlCache = {};
+  H.signed = async path => { if (!path) return ''; const c = urlCache[path]; if (c && c.t > Date.now()) return c.u; const d = await H.q(H.sb.storage.from('files').createSignedUrl(path, 3600)); urlCache[path] = { u: d.signedUrl, t: Date.now() + 50 * 60e3 }; return d.signedUrl };
+  H.logoUrl = path => path ? H.sb.storage.from('logos').getPublicUrl(path).data.publicUrl : '';
+  H.openFile = async path => { const w = window.open('', '_blank'); try { const u = await H.signed(path); if (w) w.location = u; else location.href = u } catch (e) { if (w) w.close(); H.fail(e) } };
+  H.thumbs = async (el, paths) => { el.innerHTML = ''; for (const p of paths || []) { try { const u = await H.signed(p); const a = document.createElement('a'); a.href = u; a.target = '_blank'; a.rel = 'noopener'; a.innerHTML = /\.pdf$/i.test(p) ? `<span class="file">PDF</span>` : `<img src="${esc(u)}" alt="">`; el.appendChild(a) } catch (e) { } } };
+
+  /* ---------------- pasta do motorista: checklist do auditor ---------------- */
+  /* kind: once = uma vez · expiry = vence numa data · yearly = refazer a cada 12 meses · work = vence se tiver data */
+  H.DOCS = [
+    { k: 'application', t: 'Application for Employment (assinada)', p: '391.21', kind: 'once', drv: true },
+    { k: 'license', t: 'Carteira de motorista', p: '391.21', kind: 'expiry', drv: true },
+    { k: 'workauth', t: 'Autorização de trabalho (work permit / green card / cidadania)', p: '391.21', kind: 'work', drv: true },
+    { k: 'med', t: 'Medical card (MCSA-5876)', p: '391.43', kind: 'expiry', drv: true, cmv: true },
+    { k: 'w9', t: 'W-9', p: 'IRS', kind: 'once', drv: true, all: true },
+    { k: 'coi', t: 'Seguro do veículo (COI)', p: '', kind: 'expiry', drv: true, all: true },
+    { k: 'registration', t: 'Registro do veículo', p: '', kind: 'expiry', drv: true, all: true },
+    { k: 'vehicle_photos', t: 'Fotos do veículo (frente, lados, traseira, placa)', p: '', kind: 'once', drv: true, all: true },
+    { k: 'lease', t: 'Contrato de lease assinado', p: '376.12', kind: 'once', drv: true, all: true },
+    { k: 'mvr_pre', t: 'MVR pré-contratação (3 anos)', p: '391.23(a)(1)', kind: 'once' },
+    { k: 'sph', t: 'Safety Performance History', p: '391.23(a)(2)', kind: 'once' },
+    { k: 'roadtest', t: 'Road test ou cópia da CDL', p: '391.31', kind: 'once' },
+    { k: 'onduty', t: 'Statement of On-Duty Hours (7 dias)', p: '395.8(j)(2)', kind: 'once', drv: true },
+    { k: 'mvr_annual', t: 'MVR anual', p: '391.25(a)', kind: 'yearly' },
+    { k: 'violations', t: 'Certification of Violations (anual)', p: '391.27', kind: 'yearly', drv: true },
+    { k: 'review', t: 'Annual Review of Driving Record', p: '391.25(c)(2)', kind: 'yearly' },
+    { k: 'inspection', t: 'Inspeção anual do veículo', p: '396.17', kind: 'yearly', drv: true, all: true },
+    { k: 'eldt', t: 'Entry-level driver training (ELDT)', p: '380.503', kind: 'once', cdl: true },
+    { k: 'drug_pre', t: 'Teste de drogas pré-contratação (DOT 5-panel)', p: '382.301', kind: 'once', cdl: true },
+    { k: 'da_policy', t: 'Recibo da política de drogas e álcool', p: '382.601', kind: 'once', cdl: true, drv: true },
+    { k: 'ch_full', t: 'Clearinghouse: consulta completa', p: '382.701', kind: 'once', cdl: true },
+    { k: 'ch_annual', t: 'Clearinghouse: consulta anual', p: '382.701', kind: 'yearly', cdl: true },
+  ];
+  /* veículo abaixo de 10,001 lbs: a pasta DQ federal não é obrigatória (fica como recomendada) */
+  H.isCMV = d => { const g = num((d.vehicle || {}).gvwr); return !g || g >= 10001 };
+  H.docApplies = (d, it) => !(it.cdl && !d.cdl);
+  H.docRequired = (d, it) => H.docApplies(d, it) && (it.all || !H.isCMV || H.isCMV(d));
+  /* status de um item a partir da última versão enviada */
+  H.docStatus = (d, it, rows) => {
+    const list = (rows || []).filter(r => r.item === it.k).sort((a, b) => b.created_at.localeCompare(a.created_at));
+    const last = list[0], req = H.docRequired(d, it);
+    if (!last) return { s: req ? 'miss' : 'opt', txt: req ? 'Não enviado' : 'Recomendado', last };
+    if (last.status === 'enviado') return { s: 'review', txt: 'Em análise', last };
+    if (last.status === 'rejeitado') return { s: 'bad', txt: 'Rejeitado', last };
+    let due = null;
+    if ((it.kind === 'expiry' || it.kind === 'work') && last.expires_on) due = last.expires_on;
+    if (it.kind === 'yearly') due = addMonths(last.done_on || String(last.created_at).slice(0, 10), 12);
+    if (it.kind === 'expiry' && !due) return { s: 'warn', txt: 'Aprovado · falta data de vencimento', last };
+    if (!due) return { s: 'ok', txt: 'Aprovado', last };
+    const n = daysTo(due);
+    if (n < 0) return { s: 'bad', txt: 'Venceu em ' + brDate(due), last, due };
+    if (n <= 30) return { s: 'warn', txt: 'Vence em ' + n + (n === 1 ? ' dia' : ' dias'), last, due };
+    return { s: 'ok', txt: 'Aprovado até ' + brDate(due), last, due };
+  };
+  H.pillCls = { ok: 'p-good', warn: 'p-warn', bad: 'p-bad', miss: 'p-bad', review: 'p-info', opt: '' };
+
+  /* MCS-150: último dígito do USDOT = mês (0 = outubro); penúltimo ímpar/par = ano ímpar/par (390.19) */
+  H.mcsDue = c => {
+    const dot = String(c.dot || '').replace(/\D/g, ''); if (dot.length < 2) return null;
+    const d1 = +dot.slice(-1), d2 = +dot.slice(-2, -1), month = d1 === 0 ? 10 : d1;
+    const last = c.mcs150_date ? parseD(c.mcs150_date) : null; let y = last ? last.getFullYear() : today().getFullYear() - 2;
+    for (let i = 0; i < 8; i++, y++) { if (y % 2 !== d2 % 2) continue; const end = new Date(y, month, 0), start = new Date(y, month - 1, 1); start.setMonth(start.getMonth() - 11); if (last && (end < last || last >= start)) continue; return iso(end) }
+    return null;
+  };
+  H.companyAlerts = c => {
+    if (c.type === 'dispatch') return [];
+    const out = [], yr = today().getFullYear(), mo = today().getMonth();
+    const m = H.mcsDue(c);
+    if (!c.dot) out.push({ t: 'MCS-150', s: 'miss', txt: 'Falta o USDOT' });
+    else if (m) { const n = daysTo(m); out.push({ t: 'MCS-150 (a cada 24 meses)', s: n < 0 ? 'bad' : n <= 60 ? 'warn' : 'ok', txt: n < 0 ? 'Atrasado desde ' + brDate(m) : 'Até ' + brDate(m) }) }
+    const u = num(c.ucr_year);
+    out.push({ t: 'UCR (anual)', s: u >= yr + 1 ? 'ok' : u >= yr ? (mo >= 9 ? 'warn' : 'ok') : 'bad', txt: u ? 'Pago ' + u : 'Não pago' });
+    if (c.insurance_exp) { const n = daysTo(c.insurance_exp); out.push({ t: 'Seguro', s: n < 0 ? 'bad' : n <= 30 ? 'warn' : 'ok', txt: n < 0 ? 'Venceu ' + brDate(c.insurance_exp) : 'Até ' + brDate(c.insurance_exp) }) }
+    else out.push({ t: 'Seguro', s: 'miss', txt: 'Falta a data' });
+    return out;
+  };
+
+  /* ---------------- login ---------------- */
+  function setupScreen() {
+    $('#app').innerHTML = `<div class="auth"><form class="box" id="setup"><div class="seal">H</div><h1>Configurar</h1>
+      <p class="note">Cole os dados do Supabase (Project Settings → API). Isso fica salvo só neste aparelho. Para os motoristas, os dados vão no arquivo config.js.</p>
+      <label class="f">Project URL<input name="url" placeholder="https://xxxx.supabase.co" required></label>
+      <label class="f">anon public key<textarea name="key" required></textarea></label>
+      <button class="btn gold wide">Salvar</button></form></div>`;
+    $('#setup').onsubmit = e => { e.preventDefault(); const o = H.form(e.target); try { localStorage.setItem('hts-config', JSON.stringify({ url: o.url, key: o.key })) } catch (x) { } location.reload() };
+  }
+  function authScreen(mode) {
+    const T = { login: ['Entrar', 'Entrar'], signup: ['Criar conta', 'Criar conta'], reset: ['Esqueci a senha', 'Enviar link'], newpass: ['Nova senha', 'Salvar senha'] }[mode];
+    $('#app').innerHTML = `<div class="auth"><form class="box" id="auth" autocomplete="on"><div class="seal">H</div>
+      <h1>Helen Transport</h1><p class="tag">${esc(H.cfg.dispatchName)}</p>
+      <h2 style="text-align:center">${T[0]}</h2>
+      ${mode !== 'newpass' ? `<label class="f">E-mail / Correo / Email<input name="email" type="email" autocomplete="username" required></label>` : ''}
+      ${mode !== 'reset' ? `<label class="f">Senha / Contraseña / Password<input name="password" type="password" minlength="8" autocomplete="${mode === 'login' ? 'current-password' : 'new-password'}" required></label>` : ''}
+      ${mode === 'signup' ? `<p class="note">Use o mesmo e-mail que a Helen cadastrou para você. Mínimo 8 caracteres.<br>Use el mismo correo que Helen registró para usted.</p>` : ''}
+      <p class="err" id="aerr" hidden></p>
+      <button class="btn gold wide" id="ago">${T[1]}</button>
+      <div class="row between">
+        ${mode !== 'login' ? '<button type="button" class="btn sm" data-m="login">Entrar</button>' : '<button type="button" class="btn sm" data-m="signup">Criar conta</button>'}
+        ${mode === 'login' ? '<button type="button" class="btn sm" data-m="reset">Esqueci a senha</button>' : ''}
+      </div>
+      <p class="note" style="text-align:center">WhatsApp: <a href="${H.wa('Olá Helen!')}" target="_blank" rel="noopener">(407) 376-0990</a></p></form></div>`;
+    $$('[data-m]').forEach(b => b.onclick = () => authScreen(b.dataset.m));
+    $('#auth').onsubmit = async e => {
+      e.preventDefault(); const o = H.form(e.target), er = $('#aerr'); er.hidden = true;
+      const show = m => { er.textContent = m; er.hidden = false };
+      await H.busy($('#ago'), async () => {
+        try {
+          const redirect = location.origin + location.pathname;
+          if (mode === 'login') { await H.q(H.sb.auth.signInWithPassword({ email: o.email, password: o.password })) }
+          else if (mode === 'signup') { const d = await H.q(H.sb.auth.signUp({ email: o.email, password: o.password, options: { emailRedirectTo: redirect } })); if (!d.session) { $('#auth').innerHTML = `<div class="seal">✓</div><h2 style="text-align:center">Confirme o e-mail</h2><p class="note" style="text-align:center">Enviamos um link para <b>${esc(o.email)}</b>. Abra o e-mail, toque no link e depois volte aqui para entrar.<br><br>Revise también la carpeta de spam.</p><button type="button" class="btn gold wide" id="back">Entrar</button>`; $('#back').onclick = () => authScreen('login') } }
+          else if (mode === 'reset') { await H.q(H.sb.auth.resetPasswordForEmail(o.email, { redirectTo: redirect })); show('Se o e-mail tiver conta, chegou um link para criar uma nova senha.'); er.style.color = 'var(--good)' }
+          else if (mode === 'newpass') { await H.q(H.sb.auth.updateUser({ password: o.password })); H.toast('Senha salva'); start() }
+        } catch (x) { show(H.errText(x)) }
+      });
+    };
+  }
+  H.signOut = async () => { try { await H.sb.auth.signOut() } catch (e) { } location.hash = ''; authScreen('login') };
+
+  let started = false;
+  async function start() {
+    const { data } = await H.sb.auth.getSession();
+    if (!data.session) { started = false; authScreen('login'); return }
+    H.user = data.session.user;
+    let prof = null;
+    try { prof = (await H.q(H.sb.from('profiles').select('role,email').eq('id', H.user.id).maybeSingle())) } catch (e) { H.fail(e) }
+    H.role = prof && prof.role === 'admin' ? 'admin' : 'driver';
+    started = true;
+    if (H.role === 'admin') H.Admin.start(); else H.Driver.start();
+  }
+  H.boot = () => {
+    if (!window.supabase || !window.supabase.createClient) { $('#app').innerHTML = '<div class="auth"><div class="box"><div class="seal">!</div><p class="note" style="text-align:center">Sem internet ou bloqueado. Abra de novo com internet.</p></div></div>'; return }
+    if (!H.cfg.url || !H.cfg.key) { setupScreen(); return }
+    H.sb = window.supabase.createClient(H.cfg.url, H.cfg.key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+    H.sb.auth.onAuthStateChange((ev) => {
+      if (ev === 'PASSWORD_RECOVERY') { authScreen('newpass'); return }
+      if (ev === 'SIGNED_IN' && !started) start();
+      if (ev === 'SIGNED_OUT') { started = false; authScreen('login') }
+    });
+    start();
+  };
+})(window.HTS);
+
+</script>
+<script>
+/* Helen Transport Services — painel da administração */
+'use strict';
+(function (H) {
+  const { $, $$, esc, num, fmt, fmtI, iso, today, brDate, addMonths, daysTo } = H;
+  const A = H.Admin = {};
+  const D = { companies: [], drivers: [], docs: [], loads: [], events: [], fuel: [], settlements: [], quickpay: [], ledger: [], apps: [] };
+  const TABLES = { companies: 'companies', drivers: 'drivers', docs: 'driver_docs', loads: 'loads', events: 'load_events', fuel: 'fuel', settlements: 'settlements', quickpay: 'quickpay', ledger: 'ledger', apps: 'applications' };
+  const ORDER = { companies: 'name', drivers: 'name', docs: 'created_at', loads: 'load_date', events: 'created_at', fuel: 'fuel_date', settlements: 'created_at', quickpay: 'requested_at', ledger: 'entry_date', apps: 'created_at' };
+  const st = { route: 'painel', sub: 'empresas', period: 'month', company: 'all', driver: 'all', stage: 'ativas', search: '' };
+
+  async function load(keys) {
+    keys = keys || Object.keys(TABLES);
+    await Promise.all(keys.map(async k => {
+      D[k] = await H.q(H.sb.from(TABLES[k]).select('*').order(ORDER[k], { ascending: !['created_at', 'load_date', 'fuel_date', 'requested_at', 'entry_date'].includes(ORDER[k]) }).limit(5000));
+    }));
+  }
+  A.reload = async keys => { try { await load(keys); render() } catch (e) { H.fail(e) } };
+
+  const drv = id => D.drivers.find(d => d.id === id) || {};
+  const comp = id => D.companies.find(c => c.id === id) || {};
+  const carriers = () => D.companies.filter(c => c.type === 'carrier');
+  const dispatchCo = () => D.companies.find(c => c.type === 'dispatch');
+  const loadCo = l => l.company_id || drv(l.driver_id).company_id;
+  const brandOf = d => d.brand || d.name || 'Motorista';
+  const opt = (list, val, blank) => (blank ? `<option value="">${esc(blank)}</option>` : '') + list.map(([v, t]) => `<option value="${esc(v)}" ${String(v) === String(val ?? '') ? 'selected' : ''}>${esc(t)}</option>`).join('');
+  const STAGE = { oferta: ['Oferta', 'p-gold'], confirmada: ['Confirmada', 'p-info'], coletada: ['Coletada', 'p-info'], entregue: ['Entregue', 'p-good'], cancelada: ['Cancelada', ''] };
+  const RESP = { aceita: ['Motorista aceitou', 'p-good'], recusada: ['Motorista recusou', 'p-bad'], contraproposta: ['Contraproposta', 'p-warn'] };
+
+  function period() {
+    const t = today(); let f = null, to = null;
+    if (st.period === 'week') { f = new Date(t); f.setDate(f.getDate() - ((f.getDay() + 6) % 7)) }
+    else if (st.period === 'month') f = new Date(t.getFullYear(), t.getMonth(), 1);
+    else if (st.period === 'last') { f = new Date(t.getFullYear(), t.getMonth() - 1, 1); to = new Date(t.getFullYear(), t.getMonth(), 0) }
+    return { from: f ? iso(f) : '', to: to ? iso(to) : '' };
+  }
+  const inPeriod = d => { const p = period(); return (!p.from || d >= p.from) && (!p.to || d <= p.to) };
+
+  /* ================= estrutura ================= */
+  const TABS = [['painel', 'Painel'], ['cargas', 'Cargas'], ['motoristas', 'Motoristas'], ['acertos', 'Acertos'], ['mais', 'Mais']];
+  A.start = async () => {
+    $('#app').innerHTML = `<header class="top"><div class="wrap"><div class="logo">H</div><div class="brand"><b>Helen Transport</b><span>Painel · ${esc(H.cfg.dispatchName)}</span></div>
+      <button class="iconbtn" id="reload" aria-label="Atualizar">↻</button><button class="iconbtn" id="out">Sair</button></div></header>
+      <main class="wrap" id="view"><div class="empty">Carregando…</div></main>
+      <nav class="tabs" style="grid-template-columns:repeat(${TABS.length},1fr)" role="tablist">${TABS.map(([k, l]) => `<button role="tab" data-t="${k}">${l}<span class="dot" hidden></span></button>`).join('')}</nav>`;
+    $('#out').onclick = H.signOut; $('#reload').onclick = () => A.reload();
+    $$('nav.tabs button').forEach(b => b.onclick = () => { location.hash = b.dataset.t });
+    window.onhashchange = () => { readHash(); render(); window.scrollTo(0, 0) };
+    readHash();
+    try { await load() } catch (e) { H.fail(e) }
+    render();
+  };
+  function readHash() { const [r, s] = location.hash.replace('#', '').split('/'); st.route = TABS.some(t => t[0] === r) ? r : 'painel'; if (s) st.sub = s }
+
+  function render() {
+    $$('nav.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.t === st.route));
+    const pend = pendings();
+    const dot = $('nav.tabs button[data-t="painel"] .dot'); if (dot) { dot.hidden = !pend.length; dot.textContent = pend.length }
+    const v = $('#view'); if (!v) return;
+    const fn = { painel: vPainel, cargas: vCargas, motoristas: vMotoristas, acertos: vAcertos, mais: vMais }[st.route];
+    v.innerHTML = fn.html(); fn.wire && fn.wire(v);
+  }
+
+  /* ================= pendências ================= */
+  function pendings() {
+    const out = [];
+    D.loads.filter(l => l.stage === 'oferta' && l.offer_response).forEach(l => out.push({ s: l.offer_response === 'recusada' ? 'bad' : 'gold', t: `${drv(l.driver_id).name || '—'}: ${RESP[l.offer_response][0].toLowerCase()}${l.offer_response === 'contraproposta' ? ' ' + fmt(l.counter_amount) : ''}`, d: `${l.origin} → ${l.destination}`, go: 'cargas' }));
+    D.docs.filter(x => x.status === 'enviado').forEach(x => { const it = H.DOCS.find(i => i.k === x.item) || { t: x.item }; out.push({ s: 'info', t: `${drv(x.driver_id).name || '—'} enviou documento`, d: it.t, go: 'motoristas/' + x.driver_id }) });
+    D.quickpay.filter(q => q.status === 'pendente').forEach(q => out.push({ s: 'gold', t: `Quick Pay de ${drv(q.driver_id).name || '—'}`, d: fmt(q.amount) + ' · taxa ' + fmt(q.fee), go: 'acertos' }));
+    D.quickpay.filter(q => q.status === 'aprovado' && q.eligible_on && q.eligible_on <= iso(today())).forEach(q => out.push({ s: 'warn', t: `Pagar Quick Pay de ${drv(q.driver_id).name || '—'}`, d: 'Liberado desde ' + brDate(q.eligible_on), go: 'acertos' }));
+    D.drivers.filter(d => d.status !== 'inativo').forEach(d => H.DOCS.forEach(it => { if (!H.docApplies(d, it)) return; const s = H.docStatus(d, it, D.docs.filter(x => x.driver_id === d.id)); if (s.s === 'bad' || s.s === 'warn') out.push({ s: s.s, t: `${d.name}: ${it.t}`, d: s.txt, go: 'motoristas/' + d.id }) }));
+    D.companies.forEach(c => H.companyAlerts(c).forEach(a => { if (a.s !== 'ok') out.push({ s: a.s === 'miss' ? 'warn' : a.s, t: `${c.name}: ${a.t}`, d: a.txt, go: 'mais/empresas' }) }));
+    return out;
+  }
+
+  /* ================= PAINEL ================= */
+  const vPainel = {
+    html() {
+      const L = D.loads.filter(l => l.stage !== 'cancelada' && l.stage !== 'oferta' && inPeriod(l.load_date) && (st.company === 'all' || loadCo(l) === st.company));
+      let rev = 0, pay = 0, mi = 0, dh = 0; L.forEach(l => { rev += num(l.rate); pay += num(l.driver_pay); mi += num(l.miles); dh += num(l.deadhead) });
+      const disp = rev - pay, P = pendings();
+      const byDrv = {}; L.forEach(l => { const k = l.driver_id || '-'; const g = byDrv[k] = byDrv[k] || { n: 0, rev: 0, mi: 0, disp: 0 }; g.n++; g.rev += num(l.rate); g.mi += num(l.miles); g.disp += num(l.rate) - num(l.driver_pay) });
+      return `<div class="stack">${filters(true)}
+        <div class="hero"><span class="muted">Faturamento das cargas</span><div class="big">${fmt(rev)}</div>
+          <div class="g2"><div><span class="muted">Sua parte (dispatch)</span><div class="money" style="text-align:left;font-size:20px">${fmt(disp)}</div></div><div><span class="muted">Motoristas</span><div class="money" style="text-align:left;font-size:20px">${fmt(pay)}</div></div></div></div>
+        <div class="stats"><div class="stat"><span>Cargas</span><b>${L.length}</b></div><div class="stat"><span>$/milha</span><b>${mi ? fmt(rev / mi) : '—'}</b></div><div class="stat"><span>Milhas</span><b>${fmtI(mi)}</b></div></div>
+        <div class="row between"><h2>Pendências</h2><span class="muted">${P.length}</span></div>
+        ${P.length ? P.slice(0, 25).map(p => `<button class="card tap sev ${p.s === 'info' ? 'gold' : p.s}" data-go="${esc(p.go)}"><b>${esc(p.t)}</b><span class="muted">${esc(p.d)}</span></button>`).join('') : '<div class="card sev good"><b>Tudo em dia.</b><span class="muted">Nenhuma resposta, documento ou pagamento esperando você.</span></div>'}
+        <h2>Por motorista</h2>
+        ${Object.keys(byDrv).length ? Object.entries(byDrv).map(([k, g]) => `<div class="card"><div class="top2"><div><b>${esc(drv(k).name || '—')}</b><div class="muted">${g.n} cargas · ${fmtI(g.mi)} mi${g.mi ? ' · ' + fmt(g.rev / g.mi) + '/mi' : ''}</div></div><div class="money">${fmt(g.rev)}<div class="muted">você ${fmt(g.disp)}</div></div></div></div>`).join('') : '<div class="empty">Nenhuma carga neste período.</div>'}</div>`;
+    },
+    wire(v) { wireFilters(v); $$('[data-go]', v).forEach(b => b.onclick = () => location.hash = b.dataset.go) }
+  };
+  function filters(withDriver) {
+    return `<div class="stack"><div class="chips">${[['week', 'Semana'], ['month', 'Mês'], ['last', 'Mês passado'], ['all', 'Tudo']].map(([k, l]) => `<button class="chip" data-p="${k}" aria-pressed="${st.period === k}">${l}</button>`).join('')}</div>
+      <div class="g2"><select id="fCo" aria-label="Empresa">${opt(carriers().map(c => [c.id, c.name]), st.company === 'all' ? '' : st.company, 'Todas as empresas')}</select>
+      ${withDriver ? `<select id="fDr" aria-label="Motorista">${opt(D.drivers.map(d => [d.id, d.name]), st.driver === 'all' ? '' : st.driver, 'Todos os motoristas')}</select>` : ''}</div></div>`;
+  }
+  function wireFilters(v) {
+    $$('[data-p]', v).forEach(b => b.onclick = () => { st.period = b.dataset.p; render() });
+    const c = $('#fCo', v); if (c) c.onchange = () => { st.company = c.value || 'all'; render() };
+    const d = $('#fDr', v); if (d) d.onchange = () => { st.driver = d.value || 'all'; render() };
+  }
+
+  /* ================= CARGAS ================= */
+  const vCargas = {
+    html() {
+      const s = st.search.toLowerCase();
+      const L = D.loads.filter(l => (st.stage === 'todas' || (st.stage === 'ativas' ? ['oferta', 'confirmada', 'coletada'].includes(l.stage) : l.stage === st.stage))
+        && (st.company === 'all' || loadCo(l) === st.company) && (st.driver === 'all' || l.driver_id === st.driver)
+        && (!s || [l.origin, l.destination, l.ref, l.broker, drv(l.driver_id).name].join(' ').toLowerCase().includes(s)));
+      return `<div class="stack"><div class="row between"><h1>Cargas</h1><button class="btn gold" id="newLoad">+ Carga / oferta</button></div>
+        <div class="chips">${[['ativas', 'Ativas'], ['oferta', 'Ofertas'], ['entregue', 'Entregues'], ['todas', 'Todas']].map(([k, l]) => `<button class="chip" data-s="${k}" aria-pressed="${st.stage === k}">${l}</button>`).join('')}</div>
+        <input id="srch" placeholder="Buscar cidade, nº da carga, broker, motorista" value="${esc(st.search)}">
+        ${filters(true).replace(/<div class="chips">[\s\S]*?<\/div>/, '')}
+        ${L.length ? L.map(loadCard).join('') : '<div class="empty">Nenhuma carga aqui. Toque em <b>+ Carga / oferta</b>.</div>'}</div>`;
+    },
+    wire(v) {
+      wireFilters(v);
+      $('#newLoad', v).onclick = () => loadForm();
+      $$('[data-s]', v).forEach(b => b.onclick = () => { st.stage = b.dataset.s; render() });
+      const sr = $('#srch', v); sr.oninput = () => { st.search = sr.value; clearTimeout(sr._t); sr._t = setTimeout(() => { render(); const n = $('#srch'); n.focus(); n.setSelectionRange(n.value.length, n.value.length) }, 400) };
+      $$('[data-load]', v).forEach(el => wireLoadCard(el));
+    }
+  };
+  function loadCard(l) {
+    const d = drv(l.driver_id), sg = STAGE[l.stage] || ['', ''], r = l.offer_response && l.stage === 'oferta' ? RESP[l.offer_response] : null;
+    const ev = D.events.filter(e => e.load_id === l.id), rpm = num(l.miles) ? num(l.rate) / num(l.miles) : 0;
+    return `<div class="card sev ${l.stage === 'oferta' ? 'gold' : l.stage === 'entregue' ? 'good' : ''}" data-load="${l.id}">
+      <div class="top2"><div style="min-width:0"><div class="route">${esc(l.origin)} → ${esc(l.destination)}</div>
+      <div class="muted">${brDate(l.load_date)} · ${esc(d.name || 'sem motorista')} · ${esc(comp(loadCo(l)).name || '')}${l.ref ? ' · #' + esc(l.ref) : ''}</div>
+      <div class="muted">${fmtI(l.miles)} mi${rpm ? ' · ' + fmt(rpm) + '/mi' : ''}${l.broker ? ' · ' + esc(l.broker) : ''}</div></div>
+      <div class="money">${fmt(l.rate)}<div class="muted">motorista ${fmt(l.driver_pay)}</div></div></div>
+      <div class="row"><span class="pill ${sg[1]}">${sg[0]}</span>${r ? `<span class="pill ${r[1]}">${r[0]}${l.offer_response === 'contraproposta' ? ' ' + fmt(l.counter_amount) : ''}</span>` : ''}
+      ${l.stage === 'oferta' && !l.offer_response ? '<span class="pill">Esperando o motorista</span>' : ''}
+      ${l.paid ? `<span class="pill p-good">Pago ${brDate(l.paid_at)}${l.paid_via === 'quickpay' ? ' (Quick Pay)' : ''}</span>` : l.stage === 'entregue' ? '<span class="pill p-warn">A pagar</span>' : ''}</div>
+      <div class="row">
+        ${l.stage === 'oferta' ? '<button class="btn sm gold" data-a="confirm">Fechou: confirmar</button>' : ''}
+        ${l.stage === 'confirmada' ? '<button class="btn sm" data-a="coletada">Marcar coletada</button>' : ''}
+        ${l.stage === 'coletada' ? '<button class="btn sm" data-a="entregue">Marcar entregue</button>' : ''}
+        ${ev.length ? `<button class="btn sm" data-a="events">Fotos e POD (${ev.length})</button>` : ''}
+        <button class="btn sm" data-a="edit">Editar</button></div></div>`;
+  }
+  function wireLoadCard(el) {
+    const l = D.loads.find(x => x.id === el.dataset.load), b = a => $(`[data-a="${a}"]`, el);
+    const setStage = async s => { await H.q(H.sb.from('loads').update({ stage: s }).eq('id', l.id)); H.toast('Carga atualizada'); A.reload(['loads']) };
+    if (b('confirm')) b('confirm').onclick = () => H.busy(b('confirm'), () => setStage('confirmada'));
+    if (b('coletada')) b('coletada').onclick = () => H.busy(b('coletada'), () => setStage('coletada'));
+    if (b('entregue')) b('entregue').onclick = () => H.busy(b('entregue'), () => setStage('entregue'));
+    if (b('events')) b('events').onclick = () => eventsSheet(l);
+    b('edit').onclick = () => loadForm(l);
+  }
+  function eventsSheet(l) {
+    const ev = D.events.filter(e => e.load_id === l.id).sort((a, b) => a.created_at.localeCompare(b.created_at));
+    H.sheet(`<div class="row between"><h2>${esc(l.origin)} → ${esc(l.destination)}</h2><button class="btn sm" data-close>Fechar</button></div>
+      ${ev.map((e, i) => `<div class="card"><b>${e.kind === 'pickup' ? 'Coleta' : e.kind === 'delivery' ? 'Entrega' : 'Outro'} · ${new Date(e.created_at).toLocaleString('pt-BR')}</b>
+      ${e.receiver_name ? `<span>Recebido por: <b>${esc(e.receiver_name)}</b></span>` : ''}${e.note ? `<span class="muted">${esc(e.note)}</span>` : ''}<div class="thumbs" data-ev="${i}"></div></div>`).join('')}`,
+      api => ev.forEach((e, i) => H.thumbs($(`[data-ev="${i}"]`, api.el), e.photos)));
+  }
+  function loadForm(l) {
+    const isNew = !l; l = l || { stage: 'oferta', load_date: iso(today()), dispatch_pct: null, factoring_pct: 0, broker_extra: 0 };
+    const firstDrv = D.drivers.find(d => d.status !== 'inativo');
+    H.sheet(`<form id="lf" class="stack"><div class="row between"><h2>${isNew ? 'Nova carga' : 'Editar carga'}</h2><button type="button" class="btn sm" data-close>Fechar</button></div>
+      <p class="note">Só ofereça ao motorista depois de negociar com o broker. Não deixe valor em branco: se não souber, pergunte antes.</p>
+      <div class="g2">
+        <label class="f full">Etapa<select name="stage">${opt(Object.entries(STAGE).map(([k, v]) => [k, v[0] + (k === 'oferta' ? ' (aparece para o motorista aceitar)' : '')]), l.stage)}</select></label>
+        <label class="f">Motorista<select name="driver_id" id="lfD" required>${opt(D.drivers.filter(d => d.status !== 'inativo' || d.id === l.driver_id).map(d => [d.id, d.name]), l.driver_id || (firstDrv || {}).id)}</select></label>
+        <label class="f">Empresa (DOT)<select name="company_id" id="lfC">${opt(carriers().map(c => [c.id, c.name]), l.company_id, '— do motorista —')}</select></label>
+        <label class="f">Data da coleta<input type="date" name="load_date" value="${esc(l.load_date)}" required></label>
+        <label class="f">Nº da carga<input name="ref" value="${esc(l.ref)}"></label>
+        <label class="f">Origem<input name="origin" value="${esc(l.origin)}" placeholder="Orlando, FL" required></label>
+        <label class="f">Destino<input name="destination" value="${esc(l.destination)}" placeholder="Atlanta, GA" required></label>
+        <label class="f">Janela de coleta<input name="pickup_window" value="${esc(l.pickup_window)}" placeholder="10/20 8:00–12:00"></label>
+        <label class="f">Janela de entrega<input name="delivery_window" value="${esc(l.delivery_window)}"></label>
+        <label class="f">Milhas carregado<input type="number" inputmode="numeric" name="miles" value="${esc(l.miles ?? '')}" required></label>
+        <label class="f">Milhas vazio (deadhead)<input type="number" inputmode="numeric" name="deadhead" value="${esc(l.deadhead ?? 0)}"></label>
+        <label class="f">Valor da carga $<input type="number" inputmode="decimal" step="0.01" name="rate" value="${esc(l.rate ?? '')}" required></label>
+        <label class="f">Extras do broker $<input type="number" inputmode="decimal" step="0.01" name="broker_extra" value="${esc(l.broker_extra ?? 0)}"></label>
+        <label class="f">% dispatch<input type="number" inputmode="decimal" step="0.5" name="dispatch_pct" id="lfP" value="${esc(l.dispatch_pct ?? '')}"></label>
+        <label class="f">% factoring<input type="number" inputmode="decimal" step="0.5" name="factoring_pct" value="${esc(l.factoring_pct ?? 0)}"></label>
+        <label class="f">Broker<input name="broker" value="${esc(l.broker)}"></label>
+        <label class="f">Equipamento<input name="equipment" value="${esc(l.equipment)}" placeholder="Cargo van, 26 ft…"></label>
+        <label class="f">Peso<input name="weight" value="${esc(l.weight)}"></label>
+        <label class="f full">Observações para o motorista<textarea name="notes">${esc(l.notes)}</textarea></label>
+      </div><div class="calc" id="lfCalc"></div>
+      <button class="btn gold wide" id="lfSave">Salvar</button>
+      ${!isNew ? '<button type="button" class="btn bad wide" id="lfDel">Apagar carga</button>' : ''}</form>`, api => {
+      const f = $('#lf', api.el), dSel = $('#lfD', f), pIn = $('#lfP', f);
+      const syncDrv = () => { const d = drv(dSel.value); if (isNew || pIn.value === '') pIn.value = d.dispatch_pct ?? 10; };
+      dSel.onchange = () => { syncDrv(); calc() }; if (pIn.value === '') syncDrv();
+      const calc = () => { const o = H.form(f), rate = num(o.rate), ex = num(o.broker_extra), pct = num(o.dispatch_pct), mi = num(o.miles), dh = num(o.deadhead);
+        const pay = Math.round(Math.max(rate - ex, 0) * (1 - pct / 100) * 100) / 100, fac = rate * num(o.factoring_pct) / 100, min = num(drv(o.driver_id).min_rpm);
+        const rpm = mi ? rate / mi : 0;
+        $('#lfCalc', f).innerHTML = `<span>Motorista recebe</span><span class="m">${fmt(pay)}</span><span>Você (dispatch + extras)</span><span class="m">${fmt(rate - pay)}</span>${fac ? `<span>Factoring</span><span class="m">−${fmt(fac)}</span>` : ''}
+          <span>$/milha carregado</span><span class="m ${min && mi ? (rpm >= min ? 'ok' : 'low') : ''}">${mi ? fmt(rpm) : '—'}${min && mi && rpm < min ? ' (abaixo do mínimo)' : ''}</span><span>$/milha com vazio</span><span class="m">${mi + dh ? fmt(rate / (mi + dh)) : '—'}</span>` };
+      f.oninput = calc; calc();
+      f.onsubmit = async e => { e.preventDefault(); const o = H.form(f); o.company_id = o.company_id || drv(o.driver_id).company_id || null;
+        if (l.stage === 'oferta' && o.stage === 'oferta' && !isNew && (num(o.rate) !== num(l.rate) || num(o.dispatch_pct) !== num(l.dispatch_pct))) { o.offer_response = null; o.counter_amount = null }
+        await H.busy($('#lfSave', f), async () => { if (isNew) await H.q(H.sb.from('loads').insert(o)); else await H.q(H.sb.from('loads').update(o).eq('id', l.id)); api.close(); H.toast(o.stage === 'oferta' ? 'Oferta enviada para o app do motorista' : 'Carga salva'); A.reload(['loads']) }) };
+      if ($('#lfDel', f)) H.confirmBtn($('#lfDel', f), 'Toque de novo para apagar', async () => { await H.q(H.sb.from('loads').delete().eq('id', l.id)); api.close(); H.toast('Carga apagada'); A.reload(['loads']) });
+    });
+  }
+
+  /* ================= MOTORISTAS ================= */
+  const vMotoristas = {
+    html() {
+      const id = location.hash.split('/')[1];
+      if (id && drv(id).id) { setTimeout(() => driverSheet(drv(id)), 0); history.replaceState(null, '', '#motoristas') }
+      return `<div class="stack"><div class="row between"><h1>Motoristas</h1><button class="btn gold" id="newDrv">+ Motorista</button></div>
+      ${D.drivers.length ? D.drivers.map(d => { const rows = D.docs.filter(x => x.driver_id === d.id); let bad = 0, warn = 0, miss = 0, rev = 0;
+        H.DOCS.forEach(it => { if (!H.docApplies(d, it)) return; const s = H.docStatus(d, it, rows).s; if (s === 'bad') bad++; else if (s === 'warn') warn++; else if (s === 'miss') miss++; else if (s === 'review') rev++ });
+        const v = d.vehicle || {};
+        return `<button class="card tap sev ${bad ? 'bad' : warn || miss ? 'warn' : 'good'}" data-d="${d.id}"><div class="top2"><div style="min-width:0"><b>${esc(d.name)}</b>
+          <div class="muted">${esc(comp(d.company_id).name || 'sem empresa')} · ${num(d.dispatch_pct)}% · ${esc([v.year, v.make, v.model].filter(Boolean).join(' ') || 'veículo não cadastrado')}</div></div>
+          <span class="pill ${d.user_id ? 'p-good' : ''}">${d.user_id ? 'App ativo' : 'Sem conta'}</span></div>
+          <div class="row">${rev ? `<span class="pill p-info">${rev} para revisar</span>` : ''}${bad ? `<span class="pill p-bad">${bad} vencido/rejeitado</span>` : ''}${warn ? `<span class="pill p-warn">${warn} vencendo</span>` : ''}${miss ? `<span class="pill p-bad">${miss} faltando</span>` : ''}${!bad && !warn && !miss && !rev ? '<span class="pill p-good">Pasta completa</span>' : ''}${d.status !== 'ativo' ? `<span class="pill">${esc(d.status)}</span>` : ''}</div></button>` }).join('') : '<div class="empty">Nenhum motorista. Toque em <b>+ Motorista</b>.</div>'}</div>`;
+    },
+    wire(v) { $('#newDrv', v).onclick = () => driverSheet(null); $$('[data-d]', v).forEach(b => b.onclick = () => driverSheet(drv(b.dataset.d))) }
+  };
+  function driverSheet(d) {
+    const isNew = !d; d = d || { dispatch_pct: 10, lang: 'pt', show_gross: true, status: 'ativo', vehicle: {}, license_state: 'FL' };
+    const v = d.vehicle || {}, rows = D.docs.filter(x => x.driver_id === d.id);
+    const appUrl = location.origin + location.pathname;
+    H.sheet(`<div class="row between"><h2>${esc(d.name || 'Novo motorista')}</h2><button class="btn sm" data-close>Fechar</button></div>
+      <form id="df" class="stack"><h3>Dados</h3><div class="g2">
+        <label class="f full">Nome completo<input name="name" value="${esc(d.name)}" required></label>
+        <label class="f">E-mail (login do app)<input type="email" name="email" value="${esc(d.email)}"></label>
+        <label class="f">Telefone / WhatsApp<input type="tel" name="phone" value="${esc(d.phone)}"></label>
+        <label class="f">Roda pela empresa<select name="company_id">${opt(carriers().map(c => [c.id, c.name]), d.company_id, 'Escolha')}</select></label>
+        <label class="f">Situação<select name="status">${opt([['ativo', 'Ativo'], ['candidato', 'Candidato'], ['inativo', 'Inativo']], d.status)}</select></label>
+        <label class="f">% dispatch<input type="number" step="0.5" name="dispatch_pct" value="${esc(d.dispatch_pct)}"></label>
+        <label class="f">Mínimo $/milha<input type="number" step="0.01" name="min_rpm" value="${esc(d.min_rpm ?? '')}"></label>
+        <label class="f">Idioma do app<select name="lang">${opt([['pt', 'Português'], ['es', 'Español'], ['en', 'English']], d.lang)}</select></label>
+        <label class="f">Nome que aparece no app<input name="brand" value="${esc(d.brand)}" placeholder="Empresa dele (ex.: Ramirez Express LLC)"></label>
+        <label class="f">Data de início<input type="date" name="hire_date" value="${esc(d.hire_date)}"></label>
+        <label class="f">Nº da carteira<input name="license_no" value="${esc(d.license_no)}"></label>
+        <label class="f">Estado da carteira<input name="license_state" value="${esc(d.license_state)}"></label>
+        <label class="chk full"><input type="checkbox" name="cdl" ${d.cdl ? 'checked' : ''}> Tem CDL (ativa a parte de drogas e álcool)</label>
+        <label class="chk full"><input type="checkbox" name="show_gross" ${d.show_gross ? 'checked' : ''}> Mostrar a ele o valor pago pelo broker</label>
+        <p class="note full">No lease pago por porcentagem, a regra federal (49 CFR 376.12) dá ao motorista o direito de ver o valor da carga. Desmarque só para quem recebe valor fixo.</p>
+      </div><h3>Veículo</h3><div class="g3">
+        <label class="f">Ano<input name="v_year" value="${esc(v.year)}" inputmode="numeric"></label><label class="f">Marca<input name="v_make" value="${esc(v.make)}"></label><label class="f">Modelo<input name="v_model" value="${esc(v.model)}"></label>
+        <label class="f">VIN<input name="v_vin" value="${esc(v.vin)}"></label><label class="f">Placa<input name="v_plate" value="${esc(v.plate)}"></label><label class="f">GVWR (lbs)<input name="v_gvwr" value="${esc(v.gvwr)}" inputmode="numeric"></label>
+      </div>
+      <button class="btn gold wide" id="dfSave">Salvar dados</button></form>
+      ${isNew ? '<p class="note">Salve para liberar a logo, os documentos e o convite.</p>' : `
+      <h3>Logo no app e nos acertos</h3>
+      <div class="row">${d.logo_path ? `<img src="${esc(H.logoUrl(d.logo_path))}" alt="" style="width:64px;height:64px;object-fit:contain;background:#fff;border-radius:10px">` : '<span class="note">Sem logo: o app mostra as iniciais.</span>'}
+        <span class="btn sm upl">${d.logo_path ? 'Trocar logo' : 'Enviar logo'}<input type="file" id="dLogo" accept="image/*"></span></div>
+      <h3>Acesso ao app</h3>
+      ${d.user_id ? '<p class="note"><span class="pill p-good">Conta criada</span> Ele já entra no app com o e-mail dele.</p>' : `<p class="note">1. Confira o e-mail acima. 2. Mande o convite. 3. Ele cria a conta com <b>esse mesmo e-mail</b> e já cai no app dele.</p>
+        <a class="btn" target="_blank" rel="noopener" href="${esc(H.wa(inviteText(d, appUrl), (d.phone || '').replace(/\D/g, '').replace(/^(?=\d{10}$)/, '1')))}">Mandar convite pelo WhatsApp</a>`}
+      <h3>Pasta (checklist do auditor)</h3>
+      ${!H.isCMV(d) ? '<p class="note">Veículo abaixo de 10,001 lbs: a pasta DQ federal não é obrigatória. Os itens aparecem como recomendados.</p>' : ''}
+      <div class="stack" id="docs">${H.DOCS.filter(it => H.docApplies(d, it)).map(it => docRow(d, it, rows)).join('')}</div>
+      <h3>Remover</h3><p class="note">A lei pede guardar a pasta até 3 anos depois que ele sair. Prefira marcar "Inativo".</p><button class="btn bad" id="dDel">Apagar motorista</button>`}`, api => {
+      const f = $('#df', api.el);
+      f.onsubmit = async e => { e.preventDefault(); const o = H.form(f); const veh = { year: o.v_year, make: o.v_make, model: o.v_model, vin: o.v_vin, plate: o.v_plate, gvwr: o.v_gvwr };
+        ['v_year', 'v_make', 'v_model', 'v_vin', 'v_plate', 'v_gvwr'].forEach(k => delete o[k]); o.vehicle = veh; o.email = o.email ? o.email.toLowerCase() : null; o.dispatch_pct = o.dispatch_pct ?? 10;
+        await H.busy($('#dfSave', f), async () => { if (isNew) { const r = await H.q(H.sb.from('drivers').insert(o).select().single()); api.close(); await load(['drivers']); render(); driverSheet(drv(r.id)) } else { await H.q(H.sb.from('drivers').update(o).eq('id', d.id)); H.toast('Dados salvos'); await load(['drivers']); render(); api.close(); driverSheet(drv(d.id)) } }) };
+      if (isNew) return;
+      $('#dLogo', api.el).onchange = async e => { const file = e.target.files[0]; if (!file) return; try { H.toast('Enviando logo…'); const up = await H.upload('logos', d.id, file); await H.q(H.sb.from('drivers').update({ logo_path: up.path }).eq('id', d.id)); await load(['drivers']); api.close(); driverSheet(drv(d.id)); H.toast('Logo salva') } catch (x) { H.fail(x) } };
+      wireDocs(api, d);
+      H.confirmBtn($('#dDel', api.el), 'Toque de novo para apagar tudo', async () => { await H.q(H.sb.from('drivers').delete().eq('id', d.id)); api.close(); H.toast('Motorista apagado'); A.reload(['drivers', 'docs']) });
+    });
+  }
+  const inviteText = (d, url) => ({ es: `Hola ${d.name}! Esta es la app de Helen Transport Services. Abra el enlace, toque en "Criar conta" y use este correo: ${d.email || ''}\n${url}\nEn el iPhone: Compartir → Agregar a inicio. En Android: menú ⋮ → Instalar app.`, en: `Hi ${d.name}! This is the Helen Transport Services app. Open the link, tap "Criar conta" (create account) and use this email: ${d.email || ''}\n${url}\niPhone: Share → Add to Home Screen. Android: ⋮ menu → Install app.` }[d.lang] || `Olá ${d.name}! Este é o app da Helen Transport Services. Abra o link, toque em "Criar conta" e use este e-mail: ${d.email || ''}\n${url}\nNo iPhone: Compartilhar → Adicionar à Tela de Início. No Android: menu ⋮ → Instalar app.`);
+  function docRow(d, it, rows) {
+    const s = H.docStatus(d, it, rows), last = s.last;
+    const dateField = it.kind === 'expiry' || it.kind === 'work' ? ['expires_on', it.kind === 'work' ? 'Vence em (se tiver)' : 'Vence em'] : it.kind === 'yearly' ? ['done_on', 'Feito em'] : null;
+    return `<div class="card" data-item="${it.k}"><div class="top2"><div style="min-width:0"><b>${esc(it.t)}</b> ${it.p ? `<span class="muted">${esc(it.p)}</span>` : ''}
+      ${last && last.note ? `<div class="muted">${esc(last.note)}</div>` : ''}</div><span class="pill ${H.pillCls[s.s]}">${esc(s.txt)}</span></div>
+      ${last && last.file_path ? `<button class="btn sm" data-open="${esc(last.file_path)}">Ver arquivo (${esc(brDate(String(last.created_at).slice(0, 10)))})</button>` : ''}
+      ${last && last.status === 'enviado' ? `<div class="row">${dateField ? `<input type="date" data-date="${dateField[0]}" aria-label="${dateField[1]}" style="max-width:180px">` : ''}<button class="btn sm gold" data-a="approve">Aprovar</button></div>
+        <div class="row"><input data-reason placeholder="Motivo da rejeição" style="flex:1"><button class="btn sm bad" data-a="reject">Rejeitar</button></div>` : `
+      <div class="row">${dateField ? `<label class="f" style="flex:1 1 150px">${dateField[1]}<input type="date" data-date="${dateField[0]}" value="${esc(last && last.status === 'aprovado' ? last[dateField[0]] || '' : '')}"></label>` : ''}
+        <span class="btn sm upl">Enviar arquivo<input type="file" data-up accept="image/*,application/pdf"></span>
+        <button class="btn sm" data-a="nofile">Registrar sem arquivo</button></div>`}</div>`;
+  }
+  function wireDocs(api, d) {
+    $$('[data-open]', api.el).forEach(b => b.onclick = () => H.openFile(b.dataset.open));
+    $$('[data-item]', api.el).forEach(card => {
+      const it = H.DOCS.find(i => i.k === card.dataset.item), last = H.docStatus(d, it, D.docs.filter(x => x.driver_id === d.id)).last;
+      const dateIn = $('[data-date]', card), dates = () => { const o = {}; if (dateIn && dateIn.value) o[dateIn.dataset.date] = dateIn.value; return o };
+      const need = () => { if (it.kind === 'expiry' && !(dateIn && dateIn.value)) { H.toast('Coloque a data de vencimento', true); return false } return true };
+      const refresh = async () => { await load(['docs']); render(); api.close(); driverSheet(drv(d.id)) };
+      const b = a => $(`[data-a="${a}"]`, card);
+      if (b('approve')) b('approve').onclick = () => { if (!need()) return; H.busy(b('approve'), async () => { await H.q(H.sb.from('driver_docs').update({ status: 'aprovado', reviewed_at: new Date().toISOString(), ...dates(), ...(it.kind === 'yearly' && !(dateIn && dateIn.value) ? { done_on: iso(today()) } : {}) }).eq('id', last.id)); H.toast('Aprovado'); refresh() }) };
+      if (b('reject')) b('reject').onclick = () => { const r = $('[data-reason]', card).value.trim(); if (!r) { H.toast('Escreva o motivo para o motorista', true); return } H.busy(b('reject'), async () => { await H.q(H.sb.from('driver_docs').update({ status: 'rejeitado', note: r, reviewed_at: new Date().toISOString() }).eq('id', last.id)); H.toast('Rejeitado'); refresh() }) };
+      if (b('nofile')) b('nofile').onclick = () => { if (!need()) return; H.busy(b('nofile'), async () => { await H.q(H.sb.from('driver_docs').insert({ driver_id: d.id, item: it.k, status: 'aprovado', note: 'Registrado sem arquivo', reviewed_at: new Date().toISOString(), ...dates(), ...(it.kind === 'yearly' && !(dateIn && dateIn.value) ? { done_on: iso(today()) } : {}) })); H.toast('Registrado'); refresh() }) };
+      const up = $('[data-up]', card); if (up) up.onchange = async e => { const file = e.target.files[0]; e.target.value = ''; if (!file) return; if (!need()) return;
+        try { H.toast('Enviando…'); const r = await H.upload('files', `${d.id}/docs/${it.k}`, file); await H.q(H.sb.from('driver_docs').insert({ driver_id: d.id, item: it.k, status: 'aprovado', file_path: r.path, file_name: r.name, reviewed_at: new Date().toISOString(), ...dates(), ...(it.kind === 'yearly' && !(dateIn && dateIn.value) ? { done_on: iso(today()) } : {}) })); H.toast('Arquivo salvo e aprovado'); refresh() } catch (x) { H.fail(x) } };
+    });
+  }
+
+  /* ================= ACERTOS E QUICK PAY ================= */
+  const activeQP = () => new Set(D.quickpay.filter(q => ['pendente', 'aprovado'].includes(q.status)).flatMap(q => q.load_ids));
+  const vAcertos = {
+    html() {
+      const QP = D.quickpay.filter(q => q.status !== 'negado' && (q.status !== 'pago' || daysTo(q.paid_at || iso(today())) > -60));
+      return `<div class="stack"><div class="row between"><h1>Acertos</h1><button class="btn gold" id="newSet">+ Gerar acerto</button></div>
+        <p class="note">O acerto junta as cargas entregues e não pagas e desconta o combustível do cartão da empresa. Uma carga só entra em um acerto, então nada é descontado duas vezes.</p>
+        <h2>Quick Pay</h2><p class="note">Pedido de segunda a sexta até 15h (Nova York). Taxa de ${H.cfg.quickPayPct}%, separada da comissão. Pagamento no mínimo 3 dias úteis depois da aprovação.</p>
+        ${QP.length ? QP.map(q => `<div class="card sev ${q.status === 'pendente' ? 'gold' : q.status === 'aprovado' ? 'warn' : 'good'}" data-qp="${q.id}"><div class="top2"><div><b>${esc(drv(q.driver_id).name)}</b><div class="muted">Pedido em ${new Date(q.requested_at).toLocaleString('pt-BR')} · ${q.load_ids.length} carga(s)</div>${q.eligible_on ? `<div class="muted">Pagar a partir de ${brDate(q.eligible_on)}</div>` : ''}</div>
+          <div class="money">${fmt(q.net)}<div class="muted">${fmt(q.amount)} − ${fmt(q.fee)}</div></div></div>
+          <div class="row"><span class="pill ${q.status === 'pago' ? 'p-good' : q.status === 'aprovado' ? 'p-warn' : 'p-gold'}">${{ pendente: 'Esperando aprovação', aprovado: 'Aprovado', pago: 'Pago ' + brDate(q.paid_at) }[q.status]}</span></div>
+          <div class="row">${q.status === 'pendente' ? '<button class="btn sm gold" data-a="ok">Aprovar</button><button class="btn sm bad" data-a="no">Negar</button>' : ''}${q.status === 'aprovado' ? '<button class="btn sm gold" data-a="pay">Registrar pagamento</button>' : ''}</div></div>`).join('') : '<div class="empty">Nenhum pedido de Quick Pay.</div>'}
+        <h2>Acertos semanais</h2>
+        ${D.settlements.length ? D.settlements.map(s => `<div class="card sev ${s.status === 'pago' ? 'good' : s.status === 'aprovado' ? 'warn' : 'gold'}" data-set="${s.id}"><div class="top2"><div><b>${esc(drv(s.driver_id).name)}</b><div class="muted">${brDate(s.period_start)} a ${brDate(s.period_end)} · ${esc(comp(s.company_id).name || '')}</div></div><div class="money">${fmt(s.net)}<div class="muted">cargas ${fmt(s.loads_total)} · comb. −${fmt(s.fuel_total)}</div></div></div>
+          <div class="row"><span class="pill ${s.status === 'pago' ? 'p-good' : s.status === 'aprovado' ? 'p-warn' : 'p-gold'}">${{ rascunho: 'Rascunho (só você vê)', aprovado: 'Aprovado (o motorista já vê)', pago: 'Pago ' + brDate(s.paid_at) + (s.method ? ' · ' + s.method : '') }[s.status]}</span></div>
+          <div class="row"><button class="btn sm" data-a="pdf">Ver / PDF</button>${s.status === 'rascunho' ? '<button class="btn sm gold" data-a="approve">Aprovar</button><button class="btn sm bad" data-a="del">Desfazer</button>' : ''}${s.status === 'aprovado' ? '<button class="btn sm gold" data-a="pay">Registrar pagamento</button>' : ''}</div></div>`).join('') : '<div class="empty">Nenhum acerto ainda.</div>'}</div>`;
+    },
+    wire(v) {
+      $('#newSet', v).onclick = settlementForm;
+      $$('[data-qp]', v).forEach(el => { const q = D.quickpay.find(x => x.id === el.dataset.qp), b = a => $(`[data-a="${a}"]`, el);
+        if (b('ok')) b('ok').onclick = () => H.busy(b('ok'), async () => { const ny = H.nyNow().date; await H.q(H.sb.from('quickpay').update({ status: 'aprovado', approved_at: new Date().toISOString(), eligible_on: H.addBizDays(ny, 3) }).eq('id', q.id)); H.toast('Aprovado. Pagar a partir de ' + brDate(H.addBizDays(ny, 3))); A.reload(['quickpay']) });
+        if (b('no')) H.confirmBtn(b('no'), 'Toque de novo para negar', async () => { await H.q(H.sb.from('quickpay').update({ status: 'negado' }).eq('id', q.id)); A.reload(['quickpay']) });
+        if (b('pay')) b('pay').onclick = () => paySheet(`Quick Pay de ${drv(q.driver_id).name}: ${fmt(q.net)}`, q.eligible_on, async o => {
+          await H.q(H.sb.from('quickpay').update({ status: 'pago', paid_at: o.paid_at, method: o.method, reference: o.reference }).eq('id', q.id));
+          await H.q(H.sb.from('loads').update({ paid: true, paid_at: o.paid_at, paid_via: 'quickpay' }).in('id', q.load_ids));
+          A.reload(['quickpay', 'loads']) });
+      });
+      $$('[data-set]', v).forEach(el => { const s = D.settlements.find(x => x.id === el.dataset.set), b = a => $(`[data-a="${a}"]`, el);
+        b('pdf').onclick = () => printSettlement(s);
+        if (b('approve')) b('approve').onclick = () => H.busy(b('approve'), async () => { await H.q(H.sb.from('settlements').update({ status: 'aprovado' }).eq('id', s.id)); H.toast('Aprovado. O motorista já vê no app.'); A.reload(['settlements']) });
+        if (b('del')) H.confirmBtn(b('del'), 'Toque de novo para desfazer', async () => { await H.q(H.sb.from('loads').update({ settlement_id: null }).eq('settlement_id', s.id)); await H.q(H.sb.from('fuel').update({ settlement_id: null }).eq('settlement_id', s.id)); await H.q(H.sb.from('settlements').delete().eq('id', s.id)); A.reload(['settlements', 'loads', 'fuel']) });
+        if (b('pay')) b('pay').onclick = () => paySheet(`Acerto de ${drv(s.driver_id).name}: ${fmt(s.net)}`, null, async o => {
+          await H.q(H.sb.from('settlements').update({ status: 'pago', paid_at: o.paid_at, method: o.method, reference: o.reference }).eq('id', s.id));
+          await H.q(H.sb.from('loads').update({ paid: true, paid_at: o.paid_at, paid_via: o.method }).eq('settlement_id', s.id));
+          await H.q(H.sb.from('fuel').update({ settled: true }).eq('settlement_id', s.id));
+          A.reload(['settlements', 'loads', 'fuel']) });
+      });
+    }
+  };
+  function paySheet(title, earliest, fn) {
+    H.sheet(`<form id="pf" class="stack"><div class="row between"><h2>Registrar pagamento</h2><button type="button" class="btn sm" data-close>Fechar</button></div><p><b>${esc(title)}</b></p>
+      ${earliest && earliest > iso(today()) ? `<p class="err">Pelas regras do Quick Pay, o pagamento é a partir de ${brDate(earliest)}.</p>` : ''}
+      <div class="g2"><label class="f">Data<input type="date" name="paid_at" value="${iso(today())}" required></label><label class="f">Forma<select name="method">${opt([['zelle', 'Zelle'], ['ach', 'ACH'], ['cheque', 'Cheque']], 'zelle')}</select></label>
+      <label class="f full">Comprovante / nº da transação<input name="reference" required placeholder="Confirmation code do Zelle, nº do cheque…"></label>
+      <label class="chk full"><input type="checkbox" name="ok" required> Conferi no banco que a transferência saiu</label></div>
+      <button class="btn gold wide" id="pfGo">Marcar como pago</button></form>`, api => { $('#pf', api.el).onsubmit = async e => { e.preventDefault(); const o = H.form(e.target); await H.busy($('#pfGo', api.el), async () => { await fn(o); api.close(); H.toast('Pagamento registrado') }) } });
+  }
+  function settlementForm() {
+    H.sheet(`<form id="sf" class="stack"><div class="row between"><h2>Gerar acerto</h2><button type="button" class="btn sm" data-close>Fechar</button></div>
+      <div class="g2"><label class="f">Motorista<select name="driver_id" id="sfD">${opt(D.drivers.filter(d => d.status !== 'inativo').map(d => [d.id, d.name]))}</select></label>
+      <label class="f">Até a data<input type="date" name="end" id="sfE" value="${iso(today())}"></label>
+      <label class="f">Outros descontos $<input type="number" step="0.01" name="other" value="0"></label><label class="f">Motivo<input name="other_note"></label></div>
+      <div id="sfPrev"></div><button class="btn gold wide" id="sfGo">Criar acerto (rascunho)</button></form>`, api => {
+      const f = $('#sf', api.el), prev = () => { const o = H.form(f), qp = activeQP();
+        const L = D.loads.filter(l => l.driver_id === o.driver_id && l.stage === 'entregue' && !l.paid && !l.settlement_id && !qp.has(l.id) && l.load_date <= o.end);
+        const F = D.fuel.filter(x => x.driver_id === o.driver_id && x.payer === 'cartao' && !x.settled && !x.settlement_id && x.fuel_date <= o.end);
+        const lt = L.reduce((a, l) => a + num(l.driver_pay), 0), ft = F.reduce((a, x) => a + num(x.total), 0);
+        f._sel = { L, F, lt, ft };
+        $('#sfPrev', f).innerHTML = `<div class="calc"><span>${L.length} carga(s) entregue(s)</span><span class="m">${fmt(lt)}</span><span>Combustível no cartão (${F.length})</span><span class="m">−${fmt(ft)}</span><span>Outros</span><span class="m">−${fmt(o.other)}</span><span><b>Líquido</b></span><span class="m"><b>${fmt(lt - ft - num(o.other))}</b></span></div>
+          ${L.length ? '' : '<p class="note">Nenhuma carga entregue e sem pagamento para esse motorista até essa data.</p>'}` };
+      f.oninput = prev; prev();
+      f.onsubmit = async e => { e.preventDefault(); const o = H.form(f), s = f._sel; if (!s.L.length) { H.toast('Nenhuma carga entregue e sem pagamento para acertar', true); return }
+        await H.busy($('#sfGo', f), async () => {
+          const dates = s.L.map(l => l.load_date).concat(s.F.map(x => x.fuel_date)).sort();
+          const row = await H.q(H.sb.from('settlements').insert({ driver_id: o.driver_id, company_id: drv(o.driver_id).company_id, period_start: dates[0], period_end: o.end, loads_total: s.lt, fuel_total: s.ft, other_deductions: num(o.other), other_note: o.other_note, net: s.lt - s.ft - num(o.other) }).select().single());
+          if (s.L.length) await H.q(H.sb.from('loads').update({ settlement_id: row.id }).in('id', s.L.map(l => l.id)).is('settlement_id', null));
+          if (s.F.length) await H.q(H.sb.from('fuel').update({ settlement_id: row.id }).in('id', s.F.map(x => x.id)).is('settlement_id', null));
+          api.close(); H.toast('Acerto criado. Confira e aprove.'); A.reload(['settlements', 'loads', 'fuel']) }) };
+    });
+  }
+  function printSettlement(s) {
+    const d = drv(s.driver_id), c = comp(s.company_id), L = D.loads.filter(l => l.settlement_id === s.id), F = D.fuel.filter(x => x.settlement_id === s.id);
+    const es = d.lang === 'es', en = d.lang === 'en', T = es ? ['Liquidación de pago', 'Conductor', 'Período', 'Cargas', 'Combustible (tarjeta de la empresa)', 'Otros descuentos', 'TOTAL NETO', 'Fecha', 'Ruta', 'Millas', 'Valor', 'Pago'] : en ? ['Driver pay statement', 'Driver', 'Period', 'Loads', 'Fuel (company card)', 'Other deductions', 'NET PAY', 'Date', 'Route', 'Miles', 'Rate', 'Pay'] : ['Acerto de pagamento', 'Motorista', 'Período', 'Cargas', 'Combustível (cartão da empresa)', 'Outros descontos', 'TOTAL LÍQUIDO', 'Data', 'Rota', 'Milhas', 'Valor', 'Recebe'];
+    $('#print').innerHTML = `<div class="head">${d.logo_path ? `<img src="${esc(H.logoUrl(d.logo_path))}" alt="">` : ''}<div><h1>${esc(brandOf(d))}</h1><div>${T[0]} · ${esc(c.name || '')}${c.dot ? ' · USDOT ' + esc(c.dot) : ''}</div><div>Dispatch: ${esc(H.cfg.dispatchName)}</div></div></div>
+      <p><b>${T[1]}:</b> ${esc(d.name)} &nbsp; <b>${T[2]}:</b> ${brDate(s.period_start)} – ${brDate(s.period_end)}</p>
+      <table><tr><th>${T[7]}</th><th>${T[8]}</th><th class="r">${T[9]}</th>${d.show_gross ? `<th class="r">${T[10]}</th>` : ''}<th class="r">${T[11]}</th></tr>
+      ${L.map(l => `<tr><td>${brDate(l.load_date)}</td><td>${esc(l.origin)} → ${esc(l.destination)}${l.ref ? ' #' + esc(l.ref) : ''}</td><td class="r">${fmtI(l.miles)}</td>${d.show_gross ? `<td class="r">${fmt(num(l.rate) - num(l.broker_extra))} − ${num(l.dispatch_pct)}%</td>` : ''}<td class="r">${fmt(l.driver_pay)}</td></tr>`).join('')}
+      <tr><td colspan="${d.show_gross ? 4 : 3}"><b>${T[3]}</b></td><td class="r"><b>${fmt(s.loads_total)}</b></td></tr></table>
+      ${F.length ? `<table><tr><th>${T[4]}</th><th></th><th class="r"></th></tr>${F.map(x => `<tr><td>${brDate(x.fuel_date)}</td><td>${esc(x.station || '')} ${x.gallons ? num(x.gallons).toFixed(1) + ' gal' : ''}</td><td class="r">−${fmt(x.total)}</td></tr>`).join('')}</table>` : ''}
+      ${num(s.other_deductions) ? `<p>${T[5]}: −${fmt(s.other_deductions)} ${esc(s.other_note || '')}</p>` : ''}
+      <h1 style="margin-top:14px">${T[6]}: ${fmt(s.net)}</h1>${s.status === 'pago' ? `<p>Pago em ${brDate(s.paid_at)} · ${esc(s.method || '')} · ${esc(s.reference || '')}</p>` : ''}`;
+    window.print();
+  }
+
+  /* ================= MAIS ================= */
+  const SUBS = [['empresas', 'Empresas'], ['combustivel', 'Combustível'], ['contas', 'Contas'], ['candidatos', 'Candidatos'], ['backup', 'Backup']];
+  const vMais = {
+    html() { const s = SUBS.some(x => x[0] === st.sub) ? st.sub : 'empresas'; return `<div class="stack"><div class="chips">${SUBS.map(([k, l]) => `<button class="chip" data-sub="${k}" aria-pressed="${s === k}">${l}${k === 'candidatos' && D.apps.filter(a => a.status === 'novo').length ? ' (' + D.apps.filter(a => a.status === 'novo').length + ')' : ''}</button>`).join('')}</div>${SUBV[s].html()}</div>` },
+    wire(v) { $$('[data-sub]', v).forEach(b => b.onclick = () => { location.hash = 'mais/' + b.dataset.sub }); const s = SUBS.some(x => x[0] === st.sub) ? st.sub : 'empresas'; SUBV[s].wire && SUBV[s].wire(v) }
+  };
+  const SUBV = {};
+  SUBV.empresas = {
+    html: () => `<div class="row between"><h1>Empresas</h1><button class="btn gold" id="newCo">+ Empresa</button></div>
+      <p class="note">As transportadoras são donas do DOT/MC que vai na carga. A empresa de dispatch é a sua marca, que recebe a comissão. Os dados de cada uma ficam separados.</p>
+      ${D.companies.map(c => { const al = H.companyAlerts(c); return `<button class="card tap sev ${al.some(a => a.s === 'bad') ? 'bad' : al.some(a => a.s !== 'ok') ? 'warn' : 'good'}" data-co="${c.id}"><b>${esc(c.name)}</b><span class="muted">${c.type === 'dispatch' ? 'Dispatch' : (c.dot ? 'USDOT ' + esc(c.dot) : 'sem USDOT') + (c.mc ? ' · MC ' + esc(c.mc) : '')}</span>
+        ${al.map(a => `<div class="row between"><span>${esc(a.t)}</span><span class="pill ${H.pillCls[a.s]}">${esc(a.txt)}</span></div>`).join('')}</button>` }).join('')}`,
+    wire(v) { $('#newCo', v).onclick = () => companyForm(); $$('[data-co]', v).forEach(b => b.onclick = () => companyForm(comp(b.dataset.co))) }
+  };
+  function companyForm(c) {
+    const isNew = !c; c = c || { type: 'carrier' };
+    H.sheet(`<form id="cf" class="stack"><div class="row between"><h2>${esc(c.name || 'Nova empresa')}</h2><button type="button" class="btn sm" data-close>Fechar</button></div><div class="g2">
+      <label class="f full">Nome legal<input name="name" value="${esc(c.name)}" required></label>
+      <label class="f">Tipo<select name="type">${opt([['carrier', 'Transportadora (DOT/MC)'], ['dispatch', 'Dispatch (sua marca)']], c.type)}</select></label>
+      <label class="f">EIN<input name="ein" value="${esc(c.ein)}"></label>
+      <label class="f">USDOT<input name="dot" value="${esc(c.dot)}" inputmode="numeric"></label><label class="f">MC<input name="mc" value="${esc(c.mc)}" inputmode="numeric"></label>
+      <label class="f">MCS-150 atualizado em<input type="date" name="mcs150_date" value="${esc(c.mcs150_date)}"></label><label class="f">UCR pago para o ano<input type="number" name="ucr_year" value="${esc(c.ucr_year ?? '')}"></label>
+      <label class="f">Seguro vence em<input type="date" name="insurance_exp" value="${esc(c.insurance_exp)}"></label><label class="f">Telefone<input name="phone" value="${esc(c.phone)}"></label>
+      <label class="f full">Observações<textarea name="notes">${esc(c.notes)}</textarea></label></div>
+      <button class="btn gold wide" id="cfGo">Salvar</button>${!isNew ? '<button type="button" class="btn bad wide" id="cfDel">Apagar empresa</button>' : ''}</form>`, api => {
+      const f = $('#cf', api.el);
+      f.onsubmit = async e => { e.preventDefault(); const o = H.form(f); await H.busy($('#cfGo', f), async () => { if (isNew) await H.q(H.sb.from('companies').insert(o)); else await H.q(H.sb.from('companies').update(o).eq('id', c.id)); api.close(); H.toast('Empresa salva'); A.reload(['companies']) }) };
+      if ($('#cfDel', f)) H.confirmBtn($('#cfDel', f), 'Toque de novo para apagar', async () => { await H.q(H.sb.from('companies').delete().eq('id', c.id)); api.close(); A.reload(['companies']) });
+    });
+  }
+  SUBV.combustivel = {
+    html: () => { const F = D.fuel.filter(x => st.driver === 'all' || x.driver_id === st.driver); const pend = F.filter(x => x.payer === 'cartao' && !x.settled).reduce((a, x) => a + num(x.total), 0);
+      return `<div class="row between"><h1>Combustível</h1><button class="btn gold" id="newFuel">+ Abastecimento</button></div>
+      <select id="fDr2">${opt(D.drivers.map(d => [d.id, d.name]), st.driver === 'all' ? '' : st.driver, 'Todos os motoristas')}</select>
+      <div class="stats"><div class="stat"><span>Gasto</span><b>${fmt(F.reduce((a, x) => a + num(x.total), 0))}</b></div><div class="stat"><span>Galões</span><b>${F.reduce((a, x) => a + num(x.gallons), 0).toFixed(1)}</b></div><div class="stat"><span>A descontar</span><b>${fmt(pend)}</b></div></div>
+      ${F.length ? F.map(x => `<button class="card tap" data-fu="${x.id}"><div class="top2"><div><b>${esc(drv(x.driver_id).name)}</b><div class="muted">${brDate(x.fuel_date)} · ${esc(x.station || '')}${x.gallons ? ' · ' + num(x.gallons).toFixed(1) + ' gal' : ''}${x.odometer ? ' · odôm. ' + fmtI(x.odometer) : ''}${(x.photos || []).length ? ' · ' + x.photos.length + ' foto(s)' : ''}</div></div><div class="money">${fmt(x.total)}<div class="muted">${{ cartao: 'Cartão', empresa: 'Empresa paga', motorista: 'Motorista pagou' }[x.payer]}${x.payer === 'cartao' ? (x.settled ? ' · descontado' : x.settlement_id ? ' · no acerto' : ' · a descontar') : ''}</div></div></div></button>`).join('') : '<div class="empty">Nenhum abastecimento.</div>'}` },
+    wire(v) { $('#newFuel', v).onclick = () => fuelForm(); $('#fDr2', v).onchange = e => { st.driver = e.target.value || 'all'; render() }; $$('[data-fu]', v).forEach(b => b.onclick = () => fuelForm(D.fuel.find(x => x.id === b.dataset.fu))) }
+  };
+  function fuelForm(x) {
+    const isNew = !x; x = x || { fuel_date: iso(today()), payer: 'cartao', photos: [] }; let photos = (x.photos || []).slice();
+    H.sheet(`<form id="ff" class="stack"><div class="row between"><h2>Abastecimento</h2><button type="button" class="btn sm" data-close>Fechar</button></div><div class="g2">
+      <label class="f">Motorista<select name="driver_id" required>${opt(D.drivers.map(d => [d.id, d.name]), x.driver_id || (st.driver !== 'all' ? st.driver : ''))}</select></label>
+      <label class="f">Data<input type="date" name="fuel_date" value="${esc(x.fuel_date)}" required></label>
+      <label class="f">Galões<input type="number" step="0.001" name="gallons" value="${esc(x.gallons ?? '')}"></label><label class="f">Preço/galão<input type="number" step="0.001" name="ppg" value="${esc(x.ppg ?? '')}"></label>
+      <label class="f">Total $<input type="number" step="0.01" name="total" value="${esc(x.total ?? '')}" required></label><label class="f">Odômetro<input type="number" name="odometer" value="${esc(x.odometer ?? '')}"></label>
+      <label class="f full">Posto e cidade<input name="station" value="${esc(x.station)}"></label>
+      <label class="f full">Quem pagou<select name="payer">${opt([['cartao', 'Cartão da empresa (descontar no acerto)'], ['empresa', 'Empresa paga (despesa)'], ['motorista', 'Motorista pagou (só controle)']], x.payer)}</select></label></div>
+      <div class="thumbs" id="ffT"></div><span class="btn sm upl">Anexar fotos<input type="file" id="ffP" accept="image/*,application/pdf" multiple></span>
+      ${x.settlement_id ? '<p class="note">Este abastecimento já está num acerto. Para mudar o valor, desfaça o acerto primeiro.</p>' : ''}
+      <button class="btn gold wide" id="ffGo" ${x.settlement_id ? 'disabled' : ''}>Salvar</button>${!isNew && !x.settlement_id ? '<button type="button" class="btn bad wide" id="ffDel">Apagar</button>' : ''}</form>`, api => {
+      const f = $('#ff', api.el); H.thumbs($('#ffT', f), photos);
+      $('#ffP', f).onchange = async e => { const files = [...e.target.files]; e.target.value = ''; const did = $('[name=driver_id]', f).value; try { for (const file of files) { H.toast('Enviando foto…'); photos.push((await H.upload('files', `${did}/fuel`, file)).path) } H.thumbs($('#ffT', f), photos); H.toast('Fotos anexadas') } catch (er) { H.fail(er) } };
+      f.onsubmit = async e => { e.preventDefault(); const o = H.form(f); o.photos = photos; await H.busy($('#ffGo', f), async () => { if (isNew) await H.q(H.sb.from('fuel').insert(o)); else await H.q(H.sb.from('fuel').update(o).eq('id', x.id)); api.close(); H.toast('Salvo'); A.reload(['fuel']) }) };
+      if ($('#ffDel', f)) H.confirmBtn($('#ffDel', f), 'Toque de novo para apagar', async () => { await H.q(H.sb.from('fuel').delete().eq('id', x.id)); api.close(); A.reload(['fuel']) });
+    });
+  }
+  /* contas para o tax: lançamentos automáticos das cargas + lançamentos manuais */
+  const CATS = { in: [['freight', 'Frete (cargas)', 'Freight revenue'], ['dispatch_in', 'Comissão de dispatch recebida', 'Dispatch fee income'], ['other_in', 'Outras entradas', 'Other income']],
+    out: [['driver', 'Pagamento de motorista', 'Contract labor (1099-NEC)'], ['dispatch', 'Comissão de dispatch paga', 'Commissions and fees'], ['factoring', 'Factoring', 'Factoring fees'], ['fuel', 'Combustível', 'Fuel'], ['insurance', 'Seguro', 'Insurance'], ['repairs', 'Manutenção e reparos', 'Repairs and maintenance'], ['tolls', 'Pedágios e balanças', 'Tolls and scales'], ['licenses', 'Licenças, UCR, placas', 'Taxes and licenses'], ['phone', 'Telefone e internet', 'Utilities / phone'], ['software', 'Load board e software', 'Software'], ['office', 'Escritório', 'Office expense'], ['drugtest', 'Testes, MVR, exames', 'Driver screening'], ['other_out', 'Outras despesas', 'Other expenses']] };
+  const cat = k => [...CATS.in, ...CATS.out].find(c => c[0] === k) || [k, k, k];
+  function entries(coId, year) {
+    const out = [], de = dispatchCo();
+    D.loads.filter(l => l.stage === 'entregue').forEach(l => { const c = loadCo(l), r = `${l.origin} → ${l.destination}`, fac = Math.round(num(l.rate) * num(l.factoring_pct)) / 100;
+      out.push({ auto: 1, date: l.load_date, co: c, kind: 'in', cat: 'freight', amount: num(l.rate), desc: 'Frete ' + r });
+      if (l.paid) out.push({ auto: 1, date: l.paid_at || l.load_date, co: c, kind: 'out', cat: 'driver', amount: num(l.driver_pay), desc: drv(l.driver_id).name + ' · ' + r, driver: l.driver_id });
+      const disp = num(l.rate) - num(l.driver_pay);
+      if (de && de.id !== c && disp > 0) { out.push({ auto: 1, date: l.load_date, co: c, kind: 'out', cat: 'dispatch', amount: disp, desc: 'Dispatch · ' + r }); out.push({ auto: 1, date: l.load_date, co: de.id, kind: 'in', cat: 'dispatch_in', amount: disp, desc: comp(c).name + ' · ' + r }) }
+      if (fac) out.push({ auto: 1, date: l.load_date, co: c, kind: 'out', cat: 'factoring', amount: fac, desc: 'Factoring · ' + r }) });
+    D.quickpay.filter(q => q.status === 'pago').forEach(q => { const de2 = dispatchCo(); if (de2) out.push({ auto: 1, date: q.paid_at, co: de2.id, kind: 'in', cat: 'other_in', amount: num(q.fee), desc: 'Taxa Quick Pay · ' + drv(q.driver_id).name }) });
+    D.fuel.filter(x => x.payer === 'empresa').forEach(x => out.push({ auto: 1, date: x.fuel_date, co: drv(x.driver_id).company_id, kind: 'out', cat: 'fuel', amount: num(x.total), desc: 'Combustível · ' + drv(x.driver_id).name }));
+    D.ledger.forEach(x => out.push({ id: x.id, date: x.entry_date, co: x.company_id, kind: x.kind, cat: x.category, amount: num(x.amount), desc: x.description, file: x.file_path }));
+    return out.filter(e => e.co === coId && String(e.date || '').slice(0, 4) === year).sort((a, b) => String(b.date).localeCompare(String(a.date)));
+  }
+  let contasCo = null, contasYr = String(today().getFullYear());
+  SUBV.contas = {
+    html() { contasCo = contasCo || (carriers()[0] || D.companies[0] || {}).id; const E = entries(contasCo, contasYr); let tin = 0, tout = 0; const cats = {};
+      E.forEach(e => { e.kind === 'in' ? tin += e.amount : tout += e.amount; cats[e.cat] = (cats[e.cat] || 0) + e.amount });
+      const per = {}; E.filter(e => e.cat === 'driver' && e.driver).forEach(e => per[e.driver] = (per[e.driver] || 0) + e.amount);
+      return `<div class="row between"><h1>Contas</h1><button class="btn gold" id="newTx">+ Lançar</button></div>
+      <div class="g2"><select id="cCo">${opt(D.companies.map(c => [c.id, c.name]), contasCo)}</select><select id="cYr">${opt([0, 1, 2].map(i => String(today().getFullYear() - i)).map(y => [y, y]), contasYr)}</select></div>
+      <div class="stats"><div class="stat"><span>Entradas</span><b class="ok">${fmt(tin)}</b></div><div class="stat"><span>Saídas</span><b>${fmt(tout)}</b></div><div class="stat"><span>Lucro</span><b class="${tin - tout >= 0 ? 'ok' : 'low'}">${fmt(tin - tout)}</b></div></div>
+      <div class="tbl"><table><tr><th>Categoria</th><th>Para o contador</th><th style="text-align:right">Total</th></tr>${Object.keys(cats).length ? [...CATS.in, ...CATS.out].filter(c => cats[c[0]]).map(c => `<tr><td>${c[1]}</td><td class="muted">${c[2]}</td><td style="text-align:right">${fmt(cats[c[0]])}</td></tr>`).join('') : '<tr><td colspan="3" class="muted">Nada neste ano.</td></tr>'}</table></div>
+      ${Object.entries(per).filter(([, v]) => v >= 600).length ? `<div class="card sev warn"><b>1099-NEC deste ano</b>${Object.entries(per).filter(([, v]) => v >= 600).map(([k, v]) => `<div class="row between"><span>${esc(drv(k).name)}</span><span class="money">${fmt(v)}</span></div>`).join('')}<span class="muted">Quem recebeu $600 ou mais precisa do 1099-NEC até 31 de janeiro. Peça o W-9.</span></div>` : ''}
+      <button class="btn" id="cCsv">Baixar planilha do ano (CSV)</button>
+      ${E.slice(0, 80).map(e => `<${e.auto ? 'div' : 'button'} class="card ${e.auto ? '' : 'tap'}" ${e.id ? `data-tx="${e.id}"` : ''}><div class="top2"><div><b>${esc(cat(e.cat)[1])}</b><div class="muted">${brDate(e.date)} · ${esc(e.desc || '')}${e.auto ? ' · automático' : ''}</div></div><div class="money ${e.kind === 'in' ? 'ok' : ''}">${e.kind === 'in' ? '+' : '−'}${fmt(e.amount)}</div></div></${e.auto ? 'div' : 'button'}>`).join('')}
+      <p class="note">Não sou contadora: leve a planilha para quem prepara o seu tax. Use uma conta bancária para cada empresa.</p>` },
+    wire(v) { $('#cCo', v).onchange = e => { contasCo = e.target.value; render() }; $('#cYr', v).onchange = e => { contasYr = e.target.value; render() }; $('#newTx', v).onclick = () => txForm();
+      $$('[data-tx]', v).forEach(b => b.onclick = () => txForm(D.ledger.find(x => x.id === b.dataset.tx)));
+      $('#cCsv', v).onclick = () => { const E = entries(contasCo, contasYr).reverse(); let csv = 'date,company,type,category,category_en,description,amount\n'; E.forEach(e => { const c = cat(e.cat); csv += [e.date, comp(e.co).name, e.kind === 'in' ? 'income' : 'expense', c[1], c[2], e.desc || '', num(e.amount).toFixed(2)].map(x => '"' + String(x ?? '').replace(/"/g, '""') + '"').join(',') + '\n' }); download(`contas-${comp(contasCo).name}-${contasYr}.csv`, new Blob([csv], { type: 'text/csv' })) } }
+  };
+  function txForm(x) {
+    const isNew = !x; x = x || { entry_date: iso(today()), kind: 'out', company_id: contasCo }; let file = x.file_path;
+    H.sheet(`<form id="tf" class="stack"><div class="row between"><h2>Lançamento</h2><button type="button" class="btn sm" data-close>Fechar</button></div><div class="g2">
+      <label class="f">Tipo<select name="kind" id="tfK">${opt([['out', 'Saída (despesa)'], ['in', 'Entrada']], x.kind)}</select></label><label class="f">Data<input type="date" name="entry_date" value="${esc(x.entry_date)}" required></label>
+      <label class="f">Empresa<select name="company_id">${opt(D.companies.map(c => [c.id, c.name]), x.company_id)}</select></label><label class="f">Valor $<input type="number" step="0.01" name="amount" value="${esc(x.amount ?? '')}" required></label>
+      <label class="f full">Categoria<select name="category" id="tfC"></select></label><label class="f full">Descrição<input name="description" value="${esc(x.description)}"></label>
+      <label class="f">Forma<select name="method">${opt([['zelle', 'Zelle'], ['cartao', 'Cartão'], ['ach', 'ACH'], ['dinheiro', 'Dinheiro'], ['cheque', 'Cheque']], x.method)}</select></label></div>
+      <div class="row"><span class="btn sm upl">${file ? 'Trocar comprovante' : 'Anexar comprovante'}<input type="file" id="tfF" accept="image/*,application/pdf"></span>${file ? '<button type="button" class="btn sm" id="tfO">Ver</button>' : ''}</div>
+      <button class="btn gold wide" id="tfGo">Salvar</button>${!isNew ? '<button type="button" class="btn bad wide" id="tfDel">Apagar</button>' : ''}</form>`, api => {
+      const f = $('#tf', api.el), fillC = () => { $('#tfC', f).innerHTML = opt(CATS[$('#tfK', f).value].map(c => [c[0], c[1]]), x.category) }; fillC(); $('#tfK', f).onchange = fillC;
+      $('#tfF', f).onchange = async e => { const fl = e.target.files[0]; if (!fl) return; try { file = (await H.upload('files', 'ledger', fl)).path; H.toast('Comprovante anexado') } catch (er) { H.fail(er) } };
+      if ($('#tfO', f)) $('#tfO', f).onclick = () => H.openFile(file);
+      f.onsubmit = async e => { e.preventDefault(); const o = H.form(f); o.file_path = file || null; await H.busy($('#tfGo', f), async () => { if (isNew) await H.q(H.sb.from('ledger').insert(o)); else await H.q(H.sb.from('ledger').update(o).eq('id', x.id)); api.close(); A.reload(['ledger']) }) };
+      if ($('#tfDel', f)) H.confirmBtn($('#tfDel', f), 'Toque de novo para apagar', async () => { await H.q(H.sb.from('ledger').delete().eq('id', x.id)); api.close(); A.reload(['ledger']) });
+    });
+  }
+  SUBV.candidatos = {
+    html: () => `<h1>Candidatos</h1><p class="note">Quem se cadastrou pela página pública (cadastro.html).</p>
+      ${D.apps.length ? D.apps.map(a => `<div class="card sev ${a.status === 'novo' ? 'gold' : ''}" data-ap="${a.id}"><div class="top2"><div><b>${esc(a.name)}</b><div class="muted">${new Date(a.created_at).toLocaleDateString('pt-BR')} · ${esc(a.city || '')} · ${esc(a.vehicle || '')}</div>
+        <div class="muted">MC próprio: ${a.has_mc ? 'sim ' + esc(a.mc || '') : 'não'} · CDL: ${a.cdl ? 'sim' : 'não'} · Autorização de trabalho: ${a.work_auth ? 'sim' : 'não'} · ${esc(a.experience || '')}</div></div><span class="pill ${a.status === 'novo' ? 'p-gold' : ''}">${esc(a.status)}</span></div>
+        <div class="row">${a.phone ? `<a class="btn sm gold" target="_blank" rel="noopener" href="${esc(H.wa('Olá ' + a.name + '! Aqui é a Helen, da Helen Transport Services. Recebi seu cadastro.', String(a.phone).replace(/\D/g, '').replace(/^(?=\d{10}$)/, '1')))}">WhatsApp</a>` : ''}
+        <select data-st style="max-width:170px">${opt([['novo', 'Novo'], ['contatado', 'Contatado'], ['aprovado', 'Aprovado'], ['descartado', 'Descartado']], a.status)}</select><button class="btn sm" data-a="mk">Virar motorista</button></div></div>`).join('') : '<div class="empty">Nenhum cadastro ainda.</div>'}`,
+    wire(v) { $$('[data-ap]', v).forEach(el => { const a = D.apps.find(x => x.id === el.dataset.ap);
+      $('[data-st]', el).onchange = async e => { try { await H.q(H.sb.from('applications').update({ status: e.target.value }).eq('id', a.id)); A.reload(['apps']) } catch (x) { H.fail(x) } };
+      $('[data-a="mk"]', el).onclick = () => H.busy($('[data-a="mk"]', el), async () => { const r = await H.q(H.sb.from('drivers').insert({ name: a.name, phone: a.phone, status: 'candidato', cdl: !!a.cdl, lang: a.lang || 'pt' }).select().single()); await H.q(H.sb.from('applications').update({ status: 'aprovado' }).eq('id', a.id)); await load(['drivers', 'apps']); location.hash = 'motoristas/' + r.id }) }) }
+  };
+  SUBV.backup = {
+    html: () => `<h1>Backup</h1><p class="note">Baixe uma cópia completa toda semana e guarde no iCloud Drive ou no Google Drive. O arquivo .zip leva os dados de todas as telas e os documentos e fotos.</p>
+      <button class="btn gold wide" id="bk1">Baixar backup completo (.zip)</button><button class="btn wide" id="bk2">Baixar só os dados (.json)</button><p class="note" id="bkMsg"></p>`,
+    wire(v) {
+      $('#bk2', v).onclick = () => download(`backup-dados-${iso(today())}.json`, new Blob([JSON.stringify({ gerado: new Date().toISOString(), ...D }, null, 2)], { type: 'application/json' }));
+      $('#bk1', v).onclick = () => H.busy($('#bk1', v), async () => { if (!window.JSZip) throw new Error('Gerador de .zip não carregou');
+        const zip = new JSZip(); zip.file('dados.json', JSON.stringify({ gerado: new Date().toISOString(), ...D }, null, 2));
+        const paths = new Set(); D.docs.forEach(x => x.file_path && paths.add(x.file_path)); D.events.forEach(e => (e.photos || []).forEach(p => paths.add(p))); D.fuel.forEach(x => (x.photos || []).forEach(p => paths.add(p))); D.ledger.forEach(x => x.file_path && paths.add(x.file_path));
+        let i = 0, miss = 0; for (const p of paths) { i++; $('#bkMsg').textContent = `Baixando arquivo ${i} de ${paths.size}…`; try { const r = await fetch(await H.signed(p)); if (!r.ok) throw 0; zip.file('arquivos/' + p, await r.blob()) } catch (e) { miss++ } }
+        $('#bkMsg').textContent = 'Compactando…'; const blob = await zip.generateAsync({ type: 'blob' }); download(`backup-helen-transport-${iso(today())}.zip`, blob);
+        $('#bkMsg').textContent = miss ? `Pronto. ${miss} arquivo(s) não vieram; tente de novo.` : 'Pronto. Guarde o arquivo no iCloud Drive.' });
+    }
+  };
+  function download(name, blob) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove() }, 4000) }
+})(window.HTS);
+
+</script>
+<script>
+/* Helen Transport Services — app do motorista */
+'use strict';
+(function (H) {
+  const { $, $$, esc, num, fmt, fmtI, iso, today, brDate } = H;
+  const R = H.Driver = {};
+  const S = { me: null, loads: [], docs: [], fuel: [], settlements: [], quickpay: [], tab: 'ofertas', lang: null };
+
+  const T = {
+    pt: { offers: 'Ofertas', loads: 'Cargas', pay: 'Pagamentos', docs: 'Documentos', fuel: 'Combustível', out: 'Sair', runs: 'Rodando por',
+      noOffers: 'Nenhuma oferta agora. Quando a dispatch te oferecer uma carga, ela aparece aqui.', noLoads: 'Nenhuma carga em andamento.',
+      youGet: 'Você recebe', rate: 'Valor da carga', accept: 'Aceitar', decline: 'Recusar', counter: 'Contraproposta', send: 'Enviar', amount: 'Valor $',
+      waitingAns: 'Resposta enviada', accepted: 'Você aceitou', declined: 'Você recusou', countered: 'Sua contraproposta',
+      confirmed: 'Confirmada', picked: 'Coletada', delivered: 'Entregue', pickup: 'Registrar coleta', delivery: 'Registrar entrega',
+      pickupHelp: 'Fotos da carga e do BOL assinado.', deliveryHelp: 'Fotos da carga entregue, do POD assinado e o nome completo de quem recebeu.',
+      photos: 'Tirar ou escolher fotos', receiver: 'Nome completo de quem recebeu', note: 'Observação', save: 'Salvar', needPhoto: 'Coloque pelo menos uma foto.', needName: 'Escreva o nome de quem recebeu.',
+      toReceive: 'A receber', loadsN: 'cargas', fuelDed: 'Combustível a descontar', qp: 'Quick Pay', qpAsk: 'Pedir Quick Pay',
+      qpRule: 'Pedido de segunda a sexta até 15h (Nova York). Taxa de {p}%. Pagamento no mínimo 3 dias úteis depois da aprovação.', qpClosed: 'O Quick Pay abre de segunda a sexta, até 15h (Nova York).',
+      qpPick: 'Escolha as cargas entregues', qpFee: 'Taxa', qpNet: 'Você recebe', qpSend: 'Confirmar pedido', qpSent: 'Pedido enviado',
+      qpSt: { pendente: 'Esperando aprovação', aprovado: 'Aprovado · pagamento a partir de', pago: 'Pago em', negado: 'Negado' },
+      statements: 'Acertos', paidOn: 'Pago em', approved: 'Aprovado, aguardando pagamento', net: 'Líquido', noPay: 'Nenhum acerto ainda.',
+      docSt: { miss: 'Não enviado', review: 'Em análise', bad: 'Rejeitado', ok: 'Aprovado', warn: 'Vencendo', opt: 'Opcional' }, upload: 'Enviar arquivo', reupload: 'Enviar de novo',
+      docsHelp: 'Tire foto ou escolha o PDF. Ele só fica "Aprovado" depois que a Helen conferir.', sent: 'Enviado! Aguardando a aprovação.',
+      fuelAdd: '+ Abastecimento', fuelHelp: 'Foto da bomba (ou do recibo) e do odômetro.', gallons: 'Galões', total: 'Total $', odometer: 'Odômetro', station: 'Posto e cidade', payer: 'Quem pagou', card: 'Cartão da empresa', mine: 'Eu paguei', date: 'Data',
+      waitT: 'Quase pronto', wait: 'Sua conta ainda não está ligada a um motorista. Confirme com a Helen se o e-mail que ela cadastrou é o mesmo que você usou.', talk: 'Falar com a dispatch', mi: 'mi' },
+    es: { offers: 'Ofertas', loads: 'Cargas', pay: 'Pagos', docs: 'Documentos', fuel: 'Combustible', out: 'Salir', runs: 'Trabajando con',
+      noOffers: 'No hay ofertas ahora. Cuando dispatch te ofrezca una carga, aparece aquí.', noLoads: 'No hay cargas en curso.',
+      youGet: 'Tú recibes', rate: 'Valor de la carga', accept: 'Aceptar', decline: 'Rechazar', counter: 'Contraoferta', send: 'Enviar', amount: 'Monto $',
+      waitingAns: 'Respuesta enviada', accepted: 'Aceptaste', declined: 'Rechazaste', countered: 'Tu contraoferta',
+      confirmed: 'Confirmada', picked: 'Recogida', delivered: 'Entregada', pickup: 'Registrar recogida', delivery: 'Registrar entrega',
+      pickupHelp: 'Fotos de la carga y del BOL firmado.', deliveryHelp: 'Fotos de la carga entregada, del POD firmado y el nombre completo de quien recibió.',
+      photos: 'Tomar o elegir fotos', receiver: 'Nombre completo de quien recibió', note: 'Nota', save: 'Guardar', needPhoto: 'Agrega al menos una foto.', needName: 'Escribe el nombre de quien recibió.',
+      toReceive: 'Por cobrar', loadsN: 'cargas', fuelDed: 'Combustible a descontar', qp: 'Quick Pay', qpAsk: 'Pedir Quick Pay',
+      qpRule: 'Pedido de lunes a viernes hasta las 3 p. m. (Nueva York). Cargo de {p}%. Pago mínimo 3 días hábiles después de aprobado.', qpClosed: 'Quick Pay abre de lunes a viernes, hasta las 3 p. m. (Nueva York).',
+      qpPick: 'Elige las cargas entregadas', qpFee: 'Cargo', qpNet: 'Recibes', qpSend: 'Confirmar pedido', qpSent: 'Pedido enviado',
+      qpSt: { pendente: 'Esperando aprobación', aprovado: 'Aprobado · pago desde', pago: 'Pagado el', negado: 'Negado' },
+      statements: 'Liquidaciones', paidOn: 'Pagado el', approved: 'Aprobado, esperando pago', net: 'Neto', noPay: 'Todavía no hay liquidaciones.',
+      docSt: { miss: 'No enviado', review: 'En revisión', bad: 'Rechazado', ok: 'Aprobado', warn: 'Por vencer', opt: 'Opcional' }, upload: 'Enviar archivo', reupload: 'Enviar de nuevo',
+      docsHelp: 'Toma una foto o elige el PDF. Queda "Aprobado" después de que Helen lo revise.', sent: '¡Enviado! Esperando aprobación.',
+      fuelAdd: '+ Carga de combustible', fuelHelp: 'Foto de la bomba (o del recibo) y del odómetro.', gallons: 'Galones', total: 'Total $', odometer: 'Odómetro', station: 'Estación y ciudad', payer: 'Quién pagó', card: 'Tarjeta de la empresa', mine: 'Yo pagué', date: 'Fecha',
+      waitT: 'Casi listo', wait: 'Tu cuenta todavía no está vinculada a un conductor. Confirma con Helen que el correo que registró es el mismo que usaste.', talk: 'Hablar con dispatch', mi: 'mi' },
+    en: { offers: 'Offers', loads: 'Loads', pay: 'Pay', docs: 'Documents', fuel: 'Fuel', out: 'Sign out', runs: 'Running with',
+      noOffers: 'No offers right now. When dispatch offers you a load, it shows up here.', noLoads: 'No active loads.',
+      youGet: 'You get', rate: 'Load rate', accept: 'Accept', decline: 'Decline', counter: 'Counter', send: 'Send', amount: 'Amount $',
+      waitingAns: 'Answer sent', accepted: 'You accepted', declined: 'You declined', countered: 'Your counter offer',
+      confirmed: 'Booked', picked: 'Picked up', delivered: 'Delivered', pickup: 'Log pickup', delivery: 'Log delivery',
+      pickupHelp: 'Photos of the freight and the signed BOL.', deliveryHelp: 'Photos of the delivered freight, the signed POD and the full name of who received it.',
+      photos: 'Take or choose photos', receiver: 'Full name of receiver', note: 'Note', save: 'Save', needPhoto: 'Add at least one photo.', needName: 'Write the receiver name.',
+      toReceive: 'Pending pay', loadsN: 'loads', fuelDed: 'Fuel to deduct', qp: 'Quick Pay', qpAsk: 'Request Quick Pay',
+      qpRule: 'Request Monday to Friday until 3 PM (New York). {p}% fee. Paid at least 3 business days after approval.', qpClosed: 'Quick Pay is open Monday to Friday until 3 PM (New York).',
+      qpPick: 'Choose delivered loads', qpFee: 'Fee', qpNet: 'You get', qpSend: 'Confirm request', qpSent: 'Request sent',
+      qpSt: { pendente: 'Waiting for approval', aprovado: 'Approved · paid from', pago: 'Paid on', negado: 'Denied' },
+      statements: 'Statements', paidOn: 'Paid on', approved: 'Approved, waiting for payment', net: 'Net', noPay: 'No statements yet.',
+      docSt: { miss: 'Not sent', review: 'In review', bad: 'Rejected', ok: 'Approved', warn: 'Expiring', opt: 'Optional' }, upload: 'Upload file', reupload: 'Upload again',
+      docsHelp: 'Take a photo or choose the PDF. It shows "Approved" after Helen checks it.', sent: 'Sent! Waiting for approval.',
+      fuelAdd: '+ Fuel up', fuelHelp: 'Photo of the pump (or receipt) and the odometer.', gallons: 'Gallons', total: 'Total $', odometer: 'Odometer', station: 'Station and city', payer: 'Who paid', card: 'Company card', mine: 'I paid', date: 'Date',
+      waitT: 'Almost there', wait: 'Your account is not linked to a driver yet. Check with Helen that the email she registered is the one you used.', talk: 'Message dispatch', mi: 'mi' },
+  };
+  const DOCT = {
+    es: { application: 'Solicitud de empleo (firmada)', license: 'Licencia de conducir', workauth: 'Autorización de trabajo (work permit / green card / ciudadanía)', med: 'Medical card (MCSA-5876)', w9: 'W-9', coi: 'Seguro del vehículo (COI)', registration: 'Registro del vehículo', vehicle_photos: 'Fotos del vehículo (frente, lados, atrás, placa)', lease: 'Contrato de lease firmado', onduty: 'Horas de servicio de los últimos 7 días', violations: 'Certificación de infracciones (anual)', inspection: 'Inspección anual del vehículo', da_policy: 'Recibo de la política de drogas y alcohol' },
+    en: { application: 'Employment application (signed)', license: "Driver's license", workauth: 'Work authorization (work permit / green card / citizenship)', med: 'Medical card (MCSA-5876)', w9: 'W-9', coi: 'Vehicle insurance (COI)', registration: 'Vehicle registration', vehicle_photos: 'Vehicle photos (front, sides, rear, plate)', lease: 'Signed lease agreement', onduty: 'On-duty hours, last 7 days', violations: 'Certification of violations (annual)', inspection: 'Annual vehicle inspection', da_policy: 'Drug and alcohol policy receipt' } };
+  const docTitle = it => (DOCT[lang()] || {})[it.k] || it.t;
+  const lang = () => S.lang || (() => { try { const l = localStorage.getItem('hts-lang'); if (T[l]) return l } catch (e) { } return S.me && T[S.me.lang] ? S.me.lang : 'pt' })();
+  const t = () => T[lang()];
+
+  async function load() {
+    const uid = H.user.id;
+    S.me = await H.q(H.sb.from('my_driver').select('*').maybeSingle());
+    if (!S.me) return;
+    const [loads, docs, fuel, sets, qp] = await Promise.all([
+      H.q(H.sb.from('my_loads').select('*').order('load_date', { ascending: false }).limit(500)),
+      H.q(H.sb.from('driver_docs').select('*').order('created_at', { ascending: false })),
+      H.q(H.sb.from('fuel').select('*').order('fuel_date', { ascending: false }).limit(300)),
+      H.q(H.sb.from('settlements').select('*').order('period_end', { ascending: false }).limit(100)),
+      H.q(H.sb.from('quickpay').select('*').order('requested_at', { ascending: false }).limit(100)),
+    ]);
+    Object.assign(S, { loads, docs, fuel, settlements: sets, quickpay: qp });
+    void uid;
+  }
+  R.reload = async () => { try { await load(); render() } catch (e) { H.fail(e) } };
+
+  R.start = async () => {
+    $('#app').innerHTML = '<div class="auth"><div class="box"><div class="seal">H</div><p class="tag">…</p></div></div>';
+    try { await load() } catch (e) { H.fail(e) }
+    render();
+  };
+
+  function header() {
+    const m = S.me || {}, logo = m.logo_path ? `<img src="${esc(H.logoUrl(m.logo_path))}" alt="">` : esc(H.initials(m.brand || m.name || 'H'));
+    return `<header class="top"><div class="wrap"><div class="logo">${logo}</div><div class="brand"><b>${esc(m.brand || m.name || 'Helen Transport')}</b><span>${m.company_name ? esc(t().runs) + ': ' + esc(m.company_name) : esc(H.cfg.dispatchName)}</span></div>
+      <select id="lg" aria-label="Idioma" style="width:auto;padding:7px">${['pt', 'es', 'en'].map(l => `<option value="${l}" ${lang() === l ? 'selected' : ''}>${l.toUpperCase()}</option>`).join('')}</select>
+      <button class="iconbtn" id="out">${esc(t().out)}</button></div></header>`;
+  }
+  const TABS = () => [['ofertas', t().offers], ['cargas', t().loads], ['pagamentos', t().pay], ['documentos', t().docs], ['combustivel', t().fuel]];
+
+  function render() {
+    if (!S.me) {
+      $('#app').innerHTML = header() + `<main class="wrap"><div class="card sev warn"><b>${esc(t().waitT)}</b><span class="muted">${esc(t().wait)}</span><span class="muted">${esc(H.user.email)}</span>
+        <a class="btn gold" target="_blank" rel="noopener" href="${H.wa('Olá Helen! Criei minha conta no app com o e-mail ' + H.user.email)}">${esc(t().talk)}</a><button class="btn" id="rl">↻</button></div></main>`;
+      wireHead(); $('#rl').onclick = R.reload; return;
+    }
+    const offers = S.loads.filter(l => l.stage === 'oferta' && !l.offer_response).length;
+    const missing = H.DOCS.filter(it => it.drv && H.docApplies(S.me, it)).filter(it => ['miss', 'bad'].includes(H.docStatus(S.me, it, S.docs).s)).length;
+    $('#app').innerHTML = header() + `<main class="wrap" id="view"></main>
+      <nav class="tabs" style="grid-template-columns:repeat(5,1fr)" role="tablist">${TABS().map(([k, l]) => `<button role="tab" data-t="${k}" aria-selected="${S.tab === k}">${esc(l)}${k === 'ofertas' && offers ? `<span class="dot">${offers}</span>` : ''}${k === 'documentos' && missing ? `<span class="dot">${missing}</span>` : ''}</button>`).join('')}</nav>`;
+    wireHead();
+    $$('nav.tabs button').forEach(b => b.onclick = () => { S.tab = b.dataset.t; render(); window.scrollTo(0, 0) });
+    const v = $('#view'), V = VIEWS[S.tab]; v.innerHTML = V.html(); V.wire && V.wire(v);
+  }
+  function wireHead() { $('#out').onclick = H.signOut; $('#lg').onchange = e => { S.lang = e.target.value; try { localStorage.setItem('hts-lang', S.lang) } catch (x) { } render() } }
+
+  const route = l => `${esc(l.origin)} → ${esc(l.destination)}`;
+  const VIEWS = {};
+  /* ---------------- ofertas ---------------- */
+  VIEWS.ofertas = {
+    html() {
+      const O = S.loads.filter(l => l.stage === 'oferta');
+      if (!O.length) return `<div class="empty">${esc(t().noOffers)}</div>`;
+      return `<div class="stack">${O.map(l => { const r = l.rate != null && num(l.miles) ? num(l.rate) / num(l.miles) : 0, rpd = num(l.miles) ? num(l.driver_pay) / num(l.miles) : 0;
+        return `<div class="card sev gold" data-o="${l.id}"><div class="top2"><div style="min-width:0"><div class="route">${route(l)}</div>
+          <div class="muted">${brDate(l.load_date)}${l.pickup_window ? ' · ' + esc(l.pickup_window) : ''}</div>
+          <div class="muted">${fmtI(l.miles)} mi${num(l.deadhead) ? ' + ' + fmtI(l.deadhead) + ' vazio' : ''}${l.equipment ? ' · ' + esc(l.equipment) : ''}${l.weight ? ' · ' + esc(l.weight) : ''}</div>
+          ${l.notes ? `<div class="muted">${esc(l.notes)}</div>` : ''}</div>
+          <div class="money" style="font-size:20px;color:var(--gold2)">${fmt(l.driver_pay)}<div class="muted">${esc(t().youGet)}${rpd ? ' · ' + fmt(rpd) + '/mi' : ''}</div>${l.rate != null ? `<div class="muted">${esc(t().rate)} ${fmt(l.rate)}${r ? ' · ' + fmt(r) + '/mi' : ''}</div>` : ''}</div></div>
+          ${l.offer_response ? `<span class="pill ${l.offer_response === 'aceita' ? 'p-good' : l.offer_response === 'recusada' ? 'p-bad' : 'p-warn'}">${esc({ aceita: t().accepted, recusada: t().declined, contraproposta: t().countered + ' ' + fmt(l.counter_amount) }[l.offer_response])}</span>` : ''}
+          <div class="row"><button class="btn gold" data-a="aceita">${esc(t().accept)}</button><button class="btn" data-a="recusada">${esc(t().decline)}</button></div>
+          <div class="row"><input type="number" inputmode="decimal" step="1" min="1" placeholder="${esc(t().amount)}" data-amt style="max-width:150px"><button class="btn" data-a="contraproposta">${esc(t().counter)}</button></div></div>` }).join('')}</div>`;
+    },
+    wire(v) { $$('[data-o]', v).forEach(el => $$('[data-a]', el).forEach(b => b.onclick = () => {
+      const resp = b.dataset.a, amt = num($('[data-amt]', el).value);
+      if (resp === 'contraproposta' && !amt) { H.toast(t().amount, true); $('[data-amt]', el).focus(); return }
+      H.busy(b, async () => { await H.q(H.sb.rpc('respond_offer', { p_load: el.dataset.o, p_response: resp, p_amount: resp === 'contraproposta' ? amt : null })); H.toast(t().waitingAns); await R.reload() });
+    })) }
+  };
+  /* ---------------- cargas (coleta e entrega) ---------------- */
+  VIEWS.cargas = {
+    html() {
+      const L = S.loads.filter(l => ['confirmada', 'coletada'].includes(l.stage) || (l.stage === 'entregue' && H.daysTo(l.load_date) > -21));
+      if (!L.length) return `<div class="empty">${esc(t().noLoads)}</div>`;
+      const sg = { confirmada: [t().confirmed, 'p-info'], coletada: [t().picked, 'p-info'], entregue: [t().delivered, 'p-good'] };
+      return `<div class="stack">${L.map(l => `<div class="card sev ${l.stage === 'entregue' ? 'good' : 'gold'}" data-l="${l.id}"><div class="top2"><div style="min-width:0"><div class="route">${route(l)}</div>
+        <div class="muted">${brDate(l.load_date)}${l.ref ? ' · #' + esc(l.ref) : ''} · ${fmtI(l.miles)} mi</div>${l.pickup_window ? `<div class="muted">↑ ${esc(l.pickup_window)}</div>` : ''}${l.delivery_window ? `<div class="muted">↓ ${esc(l.delivery_window)}</div>` : ''}${l.notes ? `<div class="muted">${esc(l.notes)}</div>` : ''}</div>
+        <div class="money">${fmt(l.driver_pay)}${l.rate != null ? `<div class="muted">${esc(t().rate)} ${fmt(l.rate)}</div>` : ''}</div></div>
+        <div class="row"><span class="pill ${sg[l.stage][1]}">${esc(sg[l.stage][0])}</span>${l.paid ? `<span class="pill p-good">${esc(t().paidOn)} ${brDate(l.paid_at)}</span>` : ''}</div>
+        ${l.stage === 'confirmada' ? `<button class="btn gold wide" data-a="pickup">${esc(t().pickup)}</button>` : ''}${l.stage === 'coletada' ? `<button class="btn gold wide" data-a="delivery">${esc(t().delivery)}</button>` : ''}</div>`).join('')}</div>`;
+    },
+    wire(v) { $$('[data-l]', v).forEach(el => { const l = S.loads.find(x => x.id === el.dataset.l); $$('[data-a]', el).forEach(b => b.onclick = () => eventSheet(l, b.dataset.a)) }) }
+  };
+  function eventSheet(l, kind) {
+    const photos = [];
+    H.sheet(`<form id="ev" class="stack"><div class="row between"><h2>${esc(kind === 'pickup' ? t().pickup : t().delivery)}</h2><button type="button" class="btn sm" data-close>✕</button></div>
+      <p><b>${route(l)}</b></p><p class="note">${esc(kind === 'pickup' ? t().pickupHelp : t().deliveryHelp)}</p>
+      <div class="thumbs" id="evT"></div><span class="btn upl wide">${esc(t().photos)}<input type="file" id="evF" accept="image/*,application/pdf" multiple></span>
+      ${kind === 'delivery' ? `<label class="f">${esc(t().receiver)}<input name="receiver_name" required autocomplete="off"></label>` : ''}
+      <label class="f">${esc(t().note)}<input name="note"></label>
+      <button class="btn gold wide" id="evGo">${esc(t().save)}</button></form>`, api => {
+      const f = $('#ev', api.el);
+      $('#evF', f).onchange = async e => { const files = [...e.target.files]; e.target.value = ''; for (const file of files) { try { H.toast('…'); const r = await H.upload('files', `${S.me.id}/loads/${l.id}`, file); photos.push(r.path); await H.thumbs($('#evT', f), photos) } catch (x) { H.fail(x) } } };
+      f.onsubmit = async e => { e.preventDefault(); const o = H.form(f);
+        if (!photos.length) { H.toast(t().needPhoto, true); return } if (kind === 'delivery' && !o.receiver_name) { H.toast(t().needName, true); return }
+        await H.busy($('#evGo', f), async () => {
+          await H.q(H.sb.from('load_events').insert({ load_id: l.id, driver_id: S.me.id, kind, photos, receiver_name: o.receiver_name || null, note: o.note }));
+          await H.q(H.sb.rpc('driver_set_stage', { p_load: l.id, p_stage: kind === 'pickup' ? 'coletada' : 'entregue' }));
+          api.close(); H.toast('✓'); await R.reload() }) };
+    });
+  }
+  /* ---------------- pagamentos e Quick Pay ---------------- */
+  const inQP = () => new Set(S.quickpay.filter(q => ['pendente', 'aprovado'].includes(q.status)).flatMap(q => q.load_ids));
+  VIEWS.pagamentos = {
+    html() {
+      const qp = inQP(), un = S.loads.filter(l => l.stage === 'entregue' && !l.paid), fuelDed = S.fuel.filter(x => x.payer === 'cartao' && !x.settled).reduce((a, x) => a + num(x.total), 0);
+      const owed = un.reduce((a, l) => a + num(l.driver_pay), 0), elig = un.filter(l => !l.settlement_id && !qp.has(l.id));
+      return `<div class="stack"><div class="hero"><span class="muted">${esc(t().toReceive)}</span><div class="big">${fmt(owed - fuelDed)}</div>
+        <div class="calc"><span>${un.length} ${esc(t().loadsN)}</span><span class="m">${fmt(owed)}</span><span>${esc(t().fuelDed)}</span><span class="m">−${fmt(fuelDed)}</span></div></div>
+        <h2>${esc(t().qp)}</h2><p class="note">${esc(t().qpRule.replace('{p}', H.cfg.quickPayPct))}</p>
+        ${elig.length ? `<button class="btn gold wide" id="qpBtn" ${H.quickPayOpen() ? '' : 'disabled'}>${esc(t().qpAsk)}</button>${H.quickPayOpen() ? '' : `<p class="note">${esc(t().qpClosed)}</p>`}` : ''}
+        ${S.quickpay.map(q => `<div class="card"><div class="top2"><div><b>${fmt(q.net)}</b><div class="muted">${new Date(q.requested_at).toLocaleDateString()} · ${q.load_ids.length} ${esc(t().loadsN)} · ${esc(t().qpFee)} ${fmt(q.fee)}</div></div><span class="pill ${q.status === 'pago' ? 'p-good' : q.status === 'negado' ? 'p-bad' : 'p-warn'}">${esc(t().qpSt[q.status])}${q.status === 'aprovado' && q.eligible_on ? ' ' + brDate(q.eligible_on) : q.status === 'pago' ? ' ' + brDate(q.paid_at) : ''}</span></div></div>`).join('')}
+        <h2>${esc(t().statements)}</h2>
+        ${S.settlements.length ? S.settlements.map(s => { const L = S.loads.filter(l => l.settlement_id === s.id), F = S.fuel.filter(x => x.settlement_id === s.id);
+          return `<div class="card sev ${s.status === 'pago' ? 'good' : 'warn'}"><div class="top2"><div><b>${brDate(s.period_start)} – ${brDate(s.period_end)}</b><div class="muted">${s.status === 'pago' ? esc(t().paidOn) + ' ' + brDate(s.paid_at) + (s.method ? ' · ' + esc(s.method) : '') : esc(t().approved)}</div></div><div class="money" style="color:var(--gold2)">${fmt(s.net)}<div class="muted">${esc(t().net)}</div></div></div>
+          <div class="muted">${L.map(l => `${brDate(l.load_date)} ${route(l)} · ${fmt(l.driver_pay)}`).join('<br>')}${F.length ? '<br>' + F.map(x => `${brDate(x.fuel_date)} ${esc(t().fuel)} −${fmt(x.total)}`).join('<br>') : ''}${num(s.other_deductions) ? `<br>− ${fmt(s.other_deductions)} ${esc(s.other_note || '')}` : ''}</div></div>` }).join('') : `<div class="empty">${esc(t().noPay)}</div>`}</div>`;
+    },
+    wire(v) { const b = $('#qpBtn', v); if (b) b.onclick = qpSheet }
+  };
+  function qpSheet() {
+    const qp = inQP(), L = S.loads.filter(l => l.stage === 'entregue' && !l.paid && !l.settlement_id && !qp.has(l.id)), pct = num(H.cfg.quickPayPct);
+    H.sheet(`<form id="qf" class="stack"><div class="row between"><h2>${esc(t().qp)}</h2><button type="button" class="btn sm" data-close>✕</button></div><p class="note">${esc(t().qpPick)}</p>
+      ${L.map(l => `<label class="chk card"><input type="checkbox" value="${l.id}" checked><span style="flex:1">${route(l)}<br><span class="muted">${brDate(l.load_date)}</span></span><span class="money">${fmt(l.driver_pay)}</span></label>`).join('')}
+      <div class="calc" id="qfC"></div><button class="btn gold wide" id="qfGo">${esc(t().qpSend)}</button></form>`, api => {
+      const f = $('#qf', api.el), sel = () => $$('input[type=checkbox]', f).filter(i => i.checked).map(i => i.value);
+      const calc = () => { const a = L.filter(l => sel().includes(l.id)).reduce((s, l) => s + num(l.driver_pay), 0), fee = Math.round(a * pct) / 100; $('#qfC', f).innerHTML = `<span>${esc(t().youGet)}</span><span class="m">${fmt(a)}</span><span>${esc(t().qpFee)} ${pct}%</span><span class="m">−${fmt(fee)}</span><span><b>${esc(t().qpNet)}</b></span><span class="m"><b>${fmt(a - fee)}</b></span>` };
+      f.onchange = calc; calc();
+      f.onsubmit = async e => { e.preventDefault(); const ids = sel(); if (!ids.length) return; await H.busy($('#qfGo', f), async () => { await H.q(H.sb.rpc('request_quickpay', { p_loads: ids })); api.close(); H.toast(t().qpSent); await R.reload() }) };
+    });
+  }
+  /* ---------------- documentos ---------------- */
+  VIEWS.documentos = {
+    html() {
+      const items = H.DOCS.filter(it => it.drv && H.docApplies(S.me, it));
+      return `<div class="stack"><p class="note">${esc(t().docsHelp)}</p>${items.map(it => { const s = H.docStatus(S.me, it, S.docs), last = s.last;
+        const label = s.s === 'ok' || s.s === 'warn' ? (s.due ? t().docSt[s.s] + ' · ' + brDate(s.due) : t().docSt.ok) : t().docSt[s.s];
+        return `<div class="card sev ${s.s === 'ok' ? 'good' : s.s === 'review' ? 'gold' : s.s === 'opt' ? '' : s.s === 'warn' ? 'warn' : 'bad'}" data-doc="${it.k}"><div class="top2"><b>${esc(docTitle(it))}</b><span class="pill ${H.pillCls[s.s]}">${esc(label)}</span></div>
+          ${last && last.status === 'rejeitado' && last.note ? `<span class="err">${esc(last.note)}</span>` : ''}
+          ${s.s !== 'review' ? `<span class="btn upl">${esc(last ? t().reupload : t().upload)}<input type="file" accept="image/*,application/pdf"></span>` : ''}</div>` }).join('')}</div>`;
+    },
+    wire(v) { $$('[data-doc]', v).forEach(el => { const inp = $('input[type=file]', el); if (!inp) return; inp.onchange = async e => { const file = e.target.files[0]; e.target.value = ''; if (!file) return;
+      try { H.toast('…'); const r = await H.upload('files', `${S.me.id}/docs/${el.dataset.doc}`, file); await H.q(H.sb.from('driver_docs').insert({ driver_id: S.me.id, item: el.dataset.doc, status: 'enviado', file_path: r.path, file_name: r.name })); H.toast(t().sent); await R.reload() } catch (x) { H.fail(x) } } }) }
+  };
+  /* ---------------- combustível ---------------- */
+  VIEWS.combustivel = {
+    html: () => `<div class="stack"><button class="btn gold wide" id="fAdd">${esc(t().fuelAdd)}</button>
+      ${S.fuel.length ? S.fuel.map(x => `<div class="card"><div class="top2"><div><b>${brDate(x.fuel_date)}</b><div class="muted">${esc(x.station || '')}${x.gallons ? ' · ' + num(x.gallons).toFixed(1) + ' gal' : ''}${x.odometer ? ' · ' + fmtI(x.odometer) : ''}</div></div><div class="money">${fmt(x.total)}<div class="muted">${x.payer === 'cartao' ? esc(t().card) + (x.settled ? ' ✓' : '') : esc(t().mine)}</div></div></div></div>`).join('') : ''}</div>`,
+    wire(v) { $('#fAdd', v).onclick = fuelSheet }
+  };
+  function fuelSheet() {
+    const photos = [];
+    H.sheet(`<form id="fs" class="stack"><div class="row between"><h2>${esc(t().fuel)}</h2><button type="button" class="btn sm" data-close>✕</button></div><p class="note">${esc(t().fuelHelp)}</p>
+      <div class="thumbs" id="fsT"></div><span class="btn upl wide">${esc(t().photos)}<input type="file" id="fsF" accept="image/*" multiple></span>
+      <div class="g2"><label class="f">${esc(t().date)}<input type="date" name="fuel_date" value="${iso(today())}" required></label><label class="f">${esc(t().total)}<input type="number" inputmode="decimal" step="0.01" name="total" required></label>
+      <label class="f">${esc(t().gallons)}<input type="number" inputmode="decimal" step="0.001" name="gallons"></label><label class="f">${esc(t().odometer)}<input type="number" inputmode="numeric" name="odometer"></label>
+      <label class="f full">${esc(t().station)}<input name="station"></label><label class="f full">${esc(t().payer)}<select name="payer"><option value="cartao">${esc(t().card)}</option><option value="motorista">${esc(t().mine)}</option></select></label></div>
+      <button class="btn gold wide" id="fsGo">${esc(t().save)}</button></form>`, api => {
+      const f = $('#fs', api.el);
+      $('#fsF', f).onchange = async e => { const files = [...e.target.files]; e.target.value = ''; for (const file of files) { try { H.toast('…'); photos.push((await H.upload('files', `${S.me.id}/fuel`, file)).path); await H.thumbs($('#fsT', f), photos) } catch (x) { H.fail(x) } } };
+      f.onsubmit = async e => { e.preventDefault(); const o = H.form(f); if (!photos.length) { H.toast(t().needPhoto, true); return }
+        await H.busy($('#fsGo', f), async () => { await H.q(H.sb.from('fuel').insert({ ...o, driver_id: S.me.id, photos })); api.close(); H.toast('✓'); await R.reload() }) };
+    });
+  }
+})(window.HTS);
+
+</script>
+<script>
+  
+  HTS.boot();
+</script>
+</body>
+</html>
