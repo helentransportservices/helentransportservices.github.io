@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#171b20"><link rel="icon" href="data:image/png;base64,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"><link rel="apple-touch-icon" href="data:image/png;base64,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">
+<meta name="description" content="Owner operators e lease operators de van e box truck: trabalhe com a Helen Transport Services.">
+<title>Helen Transport Services</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap">
+<style>
+html,body{margin:0}body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}
+
+/* Layout: one-column recruiting page on asphalt with an amber lane stripe; hero, two paths, vehicles, benefits, requirements, WhatsApp application. Deliberately single dark look. */
+:root{
+  --asphalt:#171b20; --asphalt-2:#20262d; --panel:#262d35; --line:#36404a;
+  --ink:#f3f5f7; --muted:#b2bcc6; --amber:#f2b705; --amber-ink:#231b00; --wa:#1fa855;
+  --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--asphalt);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5}
+.wrap{max-width:820px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(23,27,32,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px}
+.brand{font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:.03em;text-transform:uppercase;line-height:1}
+.brand span{color:var(--amber)}
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.lang button{background:none;border:0;color:var(--muted);font:700 20px var(--body);line-height:1;padding:6px 10px;cursor:pointer;opacity:.55}.lang button[aria-pressed="true"]{opacity:1}
+.lang button[aria-pressed="true"]{background:var(--amber);color:var(--amber-ink)}
+.hero{padding-block:40px 28px}
+.eyebrow{font:700 13px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(44px,11vw,84px);line-height:.92;text-transform:uppercase;margin:10px 0 16px;text-wrap:balance}
+h1 em{font-style:normal;color:var(--amber)}
+.lead{font-size:19px;color:var(--muted);max-width:34em;margin:0 0 24px}
+.cta{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:8px;font:700 17px var(--body);border-radius:12px;padding:14px 20px;border:2px solid transparent;cursor:pointer;text-decoration:none}
+.btn.amber{background:var(--amber);color:var(--amber-ink)}
+.btn.ghost{border-color:var(--line);color:var(--ink);background:transparent}
+.btn.wa{background:var(--wa);color:#fff;width:100%;justify-content:center;font-size:18px}
+.btn:focus-visible,.lang button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.lane{height:10px;background:repeating-linear-gradient(90deg,var(--amber) 0 46px,transparent 46px 78px);margin-block:8px 0}
+section{padding-block:34px}
+h2{font-family:var(--display);font-weight:800;font-size:clamp(30px,7vw,44px);text-transform:uppercase;line-height:1;margin:0 0 18px;text-wrap:balance}
+.paths{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.path{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.path .tag{align-self:flex-start;font:700 12px var(--body);letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:var(--asphalt);color:var(--amber);border:1px solid var(--line)}
+.path h3{font-family:var(--display);font-size:28px;line-height:1;margin:0;text-transform:uppercase}
+.path .big{font-family:var(--display);font-weight:800;font-size:52px;line-height:.9;color:var(--amber)}
+.path p{margin:0;color:var(--muted)}
+.veh{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.v{border:1px solid var(--line);border-radius:14px;padding:16px 12px;text-align:center;background:var(--asphalt-2)}
+.v svg{width:100%;max-width:150px;height:auto;display:block;margin:0 auto 8px}
+.v b{font-family:var(--display);font-size:22px;text-transform:uppercase;display:block;line-height:1}
+.v span{font-size:13px;color:var(--muted)}
+ul.list{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+ul.list li{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start}
+ul.list li::before{content:"";width:22px;height:22px;margin-top:2px;border-radius:6px;background:var(--amber) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.2 4.2L19 7' fill='none' stroke='%23231b00' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat}
+ul.req li::before{background-color:transparent;border:2px solid var(--amber);background-image:none}
+ul.list b{display:block}
+ul.list span{color:var(--muted);font-size:15px}
+.apply{background:var(--asphalt-2);border:1px solid var(--line);border-radius:18px;padding:22px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.full{grid-column:1/-1}
+label{display:flex;flex-direction:column;gap:6px;min-width:0;font-weight:600;font-size:14px;color:var(--muted)}
+input,select{font:500 17px var(--body);color:var(--ink);background:var(--asphalt);border:1px solid var(--line);border-radius:10px;padding:12px;width:100%;min-width:0}
+.note{font-size:14px;color:var(--muted);margin:12px 0 0}
+.contact{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
+.num{font:700 20px var(--body);letter-spacing:.02em;user-select:all}
+.copy{background:none;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px 10px;font:600 13px var(--body);cursor:pointer}
+footer{border-top:1px solid var(--line);padding-block:24px 40px;color:var(--muted);font-size:14px}
+footer a{color:var(--ink)}
+.docs{display:grid;gap:10px;margin:6px 0 16px}
+.doc{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--asphalt);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.doc b{font-size:15px;color:var(--ink)}.doc small{display:block;color:var(--muted);font-weight:500}
+.doc .pick{position:relative;overflow:hidden;flex:none;border:1px solid var(--amber);color:var(--amber);border-radius:10px;padding:8px 12px;font:700 14px var(--body);cursor:pointer}
+.doc .pick input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.doc.ok{border-color:var(--wa)}.doc.ok .pick{border-color:var(--wa);color:#7ee0a5}
+.btn.send{background:var(--amber);color:var(--amber-ink);width:100%;justify-content:center;font-size:18px;margin-bottom:10px}
+.btn:disabled{opacity:.6}
+.done{background:#163024;border:1px solid var(--wa);border-radius:14px;padding:16px;margin-bottom:12px}
+.err{color:#ff8a80;font-weight:600;margin:0 0 10px}
+@media (max-width:560px){.paths,.grid{grid-template-columns:1fr}.veh{grid-template-columns:1fr 1fr 1fr;gap:8px}.v{padding:12px 6px}.v b{font-size:18px}}
+@media (prefers-reduced-motion:no-preference){.lane{animation:drive 1.6s linear infinite}@keyframes drive{to{background-position:78px 0}}}
+</style>
+</head><body>
+
+<header><div class="wrap bar">
+  <div class="brand">Helen <span>Transport</span> Services</div>
+  <div class="lang" role="group" aria-label="Idioma">
+    <button data-l="pt" aria-pressed="true" aria-label="Português">🇧🇷</button><button data-l="en" aria-pressed="false" aria-label="English">🇺🇸</button><button data-l="es" aria-pressed="false" aria-label="Español">🇪🇸</button>
+  </div>
+</div></header>
+
+<main>
+  <div class="wrap hero">
+    <div class="eyebrow" data-t="eyebrow"></div>
+    <h1 data-t="h1"></h1>
+    <p class="lead" data-t="lead"></p>
+    <div class="cta"><a class="btn amber" href="#aplicar" data-t="ctaApply"></a><a class="btn ghost" href="#caminhos" data-t="ctaHow"></a></div>
+  </div>
+  <div class="lane" aria-hidden="true"></div>
+
+  <section class="wrap" id="caminhos">
+    <h2 data-t="pathsTitle"></h2>
+    <div class="paths">
+      <div class="path"><span class="tag" data-t="p1tag"></span><h3 data-t="p1h"></h3><div class="big">10%</div><p data-t="p1p"></p></div>
+      <div class="path"><span class="tag" data-t="p2tag"></span><h3 data-t="p2h"></h3><div class="big" data-t="p2big"></div><p data-t="p2p"></p></div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <h2 data-t="vehTitle"></h2>
+    <div class="veh">
+      <div class="v"><svg viewBox="0 0 160 80" aria-hidden="true"><path d="M8 58V30q0-8 8-10l54-6h30q8 0 13 6l22 22q6 4 6 10v6z" fill="#f2b705"/><path d="M104 20h-8v18h36z" fill="#171b20" opacity=".8"/><rect x="0" y="58" width="160" height="4" rx="2" fill="#36404a"/><circle cx="38" cy="60" r="11" fill="#171b20" stroke="#b2bcc6" stroke-width="4"/><circle cx="122" cy="60" r="11" fill="#171b20" stroke="#b2bcc6" stroke-width="4"/></svg><b>Cargo van</b><span data-t="v1"></span></div>
+      <div class="v"><svg viewBox="0 0 160 80" aria-hidden="true"><rect x="6" y="12" width="96" height="46" rx="3" fill="#f2b705"/><path d="M104 26h22q6 0 9 5l13 16q3 4 3 9v2h-47z" fill="#f2b705"/><path d="M112 30h14l11 14h-25z" fill="#171b20" opacity=".8"/><rect x="0" y="58" width="160" height="4" rx="2" fill="#36404a"/><circle cx="34" cy="60" r="11" fill="#171b20" stroke="#b2bcc6" stroke-width="4"/><circle cx="128" cy="60" r="11" fill="#171b20" stroke="#b2bcc6" stroke-width="4"/></svg><b>Box 16 ft</b><span data-t="v2"></span></div>
+      <div class="v"><svg viewBox="0 0 160 80" aria-hidden="true"><rect x="2" y="6" width="112" height="52" rx="3" fill="#f2b705"/><path d="M116 24h18q6 0 9 5l12 17q3 4 3 9v3h-42z" fill="#f2b705"/><path d="M122 28h12l11 15h-23z" fill="#171b20" opacity=".8"/><rect x="0" y="58" width="160" height="4" rx="2" fill="#36404a"/><circle cx="26" cy="60" r="11" fill="#171b20" stroke="#b2bcc6" stroke-width="4"/><circle cx="52" cy="60" r="11" fill="#171b20" stroke="#b2bcc6" stroke-width="4"/><circle cx="138" cy="60" r="11" fill="#171b20" stroke="#b2bcc6" stroke-width="4"/></svg><b>Box 26 ft</b><span data-t="v3"></span></div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <h2 data-t="benTitle"></h2>
+    <ul class="list" id="ben"></ul>
+  </section>
+
+  <section class="wrap">
+    <h2 data-t="reqTitle"></h2>
+    <ul class="list req" id="req"></ul>
+  </section>
+
+  <section class="wrap" id="aplicar">
+    <h2 data-t="formTitle"></h2>
+    <form class="apply" id="f" autocomplete="on">
+      <div class="grid">
+        <label class="full"><span data-t="fName"></span><input id="name" autocomplete="name" required></label>
+        <label><span data-t="fPhone"></span><input id="phone" type="tel" autocomplete="tel" inputmode="tel"></label>
+        <label><span data-t="fCity"></span><input id="city" placeholder="Orlando, FL"></label>
+        <label><span data-t="fVeh"></span><select id="veh"><option>Cargo van</option><option>Box truck 16 ft</option><option>Box truck 26 ft</option><option data-t="optOther"></option></select></label>
+        <label><span data-t="fMc"></span><select id="mc"><option value="yes" data-t="optMcYes"></option><option value="no" data-t="optMcNo"></option></select></label>
+        <label id="mcNumL"><span data-t="fMcNum"></span><input id="mcnum" inputmode="numeric" placeholder="MC-"></label>
+        <label><span data-t="fExp"></span><select id="exp"><option data-t="exp0"></option><option data-t="exp1"></option><option data-t="exp2"></option></select></label>
+        <label><span data-t="fCdl"></span><select id="cdl"><option data-t="no"></option><option data-t="yes"></option></select></label>
+        <label class="full"><span data-t="fWork"></span><select id="work"><option data-t="yes"></option><option data-t="no"></option></select></label>
+        <label><span data-t="fEmail"></span><input id="email" type="email" autocomplete="email"></label>
+        <label><span data-t="fZip"></span><input id="zip" inputmode="numeric" maxlength="5" autocomplete="postal-code"></label>
+        <label class="full"><span data-t="fInt"></span><select id="interest"><option value="dispatch" data-t="int1"></option><option value="lease" data-t="int2"></option><option value="?" data-t="int3"></option></select></label>
+      </div>
+      <h3 data-t="docsTitle" style="font-family:var(--display);text-transform:uppercase;font-size:24px;margin:8px 0 4px"></h3>
+      <p class="note" data-t="docsHelp" style="margin:0 0 8px"></p>
+      <div class="docs" id="docs"></div>
+      <p class="err" id="err" hidden></p>
+      <div class="done" id="done" hidden><b data-t="doneT"></b><div class="note" data-t="done" style="margin-top:4px"></div></div>
+      <button type="button" class="btn send" id="send" data-t="submit"></button>
+      <a class="btn wa" id="wa" href="https://wa.me/14073760990" target="_blank" rel="noopener">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.7.5-.1 1.5-.6 1.7-1.2s.2-1.1.2-1.2-.3-.2-.5-.3z"/></svg>
+        <span data-t="sendWa"></span></a>
+      <p class="note" data-t="formNote"></p>
+      <div class="contact"><span data-t="orCall"></span><span class="num" id="num">(407) 376-0990</span><button type="button" class="copy" id="copy" data-t="copy"></button></div>
+    </form>
+  </section>
+</main>
+
+<footer><div class="wrap">
+  <div>Helen Transport Services · Orlando, FL · Instagram <a href="https://www.instagram.com/helentransportservices/" target="_blank" rel="noopener">@helentransportservices</a></div>
+  <div style="margin-top:6px">helenchristiny786@gmail.com</div>
+  <p data-t="legal" style="margin:12px 0 0"></p>
+</div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+/* Helen Transport Services — configuração.
+   Cole aqui os dois dados do Supabase (Project Settings → API / Data API).
+   A "anon public key" pode ficar aqui: ela é pública por natureza e quem protege os dados são as regras do banco.
+   NUNCA coloque aqui a "service_role" key nem a senha do banco. */
+window.HTS_CONFIG = {
+  supabaseUrl: 'https://xwioljkfbeyrizvcxhff.supabase.co',
+  supabaseAnonKey: 'sb_publishable_0NIsBJ5JZKI1wQUoke7k1w_4y7whapU',
+  whatsapp: '14073760990',
+  dispatchName: 'Helen Transport Services',
+  quickPayPct: 5
+};
+
+</script>
+<script>
+const T={
+pt:{eyebrow:"Owner operators · Lease operators",h1:"Sua van ou box truck <em>rodando</em> com a gente",lead:"Você dirige. A gente encontra as cargas, cuida da papelada e te manda o recibo toda semana. Atendimento por mensagem em português, espanhol e inglês.",ctaApply:"Quero me cadastrar",ctaHow:"Como funciona",
+pathsTitle:"Dois jeitos de trabalhar",p1tag:"Tem MC próprio",p1h:"Dispatch",p1p:"Você roda com a sua autoridade e o seu seguro. A gente procura e negocia as cargas e fica com 10% do valor de cada uma.",p2tag:"Não tem MC",p2h:"Lease",p2big:"Sem DOT próprio",p2p:"Você roda com uma transportadora parceira, já ativa e com seguro, sem precisar abrir empresa nem esperar a autoridade. As condições são passadas na conversa.",
+vehTitle:"Veículos que aceitamos",v1:"Sprinter, Transit, ProMaster",v2:"Non-CDL",v3:"Non-CDL ou CDL",
+benTitle:"O que você recebe",ben:[["Cargas procuradas e negociadas por nós","Você diz onde está e para onde quer ir. A gente busca a carga e te manda a oferta."],["Recibo detalhado toda semana","Com o nome e o logo da sua empresa, cada carga, o valor bruto e os descontos."],["Opção de adiantamento (factoring)","Para não esperar o prazo de pagamento do broker."],["Ajuda com a documentação","Pasta do motorista, medical card, MCS-150, UCR e auditoria do DOT."],["Tudo por mensagem","WhatsApp em português, espanhol ou inglês."]],
+reqTitle:"Requisitos",req:[["Autorização para trabalhar nos EUA","Work permit (EAD) válido, green card ou cidadania americana."],["Carteira de motorista válida","E histórico de direção limpo (MVR)."],["Medical card (DOT)","Para veículos acima de 10,001 lbs."],["Veículo em bom estado","Com registro em dia."],["Com MC próprio","Autoridade ativa e seguro de carga e de responsabilidade em vigor."],["Celular com WhatsApp","Para receber as cargas e mandar as fotos dos comprovantes."]],
+formTitle:"Cadastro rápido",fName:"Nome completo",fPhone:"Telefone / WhatsApp",fCity:"Cidade e estado",fVeh:"Veículo",fMc:"Tem MC próprio?",fMcNum:"Número do MC",fExp:"Experiência",fCdl:"Tem CDL?",fWork:"Tem autorização para trabalhar nos EUA?",mWork:"Autorização de trabalho",optOther:"Outro",optMcYes:"Sim",optMcNo:"Não",exp0:"Menos de 1 ano",exp1:"1 a 3 anos",exp2:"Mais de 3 anos",no:"Não",yes:"Sim",
+send:"Enviar pelo WhatsApp",sendWa:"Avisar a Helen pelo WhatsApp",formNote:"Toque em Enviar cadastro. Depois, se quiser, avise pelo WhatsApp com os seus dados já escritos.",
+fEmail:"E-mail",fZip:"ZIP code onde você fica",fInt:"Como quer trabalhar?",int1:"Dispatch (tenho MC próprio)",int2:"Lease (rodar no DOT da transportadora parceira)",int3:"Ainda não sei",
+docsTitle:"Documentos (fotos)",docsHelp:"Tire foto ou escolha o arquivo. Pode mandar agora ou depois pelo app.",choose:"Escolher",change:"Trocar",
+dl:{license:["Carteira de motorista","Frente e verso"],med:["Medical card (DOT)","Se o veículo passa de 10,001 lbs"],coi:["Seguro do veículo (COI)",""],registration:["Registro do veículo",""],vehicle_photos:["Fotos do veículo","Frente, lados, traseira e placa"],workauth:["Autorização de trabalho","Work permit, green card ou passaporte americano"],mc_letter:["Carta do MC (se tiver)","Authority letter da FMCSA"]},
+submit:"Enviar cadastro",sending:"Enviando…",doneT:"Cadastro recebido!",done:"A Helen vai conferir e falar com você pelo WhatsApp. Se quiser, avise agora pelo botão verde.",needName:"Escreva seu nome completo.",needContact:"Coloque o WhatsApp ou o e-mail.",failSend:"Não foi possível enviar. Verifique a internet e tente de novo.",orCall:"Ou chame no WhatsApp:",copy:"Copiar",copied:"Copiado",
+msgHead:"Olá Helen! Quero me cadastrar na Helen Transport Services.",mName:"Nome",mPhone:"Telefone",mCity:"Cidade",mVeh:"Veículo",mMc:"MC próprio",mExp:"Experiência",mCdl:"CDL",
+legal:"Pagamentos conforme as cargas entregues e pagas pelos brokers. Valores variam conforme o mercado. Não garantimos renda mínima."},
+es:{eyebrow:"Owner operators · Lease operators",h1:"Tu van o box truck <em>rodando</em> con nosotros",lead:"Tú manejas. Nosotros buscamos las cargas, nos encargamos del papeleo y te mandamos el recibo cada semana. Atención por mensaje en español, portugués e inglés.",ctaApply:"Quiero registrarme",ctaHow:"Cómo funciona",
+pathsTitle:"Dos formas de trabajar",p1tag:"Tienes MC propio",p1h:"Dispatch",p1p:"Trabajas con tu autoridad y tu seguro. Nosotros buscamos y negociamos las cargas y cobramos el 10% del valor de cada una.",p2tag:"No tienes MC",p2h:"Lease",p2big:"Sin DOT propio",p2p:"Trabajas con una transportista aliada, activa y asegurada, sin abrir empresa ni esperar la autoridad. Las condiciones se explican en la conversación.",
+vehTitle:"Vehículos que aceptamos",v1:"Sprinter, Transit, ProMaster",v2:"Non-CDL",v3:"Non-CDL o CDL",
+benTitle:"Lo que recibes",ben:[["Cargas buscadas y negociadas por nosotros","Nos dices dónde estás y a dónde quieres ir. Buscamos la carga y te mandamos la oferta."],["Recibo detallado cada semana","Con el nombre y el logo de tu empresa, cada carga, el valor bruto y los descuentos."],["Opción de pago adelantado (factoring)","Para no esperar el plazo de pago del broker."],["Ayuda con los documentos","Expediente del conductor, medical card, MCS-150, UCR y auditoría del DOT."],["Todo por mensaje","WhatsApp en español, portugués o inglés."]],
+reqTitle:"Requisitos",req:[["Autorización para trabajar en EE. UU.","Work permit (EAD) vigente, green card o ciudadanía americana."],["Licencia de conducir vigente","Y récord de manejo limpio (MVR)."],["Medical card (DOT)","Para vehículos de más de 10,001 lbs."],["Vehículo en buen estado","Con registro al día."],["Con MC propio","Autoridad activa y seguro de carga y de responsabilidad vigente."],["Celular con WhatsApp","Para recibir las cargas y mandar las fotos de los comprobantes."]],
+formTitle:"Registro rápido",fName:"Nombre completo",fPhone:"Teléfono / WhatsApp",fCity:"Ciudad y estado",fVeh:"Vehículo",fMc:"¿Tienes MC propio?",fMcNum:"Número de MC",fExp:"Experiencia",fCdl:"¿Tienes CDL?",fWork:"¿Tienes autorización para trabajar en EE. UU.?",mWork:"Autorización de trabajo",optOther:"Otro",optMcYes:"Sí",optMcNo:"No",exp0:"Menos de 1 año",exp1:"1 a 3 años",exp2:"Más de 3 años",no:"No",yes:"Sí",
+send:"Enviar por WhatsApp",sendWa:"Avisar a Helen por WhatsApp",formNote:"Toca Enviar registro. Después, si quieres, avisa por WhatsApp con tus datos ya escritos.",
+fEmail:"Correo",fZip:"ZIP code donde estás",fInt:"¿Cómo quieres trabajar?",int1:"Dispatch (tengo MC propio)",int2:"Lease (con el DOT de la transportista aliada)",int3:"Todavía no sé",
+docsTitle:"Documentos (fotos)",docsHelp:"Toma una foto o elige el archivo. Puedes mandarlos ahora o después por la app.",choose:"Elegir",change:"Cambiar",
+dl:{license:["Licencia de conducir","Frente y reverso"],med:["Medical card (DOT)","Si el vehículo pasa de 10,001 lbs"],coi:["Seguro del vehículo (COI)",""],registration:["Registro del vehículo",""],vehicle_photos:["Fotos del vehículo","Frente, lados, atrás y placa"],workauth:["Autorización de trabajo","Work permit, green card o pasaporte americano"],mc_letter:["Carta del MC (si tienes)","Authority letter de la FMCSA"]},
+submit:"Enviar registro",sending:"Enviando…",doneT:"¡Registro recibido!",done:"Helen lo revisará y te escribirá por WhatsApp. Si quieres, avísale ahora con el botón verde.",needName:"Escribe tu nombre completo.",needContact:"Pon tu WhatsApp o tu correo.",failSend:"No se pudo enviar. Revisa tu internet e inténtalo de nuevo.",orCall:"O escríbenos por WhatsApp:",copy:"Copiar",copied:"Copiado",
+msgHead:"¡Hola Helen! Quiero registrarme en Helen Transport Services.",mName:"Nombre",mPhone:"Teléfono",mCity:"Ciudad",mVeh:"Vehículo",mMc:"MC propio",mExp:"Experiencia",mCdl:"CDL",
+legal:"Pagos según las cargas entregadas y pagadas por los brokers. Los valores varían según el mercado. No garantizamos ingreso mínimo."},
+en:{eyebrow:"Owner operators · Lease operators",h1:"Put your van or box truck <em>to work</em> with us",lead:"You drive. We find the loads, handle the paperwork and send you a pay statement every week. Support by text in English, Spanish and Portuguese.",ctaApply:"Apply now",ctaHow:"How it works",
+pathsTitle:"Two ways to work",p1tag:"Own MC",p1h:"Dispatch",p1p:"You run under your own authority and insurance. We find and negotiate your loads for 10% of each load.",p2tag:"No MC",p2h:"Lease on",p2big:"No DOT needed",p2p:"Run under a partner carrier that is active and insured, without opening a company or waiting for authority. Terms are explained when we talk.",
+vehTitle:"Equipment we accept",v1:"Sprinter, Transit, ProMaster",v2:"Non-CDL",v3:"Non-CDL or CDL",
+benTitle:"What you get",ben:[["Loads found and negotiated for you","Tell us where you are and where you want to go. We find the load and send you the offer."],["Detailed weekly pay statement","With your company name and logo, every load, the gross rate and deductions."],["Quick pay option (factoring)","So you don't wait for the broker's payment terms."],["Help with paperwork","Driver qualification file, medical card, MCS-150, UCR and DOT audit."],["Everything by text","WhatsApp in English, Spanish or Portuguese."]],
+reqTitle:"Requirements",req:[["Authorized to work in the U.S.","Valid work permit (EAD), green card or U.S. citizenship."],["Valid driver's license","And a clean driving record (MVR)."],["DOT medical card","For vehicles over 10,001 lbs."],["Vehicle in good condition","With current registration."],["With your own MC","Active authority with cargo and liability insurance in force."],["Phone with WhatsApp","To receive loads and send receipt photos."]],
+formTitle:"Quick application",fName:"Full name",fPhone:"Phone / WhatsApp",fCity:"City and state",fVeh:"Vehicle",fMc:"Own MC?",fMcNum:"MC number",fExp:"Experience",fCdl:"CDL?",fWork:"Authorized to work in the U.S.?",mWork:"Work authorization",optOther:"Other",optMcYes:"Yes",optMcNo:"No",exp0:"Under 1 year",exp1:"1 to 3 years",exp2:"Over 3 years",no:"No",yes:"Yes",
+send:"Send on WhatsApp",sendWa:"Let Helen know on WhatsApp",formNote:"Tap Submit application. Then, if you like, message us on WhatsApp with your details already filled in.",
+fEmail:"Email",fZip:"Your ZIP code",fInt:"How do you want to work?",int1:"Dispatch (I have my own MC)",int2:"Lease on (partner carrier's DOT)",int3:"Not sure yet",
+docsTitle:"Documents (photos)",docsHelp:"Take a photo or choose the file. You can send them now or later in the app.",choose:"Choose",change:"Change",
+dl:{license:["Driver's license","Front and back"],med:["DOT medical card","If the vehicle is over 10,001 lbs"],coi:["Vehicle insurance (COI)",""],registration:["Vehicle registration",""],vehicle_photos:["Vehicle photos","Front, sides, rear and plate"],workauth:["Work authorization","Work permit, green card or U.S. passport"],mc_letter:["MC letter (if you have one)","FMCSA authority letter"]},
+submit:"Submit application",sending:"Sending…",doneT:"Application received!",done:"Helen will review it and message you on WhatsApp. You can let her know now with the green button.",needName:"Write your full name.",needContact:"Add your WhatsApp or email.",failSend:"Could not send. Check your internet and try again.",orCall:"Or message us on WhatsApp:",copy:"Copy",copied:"Copied",
+msgHead:"Hi Helen! I'd like to apply with Helen Transport Services.",mName:"Name",mPhone:"Phone",mCity:"City",mVeh:"Vehicle",mMc:"Own MC",mExp:"Experience",mCdl:"CDL",
+legal:"Pay is based on delivered loads paid by brokers. Rates vary with the market. No minimum income is guaranteed."}
+};
+let L='pt';try{const s=localStorage.getItem('hts-lang');if(T[s])L=s}catch(e){}
+const $=id=>document.getElementById(id);
+function li(arr){return arr.map(([a,b])=>`<li><div><b>${a}</b><span>${b}</span></div></li>`).join('')}
+function apply(){const t=T[L];document.documentElement.lang=L==='pt'?'pt-BR':L;
+  document.querySelectorAll('[data-t]').forEach(el=>{const k=el.dataset.t;if(t[k]!==undefined)el.innerHTML=t[k]});
+  $('ben').innerHTML=li(t.ben);$('req').innerHTML=li(t.req);renderDocs();
+  document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===L));build()}
+function build(){const t=T[L],mc=$('mc').value==='yes';$('mcNumL').hidden=!mc;
+  const sel=id=>$(id).options[$(id).selectedIndex].textContent;
+  const lines=[t.msgHead,'',t.mName+': '+($('name').value.trim()||'—'),t.mPhone+': '+($('phone').value.trim()||'—'),t.mCity+': '+($('city').value.trim()||'—'),t.mVeh+': '+sel('veh'),t.mMc+': '+sel('mc')+(mc&&$('mcnum').value.trim()?' ('+$('mcnum').value.trim()+')':''),t.mExp+': '+sel('exp'),t.mCdl+': '+sel('cdl'),t.mWork+': '+sel('work'),'E-mail: '+($('email').value.trim()||'—'),'ZIP: '+($('zip').value.trim()||'—'),t.fInt+': '+sel('interest')];
+  $('wa').href='https://wa.me/14073760990?text='+encodeURIComponent(lines.join('\n'))}
+document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{L=b.dataset.l;try{localStorage.setItem('hts-lang',L)}catch(e){}apply()});
+['name','phone','city','veh','mc','mcnum','exp','cdl','work','email','zip','interest'].forEach(id=>{$(id).addEventListener('input',build);$(id).addEventListener('change',build)});
+$('f').addEventListener('submit',e=>e.preventDefault());
+$('copy').onclick=()=>{const done=()=>{$('copy').textContent=T[L].copied;setTimeout(()=>$('copy').textContent=T[L].copy,1600)};
+  const sel=()=>{const r=document.createRange();r.selectNodeContents($('num'));const s=getSelection();s.removeAllRanges();s.addRange(r)};
+  try{navigator.clipboard.writeText('+1 407 376 0990').then(done,sel)}catch(e){sel()}};
+/* cadastro com documentos: salva no app (aba Candidatos) */
+const DK=['license','med','coi','registration','vehicle_photos','workauth','mc_letter'];
+const picked={};
+function renderDocs(){const t=T[L];$('docs').innerHTML=DK.map(k=>{const n=(picked[k]||[]).length;return `<div class="doc ${n?'ok':''}"><div><b>${t.dl[k][0]}${n?' ✓':''}</b><small>${n?n+' '+(n>1?'arquivos':'arquivo'):t.dl[k][1]}</small></div><label class="pick">${n?t.change:t.choose}<input type="file" data-k="${k}" accept="image/*,application/pdf" ${k==='vehicle_photos'||k==='license'?'multiple':''}></label></div>`}).join('');
+  document.querySelectorAll('#docs input[type=file]').forEach(i=>i.onchange=e=>{picked[i.dataset.k]=[...e.target.files];renderDocs()})}
+async function shrink(file){if(!/^image\/(jpeg|png|webp)$/.test(file.type)||file.size<600e3)return file;try{const b=await createImageBitmap(file),M=1800,r=Math.min(1,M/Math.max(b.width,b.height)),c=document.createElement('canvas');c.width=Math.round(b.width*r);c.height=Math.round(b.height*r);c.getContext('2d').drawImage(b,0,0,c.width,c.height);const o=await new Promise(ok=>c.toBlob(ok,'image/jpeg',.82));return o&&o.size<file.size?new File([o],file.name.replace(/\.\w+$/,'')+'.jpg',{type:'image/jpeg'}):file}catch(e){return file}}
+const uid=()=>(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2));
+let sent=false;
+$('send').onclick=async()=>{const t=T[L],er=$('err');er.hidden=true;const show=m=>{er.textContent=m;er.hidden=false};
+  if(sent)return; if(!$('name').value.trim()){show(t.needName);$('name').focus();return}
+  if(!$('phone').value.trim()&&!$('email').value.trim()){show(t.needContact);$('phone').focus();return}
+  if(!window.supabase||!window.HTS_CONFIG){show(t.failSend);return}
+  const b=$('send');b.disabled=true;b.textContent=t.sending;
+  try{const sb=window.supabase.createClient(HTS_CONFIG.supabaseUrl,HTS_CONFIG.supabaseAnonKey,{auth:{persistSession:false}});
+    const id=uid(),files=[];
+    for(const k of DK){for(const f0 of (picked[k]||[])){const f=await shrink(f0);if(f.size>20e6)continue;
+      const path=`candidatos/${id}/${k}-${Date.now()}-${f.name.normalize('NFD').replace(/[^\w.-]+/g,'-').slice(-50)}`;
+      const r=await sb.storage.from('files').upload(path,f,{contentType:f.type||'application/octet-stream',upsert:false});if(r.error)throw r.error;files.push({k,path,name:f0.name})}}
+    const yes=id2=>$(id2).selectedIndex===0;
+    const r=await sb.from('applications').insert({name:$('name').value.trim(),phone:$('phone').value.trim()||null,email:$('email').value.trim().toLowerCase()||null,city:$('city').value.trim()||null,zip:$('zip').value.trim()||null,vehicle:$('veh').value,
+      has_mc:$('mc').value==='yes',mc:$('mcnum').value.trim()||null,experience:$('exp').options[$('exp').selectedIndex].textContent,cdl:$('cdl').selectedIndex===1,work_auth:yes('work'),
+      interest:$('interest').options[$('interest').selectedIndex].textContent,lang:L,files});
+    if(r.error)throw r.error;
+    sent=true;$('done').hidden=false;b.hidden=true;$('done').scrollIntoView({behavior:'smooth',block:'center'});
+  }catch(e){console.error(e);show(t.failSend+(e&&e.message?' ('+e.message+')':''));b.disabled=false;b.textContent=t.submit}};
+
+apply();
+</script>
+
+</body></html>
