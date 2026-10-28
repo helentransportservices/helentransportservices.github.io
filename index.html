@@ -1156,7 +1156,7 @@ The parties sign this Agreement electronically and agree that their electronic s
   }
   /* sinal do que mudou, para avisar e redesenhar só quando precisa */
   const sig = () => JSON.stringify([st.route === 'mapa' ? D.drivers.map(d => [d.id, d.last_seen]) : 0, D.dvir.map(x => [x.id, x.status]), D.vehicles.map(v => [v.id, v.blocked]), D.loads.map(l => [l.id, l.stage, l.offer_response, l.counter_amount, l.responded_at]), D.quickpay.map(q => [q.id, q.status]), D.docs.map(x => [x.id, x.status]), D.apps.map(a => [a.id, a.status]), D.events.length]);
-  const counts = () => ({ v: D.dvir.filter(x => x.status === 'defeito').length, r: D.loads.filter(l => l.stage === 'oferta' && l.offer_response).length, d: D.docs.filter(x => x.status === 'enviado').length, q: D.quickpay.filter(x => x.status === 'pendente').length, a: D.apps.filter(x => x.status === 'novo').length });
+  const counts = () => ({ v: D.dvir.filter(x => x.status === 'defeito').length, r: D.loads.filter(l => l.stage === 'oferta' && l.offer_response).length, d: D.docs.filter(x => x.status === 'enviado').length, q: D.quickpay.filter(x => x.status === 'pendente').length, a: D.apps.filter(x => x.status === 'novo').length, e: D.events.length });
   A.start = async () => {
     H.watchTr(); shell();
     window.onhashchange = () => { readHash(); render(); window.scrollTo(0, 0) };
@@ -1166,7 +1166,7 @@ The parties sign this Agreement electronically and agree that their electronic s
     H.poll(async () => { const before = sig(), c0 = counts();
       try { await load(['loads', 'quickpay', 'docs', 'apps', 'events', 'dvir', 'vehicles'].concat(st.route === 'mapa' ? ['drivers'] : [])) } catch (e) { return }
       if (sig() === before) return;
-      const c1 = counts(), msg = c1.v > c0.v ? 'Inspeção (DVIR) com defeito' : c1.r > c0.r ? t().newResp : c1.d > c0.d ? t().newDoc : c1.q > c0.q ? t().newQP : c1.a > c0.a ? t().newApp : '';
+      const c1 = counts(), msg = c1.v > c0.v ? 'Inspeção (DVIR) com defeito' : c1.r > c0.r ? t().newResp : c1.d > c0.d ? t().newDoc : c1.q > c0.q ? t().newQP : c1.a > c0.a ? t().newApp : c1.e > c0.e ? 'Atualização da viagem do motorista' : '';
       if (msg) { H.toast('🔔 ' + msg); H.ping() }
       if (!H.busyUI()) render() });
   };
@@ -1243,6 +1243,8 @@ The parties sign this Agreement electronically and agree that their electronic s
   /* ================= pendências ================= */
   function pendings() {
     const out = [];
+    D.events.filter(e => ['chegou_coleta', 'chegou_entrega'].includes(e.kind) && Date.now() - new Date(e.created_at) < 12 * 3600e3).forEach(e => { const l = D.loads.find(x => x.id === e.load_id) || {}; if (D.events.some(x => x.load_id === e.load_id && x.kind === (e.kind === 'chegou_coleta' ? 'pickup' : 'delivery'))) return;
+      out.push({ s: 'info', t: `${drv(e.driver_id).name || '—'}: ${EVK[e.kind][0].replace(/^\S+ /, '').toLowerCase()} às ${new Date(e.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`, d: `${l.origin || ''} → ${l.destination || ''}`, go: 'cargas' }) });
     D.loads.filter(l => l.stage === 'oferta' && l.offer_response).forEach(l => out.push({ s: l.offer_response === 'recusada' ? 'bad' : 'gold', t: `${drv(l.driver_id).name || '—'}: ${RESP[l.offer_response][0].toLowerCase()}${l.offer_response === 'contraproposta' ? ' ' + fmt(l.counter_amount) : ''}`, d: `${l.origin} → ${l.destination}`, go: 'cargas' }));
     D.docs.filter(x => x.status === 'enviado').forEach(x => { const it = H.DOCS.find(i => i.k === x.item) || { t: x.item }; out.push({ s: 'info', t: `${drv(x.driver_id).name || '—'} enviou documento`, d: it.t, go: 'motoristas/' + x.driver_id }) });
     D.quickpay.filter(q => q.status === 'pendente').forEach(q => out.push({ s: 'gold', t: `Quick Pay de ${drv(q.driver_id).name || '—'}`, d: fmt(q.amount) + ' · taxa ' + fmt(q.fee), go: 'acertos' }));
@@ -1322,13 +1324,15 @@ The parties sign this Agreement electronically and agree that their electronic s
       <div class="muted">${fmtI(l.miles)} mi${rpm ? ' · ' + fmt(rpm) + '/mi' : ''}${l.broker ? ' · ' + esc(l.broker) : ''}</div></div>
       <div class="money">${fmt(l.rate)}<div class="muted">${esc(t().driver)} ${fmt(l.driver_pay)}</div></div></div>
       <div class="row"><span class="pill ${sg[1]}">${sg[0]}</span>${r ? `<span class="pill ${r[1]}">${r[0]}${l.offer_response === 'contraproposta' ? ' ' + fmt(l.counter_amount) : ''}</span>` : ''}
-      ${l.stage === 'oferta' && !l.offer_response ? `<span class="pill">${esc(t().waiting)}</span>` : ''}${['oferta', 'confirmada'].includes(l.stage) && d.id && drvMissing(d).length ? '<span class="pill p-bad">Pasta do motorista incompleta</span>' : ''}
+      ${l.stage === 'oferta' && !l.offer_response ? `<span class="pill">${esc(t().waiting)}</span>` : ''}${l.stage === 'oferta' && !l.offer_response && l.offer_expires_at ? (new Date(l.offer_expires_at) <= new Date() ? '<span class="pill p-bad">Prazo venceu</span>' : `<span class="pill p-warn">⏳ até ${new Date(l.offer_expires_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>`) : ''}${['oferta', 'confirmada'].includes(l.stage) && d.id && drvMissing(d).length ? '<span class="pill p-bad">Pasta do motorista incompleta</span>' : ''}
       ${l.paid ? `<span class="pill p-good">${esc(t().paid)} ${brDate(l.paid_at)}${l.paid_via === 'quickpay' ? ' (Quick Pay)' : ''}</span>` : l.stage === 'entregue' ? `<span class="pill p-warn">${esc(t().toPay)}</span>` : ''}</div>
+      ${tripLine(ev)}
       <div class="row">
         ${l.stage === 'oferta' ? `<button class="btn sm gold" data-a="confirm">${esc(t().confirm)}</button>` : ''}
         ${l.stage === 'confirmada' ? `<button class="btn sm" data-a="coletada">${esc(t().mPicked)}</button>` : ''}
         ${l.stage === 'coletada' ? `<button class="btn sm" data-a="entregue">${esc(t().mDeliv)}</button>` : ''}
-        ${ev.length ? `<button class="btn sm" data-a="events">${esc(t().photos)} (${ev.length})</button>` : ''}
+        ${ev.some(e => (e.photos || []).length) ? `<button class="btn sm" data-a="events">${esc(t().photos)} (${ev.filter(e => (e.photos || []).length).length})</button>` : ''}
+        ${lastTrip(ev) ? `<a class="btn sm" href="${esc('sms:?&body=' + encodeURIComponent(brokerUpd(l, lastTrip(ev))))}">📲 Update ao broker</a>` : ''}
         <button class="btn sm" data-a="edit">${esc(t().edit)}</button></div></div>`;
   }
   function wireLoadCard(el) {
@@ -1340,10 +1344,16 @@ The parties sign this Agreement electronically and agree that their electronic s
     if (b('events')) b('events').onclick = () => eventsSheet(l);
     b('edit').onclick = () => loadForm(l);
   }
+  /* status da viagem: chegou na coleta / coletou / chegou na entrega / entregou */
+  const EVK = { chegou_coleta: ['📍 Chegou na coleta', 'arrived at pickup'], pickup: ['📦 Coletou', 'is loaded and on the way'], chegou_entrega: ['📍 Chegou na entrega', 'arrived at delivery'], delivery: ['✅ Entregou', 'delivered the load'] };
+  const hhmm = d => new Date(d).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  const tripLine = ev => { const E = ev.filter(e => EVK[e.kind]).sort((a, b) => a.created_at.localeCompare(b.created_at)); return E.length ? `<div class="muted">${E.map(e => `${EVK[e.kind][0]} · ${new Date(e.created_at).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}${e.lat ? ` <a target="_blank" rel="noopener" href="https://maps.google.com/?q=${e.lat},${e.lng}">mapa</a>` : ''}`).join('<br>')}</div>` : '' };
+  const lastTrip = ev => ev.filter(e => EVK[e.kind]).sort((a, b) => b.created_at.localeCompare(a.created_at))[0];
+  const brokerUpd = (l, e) => `Hi! Update on load ${l.ref ? '#' + l.ref + ' ' : ''}(${l.origin} → ${l.destination}): our driver ${EVK[e.kind][1]} at ${hhmm(e.created_at)}.${e.kind === 'pickup' && l.delivery_window ? ' Delivery window: ' + l.delivery_window + '.' : ''} Thank you!`;
   function eventsSheet(l) {
     const ev = D.events.filter(e => e.load_id === l.id).sort((a, b) => a.created_at.localeCompare(b.created_at));
     H.sheet(`<div class="row between"><h2>${esc(l.origin)} → ${esc(l.destination)}</h2><button class="btn sm" data-close>Fechar</button></div>
-      ${ev.map((e, i) => `<div class="card"><b>${e.kind === 'pickup' ? 'Coleta' : e.kind === 'delivery' ? 'Entrega' : 'Outro'} · ${new Date(e.created_at).toLocaleString('pt-BR')}</b>
+      ${ev.map((e, i) => `<div class="card"><b>${EVK[e.kind] ? EVK[e.kind][0] : 'Outro'} · ${new Date(e.created_at).toLocaleString('pt-BR')}</b>
       ${e.receiver_name ? `<span>Recebido por: <b>${esc(e.receiver_name)}</b></span>` : ''}${e.note ? `<span class="muted">${esc(e.note)}</span>` : ''}<div class="thumbs" data-ev="${i}"></div></div>`).join('')}`,
       api => ev.forEach((e, i) => H.thumbs($(`[data-ev="${i}"]`, api.el), e.photos)));
   }
@@ -1357,6 +1367,7 @@ The parties sign this Agreement electronically and agree that their electronic s
       <p class="note">Só ofereça ao motorista depois de negociar com o broker. Não deixe valor em branco: se não souber, pergunte antes.</p>
       <div class="g2">
         <label class="f full">Etapa<select name="stage">${opt(Object.entries(STAGE).map(([k, v]) => [k, v[0] + (k === 'oferta' ? ' (aparece para o motorista aceitar)' : '')]), l.stage)}</select></label>
+        <label class="f full">Prazo para o motorista responder a oferta<select name="offer_exp_h">${opt([['', l.offer_expires_at ? (new Date(l.offer_expires_at) > new Date() ? 'Manter (até ' + new Date(l.offer_expires_at).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) + ')' : 'Manter (já venceu)') : 'Sem prazo'], ['0.25', '15 minutos'], ['0.5', '30 minutos'], ['1', '1 hora'], ['2', '2 horas'], ['4', '4 horas'], ['12', '12 horas'], ['24', '24 horas'], ...(l.offer_expires_at ? [['0', 'Tirar o prazo']] : [])], '')}</select></label>
         <label class="f">Motorista<select name="driver_id" id="lfD" required>${opt(D.drivers.filter(d => d.status !== 'inativo' || d.id === l.driver_id).map(d => [d.id, d.name]), l.driver_id || (firstDrv || {}).id)}</select></label>
         <label class="f">Empresa (DOT)<select name="company_id" id="lfC">${opt(carriers().map(c => [c.id, c.name]), l.company_id, '— do motorista —')}</select></label>
         <label class="f">Data da coleta<input type="date" name="load_date" value="${esc(l.load_date)}" required></label>
@@ -1403,6 +1414,7 @@ The parties sign this Agreement electronically and agree that their electronic s
       if ($('#lfRt', f)) $('#lfRt', f).onclick = () => H.busy($('#lfRt', f), async () => { const o = H.form(f); const r = await H.route(o.origin, o.destination, false); if (!r) { H.toast('Não achei a rota. Confira origem e destino.', true); return }
         $('[name="miles"]', f).value = r.miles; $('[name="tolls"]', f).value = r.tolls || 0; $('#lfRtN', f).textContent = H.tr(`Google: ${r.miles} mi · ${r.hours.toFixed(1)} h · pedágio ${fmt(r.tolls)} (valor de carro; van e caminhão podem pagar mais)`); calc() });
       f.onsubmit = async e => { e.preventDefault(); const o = H.form(f); o.company_id = o.company_id || drv(o.driver_id).company_id || null;
+        const eh = o.offer_exp_h; delete o.offer_exp_h; if (eh === '0') o.offer_expires_at = null; else if (eh && o.stage === 'oferta') { o.offer_expires_at = new Date(Date.now() + num(eh) * 3600e3).toISOString(); if (!isNew && l.offer_response) { o.offer_response = null; o.counter_amount = null } }
         if (l.stage === 'oferta' && o.stage === 'oferta' && !isNew && (num(o.rate) !== num(l.rate) || num(o.dispatch_pct) !== num(l.dispatch_pct))) { o.offer_response = null; o.counter_amount = null }
         await H.busy($('#lfSave', f), async () => { if (isNew) await H.q(H.sb.from('loads').insert(o)); else await H.q(H.sb.from('loads').update(o).eq('id', l.id)); api.close(); H.toast(o.stage === 'oferta' ? 'Oferta enviada para o app do motorista' : 'Carga salva'); A.reload(['loads']) }) };
       if ($('#lfDel', f)) H.confirmBtn($('#lfDel', f), 'Toque de novo para apagar', async () => { await H.q(H.sb.from('loads').delete().eq('id', l.id)); api.close(); H.toast('Carga apagada'); A.reload(['loads']) });
@@ -1444,6 +1456,8 @@ The parties sign this Agreement electronically and agree that their electronic s
         <label class="f">Idioma do app<select name="lang">${opt([['pt', 'Português'], ['es', 'Español'], ['en', 'English']], d.lang)}</select></label>
         <label class="f">Nome que aparece no app<input name="brand" value="${esc(d.brand)}" placeholder="Empresa dele (ex.: Ramirez Express LLC)"></label>
         <label class="f">Data de início<input type="date" name="hire_date" value="${esc(d.hire_date)}"></label>
+        <label class="f">Data de nascimento<input type="date" name="dob" value="${esc(d.dob || '')}"></label>
+        <label class="f full">Endereço completo<input name="address" value="${esc(d.address || '')}" placeholder="Rua, nº, apto, cidade, estado, ZIP"></label>
         <label class="f">Nº da carteira<input name="license_no" value="${esc(d.license_no)}"></label>
         <label class="f">Estado da carteira<input name="license_state" value="${esc(d.license_state)}"></label>
         <label class="chk full"><input type="checkbox" name="cdl" ${d.cdl ? 'checked' : ''}> Tem CDL (ativa a parte de drogas e álcool)</label>
@@ -1486,7 +1500,7 @@ The parties sign this Agreement electronically and agree that their electronic s
       <button class="btn gold" id="newLease">+ Contrato de lease para ele assinar</button>
       <h3>Remover</h3><p class="note">A lei pede guardar a pasta até 3 anos depois que ele sair. Prefira marcar "Inativo".</p><button class="btn bad" id="dDel">Apagar motorista</button>`}`, api => {
       const f = $('#df', api.el);
-      f.onsubmit = async e => { e.preventDefault(); const o = H.form(f); const veh = { ...(d.vehicle || {}), year: o.v_year, make: o.v_make, model: o.v_model, vin: o.v_vin, plate: o.v_plate, gvwr: o.v_gvwr, type: o.v_type || null, owner: o.v_owner || 'driver', dims: (o.v_dims || '').trim() || null, value: (o.v_value || '').trim() || null }; o.test_until = o.test_until || null; if (o.v_owner === 'company' && num(o.drv_pct) > 0) o.dispatch_pct = 100 - num(o.drv_pct); delete o.drv_pct;
+      f.onsubmit = async e => { e.preventDefault(); const o = H.form(f); const veh = { ...(d.vehicle || {}), year: o.v_year, make: o.v_make, model: o.v_model, vin: o.v_vin, plate: o.v_plate, gvwr: o.v_gvwr, type: o.v_type || null, owner: o.v_owner || 'driver', dims: (o.v_dims || '').trim() || null, value: (o.v_value || '').trim() || null }; o.test_until = o.test_until || null; o.dob = o.dob || null; o.address = (o.address || '').trim() || null; if (o.v_owner === 'company' && num(o.drv_pct) > 0) o.dispatch_pct = 100 - num(o.drv_pct); delete o.drv_pct;
         ['v_year', 'v_make', 'v_model', 'v_vin', 'v_plate', 'v_gvwr', 'v_type', 'v_owner', 'v_dims', 'v_value'].forEach(k => delete o[k]);
         o.emergency = [0, 1].map(i => ({ name: (o['ec' + i + '_name'] || '').trim(), phone: (o['ec' + i + '_phone'] || '').trim(), rel: (o['ec' + i + '_rel'] || '').trim() })).filter(e => e.name || e.phone); [0, 1].forEach(i => ['name', 'phone', 'rel'].forEach(k => delete o['ec' + i + '_' + k])); o.vehicle = veh; o.email = o.email ? o.email.toLowerCase() : null; o.dispatch_pct = o.dispatch_pct ?? 10;
         await H.busy($('#dfSave', f), async () => { if (isNew) { const r = await H.q(H.sb.from('drivers').insert(o).select().single()); api.close(); await load(['drivers']); render(); driverSheet(drv(r.id)) } else { await H.q(H.sb.from('drivers').update(o).eq('id', d.id)); H.toast('Dados salvos'); await load(['drivers']); render(); api.close(); driverSheet(drv(d.id)) } }) };
@@ -1935,7 +1949,7 @@ The parties sign this Agreement electronically and agree that their electronic s
     return quoteMsg({ name: a.name, dob: x.dob, addr: [x.address, a.city, a.zip].filter(Boolean).join(', '), lic: x.license_no, licState: x.license_state, cdl: a.cdl, newVehicle: a.role === 'owner',
       veh: { year: x.year, model: x.model, vin: x.vin, value: x.value } }) }
   function drvQuote(d) { const v = d.vehicle || {}; const a = D.apps.find(x => (d.phone && x.phone && String(x.phone).replace(/\D/g, '').slice(-10) === String(d.phone).replace(/\D/g, '').slice(-10)) || (d.email && x.email && x.email.toLowerCase() === d.email.toLowerCase())) || {}; const x = a.details || {};
-    return quoteMsg({ name: d.name, dob: x.dob, addr: [x.address, a.city, a.zip || d.home_zip].filter(Boolean).join(', '), lic: d.license_no || x.license_no, licState: d.license_state || x.license_state, cdl: d.cdl, newVehicle: v.owner !== 'company',
+    return quoteMsg({ name: d.name, dob: d.dob || x.dob, addr: d.address || [x.address, a.city, a.zip || d.home_zip].filter(Boolean).join(', '), lic: d.license_no || x.license_no, licState: d.license_state || x.license_state, cdl: d.cdl, newVehicle: v.owner !== 'company',
       veh: { year: v.year || x.year, make: v.make, model: v.model || x.model, vin: v.vin || x.vin, value: v.value || x.value, gvwr: v.gvwr } }) }
   SUBV.candidatos = {
     html: () => `<h1>Candidatos</h1><p class="note">Quem se cadastrou pela página pública. Link para divulgar: <b>${esc(location.origin + location.pathname.replace(/[^/]*$/, ''))}cadastro.html</b></p>
@@ -1957,7 +1971,7 @@ The parties sign this Agreement electronically and agree that their electronic s
       $$('[data-ap]', v).forEach(el => { const a = D.apps.find(x => x.id === el.dataset.ap);
       $('[data-st]', el).onchange = async e => { try { await H.q(H.sb.from('applications').update({ status: e.target.value }).eq('id', a.id)); A.reload(['apps']) } catch (x) { H.fail(x) } };
       $('[data-a="mk"]', el).onclick = () => H.busy($('[data-a="mk"]', el), async () => {
-        const r = await H.q(H.sb.from('drivers').insert({ name: a.name, phone: a.phone, email: a.email ? a.email.toLowerCase() : null, status: 'candidato', cdl: !!a.cdl, lang: a.lang || 'pt', home_zip: a.zip || null, ...(Array.isArray(a.emergency) && a.emergency.length ? { emergency: a.emergency } : {}), vehicle: a.role === 'driver' ? { owner: 'company', type: 'truck' } : a.role === 'van' ? { owner: 'company', type: 'van' } : { owner: 'driver' } }).select().single());
+        const r = await H.q(H.sb.from('drivers').insert({ name: a.name, phone: a.phone, email: a.email ? a.email.toLowerCase() : null, status: 'candidato', cdl: !!a.cdl, lang: a.lang || 'pt', home_zip: a.zip || null, ...((a.details || {}).dob ? { dob: a.details.dob } : {}), ...((a.details || {}).license_no ? { license_no: a.details.license_no, license_state: a.details.license_state || null } : {}), ...(Array.isArray(a.emergency) && a.emergency.length ? { emergency: a.emergency } : {}), vehicle: a.role === 'driver' ? { owner: 'company', type: 'truck' } : a.role === 'van' ? { owner: 'company', type: 'van' } : { owner: 'driver' } }).select().single());
         const docs = (Array.isArray(a.files) ? a.files : []).filter(f => H.DOCS.some(i => i.k === f.k)).map(f => ({ driver_id: r.id, item: f.k, status: 'enviado', file_path: f.path, file_name: f.name || null, note: 'Enviado no cadastro' }));
         if (docs.length) await H.q(H.sb.from('driver_docs').insert(docs));
         await H.q(H.sb.from('applications').update({ status: 'aprovado' }).eq('id', a.id)); await load(['drivers', 'apps', 'docs']); location.hash = 'motoristas/' + r.id }) }) }
@@ -2295,7 +2309,7 @@ The parties sign this Agreement electronically and agree that their electronic s
 (function (H) {
   const { $, $$, esc, num, fmt, fmtI, iso, today, brDate } = H;
   const R = H.Driver = {};
-  const S = { hos: [], agr: [], veh: [], dvir: [], me: null, loads: [], docs: [], fuel: [], settlements: [], quickpay: [], tab: 'ofertas', lang: null };
+  const S = { ev: [], year: null, hos: [], agr: [], veh: [], dvir: [], me: null, loads: [], docs: [], fuel: [], settlements: [], quickpay: [], tab: 'ofertas', lang: null };
 
   const T = {
     pt: { fillSign: '✍️ Preencher e assinar no app', readSign: '✍️ Ler e assinar o contrato', leaseWait: 'Contrato de lease esperando a sua assinatura', signName: 'Seu nome completo', signHere: 'Assine aqui com o dedo', signAgree: 'Li, concordo e esta é a minha assinatura.', signSend: 'Assinar e enviar', needSig: 'Assine no quadro branco.', needFields: 'Falta preencher: ', signedOk: 'Assinado e enviado!', leaseCarrier: 'Depois a transportadora assina também.', ckT: 'Para trabalhar com a gente', ckDocs: 'Documentos enviados', ckAppr: 'Aprovados pela Helen', ckVeh: 'Veículo cadastrado pela Helen', ckDvir: 'Inspeção de saída de hoje', ckMiss: 'Falta enviar', ckGo: 'Enviar agora', ckLock: 'Para aceitar cargas, envie primeiro os documentos que faltam.', ckReady: 'Tudo pronto! Você está liberado para receber cargas.', ckPopT: 'Faltam documentos', ckPop: 'Você ainda não pode aceitar cargas. Envie estes documentos:', later: 'Depois', lockDvir: 'Faça a inspeção de saída (DVIR) de hoje antes da coleta.', lockBlocked: 'Veículo bloqueado: espere a Helen registrar o reparo.', waitAppr: 'em análise pela Helen', dvirT: 'Inspeção do veículo (DVIR)', dvirPre: 'Inspeção de saída', dvirPost: 'Inspeção de chegada', dvirDone: 'feita', dvirTodo: 'falta', dvirHelp: 'Confira cada item. Toque no item que tiver problema para marcar como defeito.', dvirOk: 'OK', dvirBad: 'Defeito', dvirOdo: 'Odômetro', dvirNotes: 'Explique o defeito', dvirSign: 'Seu nome completo (assinatura)', dvirCert: 'Declaro que inspecionei o veículo e as informações são verdadeiras.', dvirSend: 'Enviar inspeção', dvirSent: 'Inspeção enviada', dvirSentBad: 'Inspeção enviada. A Helen foi avisada do defeito.', dvirNeedPhoto: 'Com defeito, tire pelo menos uma foto.', dvirNeedCert: 'Marque a declaração e escreva seu nome.', blocked: 'Veículo bloqueado: tem defeito na inspeção. Não rode até a Helen registrar o reparo.', today: 'Hoje', route: 'Rota, pedágio e tempo', seeRoute: 'Ver rota', withTolls: 'Com pedágio', noTolls: 'Sem pedágio', tollAuto: 'Pedágio calculado pelo Google', tollManual: 'Pedágio $ (veja no Google Maps e coloque aqui)', tollNote: 'O Google calcula o pedágio de carro. Van e caminhão podem pagar mais em algumas estradas.', trip: 'Plano da viagem', driveT: 'Dirigindo', totalT: 'Tempo total (com carga e descarga)', fuelStops: 'Paradas para abastecer', breaks: 'Pausas de 30 min', rests: 'Descansos de 10 h', eta: 'Chegada prevista', onTime: 'Chega a tempo ✓', late: 'Pode atrasar ⚠', tank: 'Tanque (galões)', speed: 'Velocidade média (mph)', needPay: 'Para compensar, você precisa receber pelo menos', useCounter: 'Usar como contraproposta', planNote: 'Estimativa com as regras de horas: 11 h dirigindo, pausa de 30 min a cada 8 h e descanso de 10 h. 1 h para carregar e 1 h para descarregar.', routeLoading: 'Calculando a rota…', fromGoogle: 'Milhas e tempo calculados pelo Google', chooseRoute: 'Escolha a rota', empty: 'vazio', worth: 'Compensa?', costs: 'Meus custos', mpg: 'Consumo (milhas por galão)', fprice: 'Preço do combustível $/galão', cpm: 'Outros custos por milha $ (manutenção, pneus, seguro)', minNet: 'Meu mínimo: sobra por milha $', fuelCost: 'Combustível', tolls: 'Pedágios', other: 'Outros custos', left: 'Sobra para você', perMi: '/milha rodada', good: 'Compensa ✓', low: 'Abaixo do seu mínimo', setCosts: 'Coloque seus custos em "Meus custos" para ver quanto sobra.', calcOther: 'Calcular outra carga', offered: 'Valor da carga $', loadedMi: 'Milhas carregado', emptyMi: 'Milhas vazio', dpct: '% dispatch', newOffer: 'Nova oferta!', costsHelp: 'Fica salvo só neste celular. Serve para a calculadora mostrar quanto sobra de verdade.', offers: 'Ofertas', loads: 'Cargas', pay: 'Pagamentos', docs: 'Documentos', fuel: 'Combustível', out: 'Sair', runs: 'Rodando por',
@@ -2347,6 +2361,9 @@ The parties sign this Agreement electronically and agree that their electronic s
       fuelAdd: '+ Fuel up', fuelHelp: 'Photo of the pump (or receipt) and the odometer.', gallons: 'Gallons', total: 'Total $', odometer: 'Odometer', station: 'Station and city', payer: 'Who paid', card: 'Company card', mine: 'I paid', date: 'Date',
       waitT: 'Almost there', wait: 'Your account is not linked to a driver yet. Check with Helen that the email she registered is the one you used.', talk: 'Message dispatch', mi: 'mi' },
   };
+  Object.assign(T.pt, { expIn: 'Responda em', expired: 'Prazo encerrado', fromYou: 'de você', showDist: '📍 Mostrar a distância até as cargas', arrP: '📍 Cheguei na coleta', arrD: '📍 Cheguei na entrega', arrSent: 'Avisado! A Helen já sabe.', stArrP: 'Chegou na coleta', stArrD: 'Chegou na entrega', earnT: 'Meus ganhos', eLoads: 'Cargas entregues', eMiles: 'Milhas', eTotal: 'Ganhos', ePaid: 'Já recebido', eOpen: 'A receber', eFuel: 'Combustível descontado', ePdf: '📄 Relatório do ano (PDF)', ePdfNote: 'Para o imposto: entregue ao seu contador. Na tela de imprimir, escolha "Salvar como PDF".', eRepT: 'Relatório de ganhos', eDate: 'Data', eRoute: 'Rota', ePay: 'Valor', ePaidOn: 'Pago em', eGen: 'Gerado em', eNo: 'Nenhuma carga entregue neste ano.' });
+  Object.assign(T.es, { expIn: 'Responde en', expired: 'Plazo vencido', fromYou: 'de ti', showDist: '📍 Mostrar la distancia a las cargas', arrP: '📍 Llegué a la recogida', arrD: '📍 Llegué a la entrega', arrSent: '¡Avisado! Helen ya sabe.', stArrP: 'Llegó a la recogida', stArrD: 'Llegó a la entrega', earnT: 'Mis ganancias', eLoads: 'Cargas entregadas', eMiles: 'Millas', eTotal: 'Ganancias', ePaid: 'Ya cobrado', eOpen: 'Por cobrar', eFuel: 'Combustible descontado', ePdf: '📄 Reporte del año (PDF)', ePdfNote: 'Para los impuestos: entrégalo a tu contador. En la pantalla de imprimir, elige "Guardar como PDF".', eRepT: 'Reporte de ganancias', eDate: 'Fecha', eRoute: 'Ruta', ePay: 'Valor', ePaidOn: 'Pagado el', eGen: 'Generado el', eNo: 'Ninguna carga entregada este año.' });
+  Object.assign(T.en, { expIn: 'Respond within', expired: 'Expired', fromYou: 'from you', showDist: '📍 Show distance to loads', arrP: '📍 Arrived at pickup', arrD: '📍 Arrived at delivery', arrSent: 'Sent! Helen has been notified.', stArrP: 'Arrived at pickup', stArrD: 'Arrived at delivery', earnT: 'My earnings', eLoads: 'Loads delivered', eMiles: 'Miles', eTotal: 'Earnings', ePaid: 'Paid', eOpen: 'To receive', eFuel: 'Fuel deducted', ePdf: '📄 Year report (PDF)', ePdfNote: 'For taxes: give it to your accountant. On the print screen, choose "Save as PDF".', eRepT: 'Earnings report', eDate: 'Date', eRoute: 'Route', ePay: 'Amount', ePaidOn: 'Paid on', eGen: 'Generated on', eNo: 'No loads delivered this year.' });
   const DOCT = {
     es: { application: 'Solicitud de empleo (firmada)', license: 'Licencia de conducir', workauth: 'Autorización de trabajo (work permit / green card / ciudadanía)', med: 'Medical card (MCSA-5876)', w9: 'W-9', coi: 'Seguro del vehículo (COI)', registration: 'Registro del vehículo', vehicle_photos: 'Fotos del vehículo (frente, lados, atrás, placa y área de carga)', lease: 'Contrato de lease firmado', onduty: 'Horas de servicio de los últimos 7 días', violations: 'Certificación de infracciones (anual)', inspection: 'Inspección anual del vehículo', da_policy: 'Recibo de la política de drogas y alcohol' },
     en: { application: 'Employment application (signed)', license: "Driver's license", workauth: 'Work authorization (work permit / green card / citizenship)', med: 'Medical card (MCSA-5876)', w9: 'W-9', coi: 'Vehicle insurance (COI)', registration: 'Vehicle registration', vehicle_photos: 'Vehicle photos (front, sides, rear, plate and cargo area)', lease: 'Signed lease agreement', onduty: 'On-duty hours, last 7 days', violations: 'Certification of violations (annual)', inspection: 'Annual vehicle inspection', da_policy: 'Drug and alcohol policy receipt' } };
@@ -2368,6 +2385,7 @@ The parties sign this Agreement electronically and agree that their electronic s
     Object.assign(S, { loads, docs, fuel, settlements: sets, quickpay: qp });
     try { S.agr = await H.q(H.sb.from('agreements').select('*').order('created_at', { ascending: false })) } catch (e) { S.agr = [] }
     try { S.veh = await H.q(H.sb.from('vehicles').select('*').eq('status', 'ativo')); S.dvir = await H.q(H.sb.from('dvir').select('*').order('created_at', { ascending: false }).limit(60)) } catch (e) { S.veh = []; S.dvir = [] }
+    try { S.ev = await H.q(H.sb.from('load_events').select('id,load_id,kind,created_at').order('created_at', { ascending: true }).limit(500)) } catch (e) { S.ev = [] }
     try { S.hos = await H.q(H.sb.from('hos_logs').select('*').order('week_start', { ascending: false }).limit(60)) } catch (e) { S.hos = [] }
     void uid;
   }
@@ -2377,7 +2395,7 @@ The parties sign this Agreement electronically and agree that their electronic s
     $('#app').innerHTML = '<div class="auth"><div class="box"><div class="seal">H</div><p class="tag">…</p></div></div>';
     try { await load() } catch (e) { H.fail(e) }
     render(); if (S.me) nagOnce();
-    const sig = () => JSON.stringify([S.veh.map(v => [v.id, v.blocked]), S.dvir.length, S.loads.map(l => [l.id, l.stage, l.offer_response, l.driver_pay, l.paid]), S.docs.map(x => [x.id, x.status]), S.settlements.map(x => [x.id, x.status]), S.quickpay.map(x => [x.id, x.status])]);
+    const sig = () => JSON.stringify([S.ev.length, S.veh.map(v => [v.id, v.blocked]), S.dvir.length, S.loads.map(l => [l.id, l.stage, l.offer_response, l.driver_pay, l.paid]), S.docs.map(x => [x.id, x.status]), S.settlements.map(x => [x.id, x.status]), S.quickpay.map(x => [x.id, x.status])]);
     const nOff = () => S.loads.filter(l => l.stage === 'oferta' && !l.offer_response).length;
     try { H.Driver.locResume() } catch (e) { }
     H.poll(async () => { const b = sig(), o0 = nOff(); try { await load() } catch (e) { return } if (sig() === b) return;
@@ -2569,26 +2587,46 @@ The parties sign this Agreement electronically and agree that their electronic s
   }
 
   const VIEWS = {};
+  /* ---------------- distância e prazo das ofertas ---------------- */
+  const DIST = {}, POS = { me: null };
+  const GEO = (() => { try { return JSON.parse(localStorage.getItem('hts-geo') || '{}') } catch (e) { return {} } })();
+  async function geocode(q) { q = String(q || '').trim(); if (!q) return null; if (GEO[q] !== undefined) return GEO[q];
+    try { const r = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=us&q=' + encodeURIComponent(q)); const j = await r.json(); GEO[q] = j[0] ? { lat: +j[0].lat, lng: +j[0].lon } : null } catch (e) { return null }
+    try { localStorage.setItem('hts-geo', JSON.stringify(GEO)) } catch (e) { } return GEO[q] }
+  const myPos = () => POS.me || LOC.lastPos;
+  function askPos(btn) { if (!navigator.geolocation) return; if (btn) btn.disabled = true;
+    navigator.geolocation.getCurrentPosition(p => { POS.me = { lat: p.coords.latitude, lng: p.coords.longitude }; render() }, () => { if (btn) btn.disabled = false; H.toast(t().locDenied, true) }, { enableHighAccuracy: false, timeout: 15e3, maximumAge: 300e3 }) }
+  let distBusy = false;
+  async function fillDist(O) { const me = myPos(); if (!me || distBusy) return; distBusy = true; let changed = false;
+    try { for (const l of O) { if (DIST[l.id] !== undefined) continue; const g = await geocode(l.pickup_zip || l.origin); DIST[l.id] = g ? Math.round(distKm(me, g) * 0.621371) : null; changed = true } } finally { distBusy = false }
+    if (changed && S.tab === 'ofertas' && !H.busyUI()) render() }
+  const isExp = l => !!(l.offer_expires_at && !l.offer_response && new Date(l.offer_expires_at) <= new Date());
+  const expLeft = l => { const m = Math.max(0, Math.ceil((new Date(l.offer_expires_at) - new Date()) / 60e3)); return m >= 60 ? Math.floor(m / 60) + 'h ' + String(m % 60).padStart(2, '0') + 'min' : m + ' min' };
+  setInterval(() => { const els = $$('[data-exp]'); if (!els.length) return; let ended = false; els.forEach(el => { const l = { offer_expires_at: el.dataset.exp }; if (new Date(l.offer_expires_at) <= new Date()) ended = true; else el.textContent = '⏳ ' + t().expIn + ' ' + expLeft(l) }); if (ended && !H.busyUI()) render() }, 30e3);
   /* ---------------- ofertas ---------------- */
   VIEWS.ofertas = {
     html() {
-      const O = S.loads.filter(l => l.stage === 'oferta');
+      const O = S.loads.filter(l => l.stage === 'oferta').sort((a, b) => (isExp(a) - isExp(b)) || ((DIST[a.id] ?? 1e9) - (DIST[b.id] ?? 1e9)) || String(a.load_date).localeCompare(String(b.load_date)));
+      setTimeout(() => fillDist(O), 0);
       const tools = `<div class="row"><button class="btn sm" data-tool="calc">🧮 ${esc(t().calcOther)}</button><button class="btn sm" data-tool="costs">⚙ ${esc(t().costs)}</button></div>`;
       if (!O.length) return checklist() + tools + `<div class="empty">${esc(t().noOffers)}</div>`;
       const lock = !docsReady();
-      return checklist() + tools + `<div class="stack">${O.map(l => { const r = l.rate != null && num(l.miles) ? num(l.rate) / num(l.miles) : 0, rpd = num(l.miles) ? num(l.driver_pay) / num(l.miles) : 0;
+      const distBtn = !myPos() && navigator.geolocation ? `<button class="btn sm" id="distB">${esc(t().showDist)}</button>` : '';
+      return checklist() + tools + distBtn + `<div class="stack">${O.map(l => { const exp = isExp(l), r = l.rate != null && num(l.miles) ? num(l.rate) / num(l.miles) : 0, rpd = num(l.miles) ? num(l.driver_pay) / num(l.miles) : 0;
         return `<div class="card sev gold" data-o="${l.id}"><div class="top2"><div style="min-width:0"><div class="route">${route(l)}</div>
           <div class="muted">${brDate(l.load_date)}${l.pickup_window ? ' · ' + esc(l.pickup_window) : ''}</div>
           <div class="muted">${fmtI(l.miles)} mi${num(l.deadhead) ? ' + ' + fmtI(l.deadhead) + ' ' + esc(t().empty) : ''}${l.equipment ? ' · ' + esc(l.equipment) : ''}${l.weight ? ' · ' + esc(l.weight) : ''}</div>
+          <div class="row">${DIST[l.id] != null ? `<span class="pill p-info">📍 ${fmtI(DIST[l.id])} mi ${esc(t().fromYou)}</span>` : ''}${l.offer_expires_at && !l.offer_response ? (exp ? `<span class="pill p-bad">${esc(t().expired)}</span>` : `<span class="pill p-warn" data-exp="${esc(l.offer_expires_at)}">⏳ ${esc(t().expIn)} ${expLeft(l)}</span>`) : ''}</div>
           ${l.notes ? `<div class="muted">${esc(l.notes)}</div>` : ''}</div>
           <div class="money" style="font-size:20px;color:var(--gold2)">${fmt(l.driver_pay)}<div class="muted">${esc(t().youGet)}${rpd ? ' · ' + fmt(rpd) + '/mi' : ''}</div>${l.rate != null ? `<div class="muted">${esc(t().rate)} ${fmt(l.rate)}${r ? ' · ' + fmt(r) + '/mi' : ''}</div>` : ''}</div></div>
           <b>${esc(t().worth)}</b>${calcBlock(l.driver_pay, l.miles, l.deadhead, tollsOf(l))}
           <button class="btn" data-trip="${l.id}">🗺️ ${esc(t().route)}</button>
           ${l.offer_response ? `<span class="pill ${l.offer_response === 'aceita' ? 'p-good' : l.offer_response === 'recusada' ? 'p-bad' : 'p-warn'}">${esc({ aceita: t().accepted, recusada: t().declined, contraproposta: t().countered + ' ' + fmt(l.counter_amount) }[l.offer_response])}</span>` : ''}
-          ${lock ? `<span class="err">${esc(t().ckLock)}</span>` : ''}<div class="row"><button class="btn gold" data-a="aceita" ${lock ? 'disabled' : ''}>${esc(t().accept)}</button><button class="btn" data-a="recusada">${esc(t().decline)}</button></div>
-          <div class="row"><input type="number" inputmode="decimal" step="1" min="1" placeholder="${esc(t().amount)}" data-amt style="max-width:150px"><button class="btn" data-a="contraproposta" ${lock ? 'disabled' : ''}>${esc(t().counter)}</button></div></div>` }).join('')}</div>`;
+          ${exp ? '' : `${lock ? `<span class="err">${esc(t().ckLock)}</span>` : ''}<div class="row"><button class="btn gold" data-a="aceita" ${lock ? 'disabled' : ''}>${esc(t().accept)}</button><button class="btn" data-a="recusada">${esc(t().decline)}</button></div>
+          <div class="row"><input type="number" inputmode="decimal" step="1" min="1" placeholder="${esc(t().amount)}" data-amt style="max-width:150px"><button class="btn" data-a="contraproposta" ${lock ? 'disabled' : ''}>${esc(t().counter)}</button></div>`}</div>` }).join('')}</div>`;
     },
     wire(v) { const tc = $('[data-tool="calc"]', v), tk = $('[data-tool="costs"]', v); if (tc) tc.onclick = calcSheet; if (tk) tk.onclick = costsSheet;
+      const db = $('#distB', v); if (db) db.onclick = () => askPos(db);
       $$('[data-trip]', v).forEach(b => b.onclick = () => tripSheet(S.loads.find(x => x.id === b.dataset.trip)));
       $$('[data-o]', v).forEach(el => $$('[data-a]', el).forEach(b => b.onclick = () => {
       const resp = b.dataset.a, amt = num($('[data-amt]', el).value);
@@ -2628,13 +2666,25 @@ The parties sign this Agreement electronically and agree that their electronic s
         <div class="muted">${brDate(l.load_date)}${l.ref ? ' · #' + esc(l.ref) : ''} · ${fmtI(l.miles)} mi</div>${l.pickup_window ? `<div class="muted">↑ ${esc(l.pickup_window)}</div>` : ''}${l.delivery_window ? `<div class="muted">↓ ${esc(l.delivery_window)}</div>` : ''}${l.notes ? `<div class="muted">${esc(l.notes)}</div>` : ''}</div>
         <div class="money">${fmt(l.driver_pay)}${l.rate != null ? `<div class="muted">${esc(t().rate)} ${fmt(l.rate)}</div>` : ''}</div></div>
         <div class="row"><span class="pill ${sg[l.stage][1]}">${esc(sg[l.stage][0])}</span>${l.paid ? `<span class="pill p-good">${esc(t().paidOn)} ${brDate(l.paid_at)}</span>` : ''}</div>
+        ${timeline(l)}
         ${l.stage !== 'entregue' ? `<button class="btn wide" data-trip="${l.id}">🗺️ ${esc(t().route)}</button>` : ''}
         ${l.stage === 'confirmada' && !dvirReady() ? `<span class="err">${esc(S.veh.some(v => v.blocked) ? t().lockBlocked : t().lockDvir)}</span>` : ''}
+        ${l.stage === 'confirmada' && !hasEv(l, 'chegou_coleta') ? `<button class="btn wide" data-arr="chegou_coleta">${esc(t().arrP)}</button>` : ''}${l.stage === 'coletada' && !hasEv(l, 'chegou_entrega') ? `<button class="btn wide" data-arr="chegou_entrega">${esc(t().arrD)}</button>` : ''}
         ${l.stage === 'confirmada' ? `<button class="btn gold wide" data-a="pickup" ${dvirReady() ? '' : 'disabled'}>${esc(t().pickup)}</button>` : ''}${l.stage === 'coletada' ? `<button class="btn gold wide" data-a="delivery">${esc(t().delivery)}</button>` : ''}</div>`).join('')}</div>`;
     },
     wire(v) { wireLoc(v); $$('[data-dvk]', v).forEach(b => b.onclick = () => dvirSheet(S.veh.find(x => x.id === b.dataset.vid), b.dataset.dvk));
-      $$('[data-l]', v).forEach(el => { const l = S.loads.find(x => x.id === el.dataset.l); $$('[data-a]', el).forEach(b => b.onclick = () => eventSheet(l, b.dataset.a)) }); $$('[data-trip]', v).forEach(b => b.onclick = () => tripSheet(S.loads.find(x => x.id === b.dataset.trip))) }
+      $$('[data-l]', v).forEach(el => { const l = S.loads.find(x => x.id === el.dataset.l); $$('[data-a]', el).forEach(b => b.onclick = () => eventSheet(l, b.dataset.a)); $$('[data-arr]', el).forEach(b => b.onclick = () => arrive(l, b.dataset.arr, b)) }); $$('[data-trip]', v).forEach(b => b.onclick = () => tripSheet(S.loads.find(x => x.id === b.dataset.trip))) }
   };
+  const hasEv = (l, k) => S.ev.some(e => e.load_id === l.id && e.kind === k);
+  const EVL = () => ({ chegou_coleta: t().stArrP, pickup: t().picked, chegou_entrega: t().stArrD, delivery: t().delivered });
+  function timeline(l) { const E = S.ev.filter(e => e.load_id === l.id && EVL()[e.kind]); if (!E.length) return '';
+    return `<div class="muted">${E.map(e => `✓ ${esc(EVL()[e.kind])} · ${new Date(e.created_at).toLocaleString([], { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}`).join('<br>')}</div>` }
+  function arrive(l, kind, btn) {
+    H.busy(btn, async () => {
+      const pos = await new Promise(res => { if (!navigator.geolocation) return res(myPos()); navigator.geolocation.getCurrentPosition(p => res({ lat: p.coords.latitude, lng: p.coords.longitude }), () => res(myPos()), { enableHighAccuracy: true, timeout: 8e3, maximumAge: 120e3 }) });
+      await H.q(H.sb.from('load_events').insert({ load_id: l.id, driver_id: S.me.id, kind, lat: pos ? pos.lat : null, lng: pos ? pos.lng : null }));
+      H.toast(t().arrSent); await R.reload() });
+  }
   function eventSheet(l, kind) {
     const photos = [];
     H.sheet(`<form id="ev" class="stack"><div class="row between"><h2>${esc(kind === 'pickup' ? t().pickup : t().delivery)}</h2><button type="button" class="btn sm" data-close>✕</button></div>
@@ -2653,6 +2703,23 @@ The parties sign this Agreement electronically and agree that their electronic s
           api.close(); H.toast('✓'); await R.reload() }) };
     });
   }
+  /* ---------------- meus ganhos (relatório do ano) ---------------- */
+  const yearsList = () => { const now = new Date().getFullYear(), ys = new Set([now]); S.loads.forEach(l => { const y = +String(l.load_date || '').slice(0, 4); if (y) ys.add(y) }); return [...ys].sort((a, b) => b - a) };
+  function earnData(y) { const L = S.loads.filter(l => l.stage === 'entregue' && String(l.load_date || '').startsWith(String(y))).sort((a, b) => String(a.load_date).localeCompare(String(b.load_date)));
+    const F = S.fuel.filter(x => x.payer === 'cartao' && String(x.fuel_date || '').startsWith(String(y)));
+    return { L, n: L.length, mi: L.reduce((a, l) => a + num(l.miles), 0), tot: L.reduce((a, l) => a + num(l.driver_pay), 0), paid: L.filter(l => l.paid).reduce((a, l) => a + num(l.driver_pay), 0), fuel: F.reduce((a, x) => a + num(x.total), 0) } }
+  function earnBlock() { const ys = yearsList(), y = S.year && ys.includes(S.year) ? S.year : ys[0], e = earnData(y);
+    return `<h2>${esc(t().earnT)}</h2>${ys.length > 1 ? `<div class="chips">${ys.map(x => `<button class="chip" data-yr="${x}" aria-pressed="${x === y}">${x}</button>`).join('')}</div>` : ''}
+      <div class="card"><div class="calc"><span>${esc(t().eLoads)} (${y})</span><span class="m">${e.n}</span><span>${esc(t().eMiles)}</span><span class="m">${fmtI(e.mi)}</span><span>${esc(t().eTotal)}</span><span class="m">${fmt(e.tot)}</span><span>${esc(t().ePaid)}</span><span class="m">${fmt(e.paid)}</span><span>${esc(t().eOpen)}</span><span class="m">${fmt(e.tot - e.paid)}</span>${e.fuel ? `<span>${esc(t().eFuel)}</span><span class="m">−${fmt(e.fuel)}</span>` : ''}</div>
+      <button class="btn wide" id="ePdf" data-y="${y}">${esc(t().ePdf)}</button><p class="note">${esc(t().ePdfNote)}</p></div>` }
+  function earnPdf() { const y = +$('#ePdf').dataset.y, e = earnData(y), m = S.me || {};
+    $('#print').innerHTML = `<div class="head"><div><h1>${esc(t().eRepT)} — ${y}</h1><div>${esc(m.name || '')}${m.brand && m.brand !== m.name ? ' · ' + esc(m.brand) : ''}</div><div>${esc(m.company_name || H.cfg.dispatchName || '')}</div></div></div>
+      <p><b>${esc(t().eLoads)}:</b> ${e.n} · <b>${esc(t().eMiles)}:</b> ${fmtI(e.mi)} · <b>${esc(t().eTotal)}:</b> ${fmt(e.tot)} · <b>${esc(t().ePaid)}:</b> ${fmt(e.paid)} · <b>${esc(t().eOpen)}:</b> ${fmt(e.tot - e.paid)}${e.fuel ? ` · <b>${esc(t().eFuel)}:</b> −${fmt(e.fuel)}` : ''}</p>
+      ${e.n ? `<table><thead><tr><th>${esc(t().eDate)}</th><th>${esc(t().eRoute)}</th><th>#</th><th class="r">${esc(t().eMiles)}</th><th class="r">${esc(t().ePay)}</th><th>${esc(t().ePaidOn)}</th></tr></thead><tbody>
+      ${e.L.map(l => `<tr><td>${brDate(l.load_date)}</td><td>${esc(l.origin)} → ${esc(l.destination)}</td><td>${esc(l.ref || '')}</td><td class="r">${fmtI(l.miles)}</td><td class="r">${fmt(l.driver_pay)}</td><td>${l.paid ? brDate(l.paid_at) : '—'}</td></tr>`).join('')}
+      <tr><td colspan="3"><b>Total</b></td><td class="r"><b>${fmtI(e.mi)}</b></td><td class="r"><b>${fmt(e.tot)}</b></td><td></td></tr></tbody></table>` : `<p>${esc(t().eNo)}</p>`}
+      <p style="margin-top:14px;color:#555">${esc(t().eGen)} ${new Date().toLocaleDateString()}</p>`;
+    window.print() }
   /* ---------------- pagamentos e Quick Pay ---------------- */
   const inQP = () => new Set(S.quickpay.filter(q => ['pendente', 'aprovado'].includes(q.status)).flatMap(q => q.load_ids));
   VIEWS.pagamentos = {
@@ -2661,6 +2728,7 @@ The parties sign this Agreement electronically and agree that their electronic s
       const owed = un.reduce((a, l) => a + num(l.driver_pay), 0), elig = un.filter(l => !l.settlement_id && !qp.has(l.id));
       return `<div class="stack"><div class="hero"><span class="muted">${esc(t().toReceive)}</span><div class="big">${fmt(owed - fuelDed)}</div>
         <div class="calc"><span>${un.length} ${esc(t().loadsN)}</span><span class="m">${fmt(owed)}</span><span>${esc(t().fuelDed)}</span><span class="m">−${fmt(fuelDed)}</span></div></div>
+        ${earnBlock()}
         <h2>${esc(t().qp)}</h2><p class="note">${esc(t().qpRule.replace('{p}', H.cfg.quickPayPct))}</p>
         ${elig.length ? `<button class="btn gold wide" id="qpBtn" ${H.quickPayOpen() ? '' : 'disabled'}>${esc(t().qpAsk)}</button>${H.quickPayOpen() ? '' : `<p class="note">${esc(t().qpClosed)}</p>`}` : ''}
         ${S.quickpay.map(q => `<div class="card"><div class="top2"><div><b>${fmt(q.net)}</b><div class="muted">${new Date(q.requested_at).toLocaleDateString()} · ${q.load_ids.length} ${esc(t().loadsN)} · ${esc(t().qpFee)} ${fmt(q.fee)}</div></div><span class="pill ${q.status === 'pago' ? 'p-good' : q.status === 'negado' ? 'p-bad' : 'p-warn'}">${esc(t().qpSt[q.status])}${q.status === 'aprovado' && q.eligible_on ? ' ' + brDate(q.eligible_on) : q.status === 'pago' ? ' ' + brDate(q.paid_at) : ''}</span></div></div>`).join('')}
@@ -2669,7 +2737,8 @@ The parties sign this Agreement electronically and agree that their electronic s
           return `<div class="card sev ${s.status === 'pago' ? 'good' : 'warn'}"><div class="top2"><div><b>${brDate(s.period_start)} – ${brDate(s.period_end)}</b><div class="muted">${s.status === 'pago' ? esc(t().paidOn) + ' ' + brDate(s.paid_at) + (s.method ? ' · ' + esc(s.method) : '') : esc(t().approved)}</div></div><div class="money" style="color:var(--gold2)">${fmt(s.net)}<div class="muted">${esc(t().net)}</div></div></div>
           <div class="muted">${L.map(l => `${brDate(l.load_date)} ${route(l)} · ${fmt(l.driver_pay)}`).join('<br>')}${F.length ? '<br>' + F.map(x => `${brDate(x.fuel_date)} ${esc(t().fuel)} −${fmt(x.total)}`).join('<br>') : ''}${num(s.other_deductions) ? `<br>− ${fmt(s.other_deductions)} ${esc(s.other_note || '')}` : ''}</div></div>` }).join('') : `<div class="empty">${esc(t().noPay)}</div>`}</div>`;
     },
-    wire(v) { const b = $('#qpBtn', v); if (b) b.onclick = qpSheet }
+    wire(v) { const b = $('#qpBtn', v); if (b) b.onclick = qpSheet;
+      $$('[data-yr]', v).forEach(x => x.onclick = () => { S.year = +x.dataset.yr; render() }); const pb = $('#ePdf', v); if (pb) pb.onclick = earnPdf }
   };
   function qpSheet() {
     const qp = inQP(), L = S.loads.filter(l => l.stage === 'entregue' && !l.paid && !l.settlement_id && !qp.has(l.id)), pct = num(H.cfg.quickPayPct);
