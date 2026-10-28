@@ -263,32 +263,87 @@ window.HTS = window.HTS || {};
   /* kind: once = uma vez · expiry = vence numa data · yearly = refazer a cada 12 meses · work = vence se tiver data */
   H.DOCS = [
     { k: 'application', t: 'Application for Employment (assinada)', p: '391.21', kind: 'once', drv: true },
-    { k: 'license', t: 'Carteira de motorista', p: '391.21', kind: 'expiry', drv: true },
+    { k: 'license', t: 'Carteira de motorista', p: '391.21', kind: 'expiry', drv: true, van: true },
     { k: 'workauth', t: 'Autorização de trabalho (work permit / green card / cidadania)', p: '391.21', kind: 'work', drv: true },
     { k: 'med', t: 'Medical card (MCSA-5876)', p: '391.43', kind: 'expiry', drv: true, cmv: true },
-    { k: 'w9', t: 'W-9', p: 'IRS', kind: 'once', drv: true, all: true },
-    { k: 'coi', t: 'Seguro do veículo (COI)', p: '', kind: 'expiry', drv: true, all: true },
-    { k: 'registration', t: 'Registro do veículo', p: '', kind: 'expiry', drv: true, all: true },
-    { k: 'vehicle_photos', t: 'Fotos do veículo (frente, lados, traseira, placa)', p: '', kind: 'once', drv: true, all: true },
-    { k: 'lease', t: 'Contrato de lease assinado', p: '376.12', kind: 'once', drv: true, all: true },
-    { k: 'mvr_pre', t: 'MVR pré-contratação (3 anos)', p: '391.23(a)(1)', kind: 'once' },
+    { k: 'w9', t: 'W-9', p: 'IRS', kind: 'once', drv: true, van: true },
+    { k: 'coi', t: 'Seguro do veículo (COI)', p: '', kind: 'expiry', drv: true, van: true, own: true },
+    { k: 'registration', t: 'Registro do veículo', p: '', kind: 'expiry', drv: true, van: true, own: true },
+    { k: 'vehicle_photos', t: 'Fotos do veículo (frente, lados, traseira, placa e área de carga)', p: '', kind: 'once', drv: true, van: true, own: true },
+    { k: 'lease', t: 'Contrato de lease assinado', p: '376.12', kind: 'once', drv: true, van: true, own: true },
+    { k: 'mvr_pre', t: 'MVR pré-contratação (3 anos)', p: '391.23(a)(1)', kind: 'once', van: true },
     { k: 'sph', t: 'Safety Performance History', p: '391.23(a)(2)', kind: 'once' },
     { k: 'roadtest', t: 'Road test ou cópia da CDL', p: '391.31', kind: 'once' },
     { k: 'onduty', t: 'Statement of On-Duty Hours (7 dias)', p: '395.8(j)(2)', kind: 'once', drv: true },
     { k: 'mvr_annual', t: 'MVR anual', p: '391.25(a)', kind: 'yearly' },
     { k: 'violations', t: 'Certification of Violations (anual)', p: '391.27', kind: 'yearly', drv: true },
     { k: 'review', t: 'Annual Review of Driving Record', p: '391.25(c)(2)', kind: 'yearly' },
-    { k: 'inspection', t: 'Inspeção anual do veículo', p: '396.17', kind: 'yearly', drv: true, all: true },
+    { k: 'inspection', t: 'Inspeção anual do veículo', p: '396.17', kind: 'yearly', drv: true, own: true },
     { k: 'eldt', t: 'Entry-level driver training (ELDT)', p: '380.503', kind: 'once', cdl: true },
     { k: 'drug_pre', t: 'Teste de drogas pré-contratação (DOT 5-panel)', p: '382.301', kind: 'once', cdl: true },
     { k: 'da_policy', t: 'Recibo da política de drogas e álcool', p: '382.601', kind: 'once', cdl: true, drv: true },
     { k: 'ch_full', t: 'Clearinghouse: consulta completa', p: '382.701', kind: 'once', cdl: true },
     { k: 'ch_annual', t: 'Clearinghouse: consulta anual', p: '382.701', kind: 'yearly', cdl: true },
   ];
-  /* veículo abaixo de 10,001 lbs: a pasta DQ federal não é obrigatória (fica como recomendada) */
-  H.isCMV = d => { const g = num((d.vehicle || {}).gvwr); return !g || g >= 10001 };
-  H.docApplies = (d, it) => !(it.cdl && !d.cdl);
-  H.docRequired = (d, it) => H.docApplies(d, it) && (it.all || !H.isCMV || H.isCMV(d));
+  /* VAN (abaixo de 10,001 lbs): só carteira, documento e seguro da van, lease, W-9, fotos e MVR. CAMINHÃO: a pasta completa do auditor. */
+  H.isCMV = d => { const v = (d && d.vehicle) || {}; if (v.type === 'van') return false; if (v.type === 'truck') return true; const g = num(v.gvwr); return !g || g >= 10001 };
+  /* caminhão confirmado (para cobrar os logs do ELD sem incomodar quem ainda não informou o veículo) */
+  H.isTruck = d => { const v = (d && d.vehicle) || {}; return v.type === 'truck' || (v.type !== 'van' && num(v.gvwr) >= 10001) };
+  /* veículo da empresa (ex.: o caminhão da Helen): os documentos do veículo ficam na Frota, não na pasta do motorista */
+  H.companyVeh = d => ((d && d.vehicle) || {}).owner === 'company';
+  H.docApplies = (d, it) => !(it.cdl && !d.cdl) && !(it.own && H.companyVeh(d));
+  H.docRequired = (d, it) => H.docApplies(d, it) && (H.isCMV(d) || !!it.van);
+  /* liberado para teste: até a data escolhida, os documentos faltando não bloqueiam as cargas */
+  H.testOn = d => !!(d && d.test_until && daysTo(d.test_until) >= 0);
+  /* semana (segunda-feira) e a semana passada, para os logs do ELD */
+  H.weekStart = dt => { const x = new Date(dt || today()); x.setHours(12, 0, 0, 0); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return iso(x) };
+  H.lastWeek = () => { const x = today(); x.setDate(x.getDate() - 7); return H.weekStart(x) };
+  /* como conseguir cada documento: [pt, es, en] */
+  H.HOWTO = {
+    application: ['Preencha e assine aqui no app (botão Preencher).', 'Llénala y fírmala aquí en la app (botón Llenar).', 'Fill it out and sign it here in the app.'],
+    license: ['Foto da frente e do verso da sua carteira de motorista.', 'Foto del frente y reverso de tu licencia.', 'Photo of the front and back of your license.'],
+    workauth: ['Foto do green card, passaporte americano, work permit (EAD) ou certidão de nascimento dos EUA.', 'Foto de green card, pasaporte de EE.UU., permiso de trabajo (EAD) o acta de nacimiento de EE.UU.', 'Photo of your green card, US passport, work permit (EAD) or US birth certificate.'],
+    med: ['Exame DOT em clínica do registro nacional (nationalregistry.fmcsa.dot.gov). Custa cerca de $75–125. Mande a foto do cartão.', 'Examen DOT en clínica del registro nacional (nationalregistry.fmcsa.dot.gov). Cuesta unos $75–125. Envía la foto de la tarjeta.', 'DOT physical at a clinic from nationalregistry.fmcsa.dot.gov (about $75–125). Send a photo of the card.'],
+    w9: ['Baixe o W-9 em irs.gov/w9, preencha com o seu nome ou o da sua empresa e assine.', 'Descarga el W-9 en irs.gov/w9, llénalo con tu nombre o el de tu empresa y fírmalo.', 'Download the W-9 at irs.gov/w9, fill it in and sign it.'],
+    coi: ['Peça ao seu agente de seguro o certificado (COI) do veículo, em PDF.', 'Pide a tu agente de seguros el certificado (COI) del vehículo, en PDF.', 'Ask your insurance agent for the vehicle certificate (COI) as a PDF.'],
+    registration: ['Foto do registro do veículo que fica no porta-luvas.', 'Foto del registro del vehículo (guantera).', 'Photo of the vehicle registration (glove box).'],
+    vehicle_photos: ['Fotos de fora (4 lados), da área de carga por dentro, da etiqueta na porta do motorista (mostra o peso GVWR) e 4 fotos da trena mostrando as medidas (veja o desenho).', 'Fotos de afuera (4 lados), del área de carga por dentro, de la etiqueta en la puerta del conductor (muestra el GVWR) y 4 fotos de la cinta métrica con las medidas (mira el dibujo).', 'Outside photos (4 sides), inside the cargo area, the driver door sticker (shows the GVWR) and 4 tape-measure photos (see the drawing).'],
+    lease: ['A Helen prepara o contrato e ele aparece aqui para você assinar.', 'Helen prepara el contrato y aparece aquí para que lo firmes.', 'Helen prepares the agreement and it shows up here for you to sign.'],
+    mvr_pre: ['A empresa puxa o seu histórico de direção (MVR) no site do DMV do estado da sua carteira. Custa cerca de $10.', 'La empresa saca tu récord de manejo (MVR) en el DMV del estado de tu licencia. Cuesta unos $10.', 'The company pulls your driving record (MVR) from your license state DMV (about $10).'],
+    sph: ['A empresa pede o seu histórico às empresas onde você dirigiu veículo comercial nos últimos 3 anos.', 'La empresa pide tu historial a las empresas donde manejaste vehículo comercial en los últimos 3 años.', 'The company requests your history from employers where you drove a commercial vehicle in the last 3 years.'],
+    roadtest: ['Teste prático com a empresa, ou uma cópia da sua CDL.', 'Prueba práctica con la empresa, o copia de tu CDL.', 'Road test with the company, or a copy of your CDL.'],
+    onduty: ['Preencha aqui no app as horas trabalhadas nos últimos 7 dias.', 'Llena aquí en la app las horas trabajadas en los últimos 7 días.', 'Fill in your hours for the last 7 days here in the app.'],
+    mvr_annual: ['A empresa puxa o MVR de novo todo ano.', 'La empresa saca el MVR de nuevo cada año.', 'The company pulls your MVR again every year.'],
+    violations: ['Preencha aqui no app a lista de multas de trânsito do último ano (ou "nenhuma").', 'Llena aquí en la app la lista de multas del último año (o "ninguna").', 'List your traffic tickets from the last year here in the app (or "none").'],
+    review: ['A empresa revisa o seu histórico uma vez por ano.', 'La empresa revisa tu historial una vez al año.', 'The company reviews your record once a year.'],
+    inspection: ['Inspeção anual numa oficina de caminhão (cerca de $50–150). Mande o relatório.', 'Inspección anual en un taller de camiones (unos $50–150). Envía el reporte.', 'Annual inspection at a truck shop (about $50–150). Send the report.'],
+    eldt: ['Certificado do treinamento ELDT (aparece no Training Provider Registry).', 'Certificado del entrenamiento ELDT.', 'ELDT training certificate.'],
+    drug_pre: ['Teste DOT 5-panel pedido pela empresa no consórcio. Custa cerca de $50–80.', 'Prueba DOT 5-panel pedida por la empresa. Cuesta unos $50–80.', 'DOT 5-panel test ordered by the company (about $50–80).'],
+    da_policy: ['Leia a política e assine o recibo aqui no app.', 'Lee la política y firma el recibo aquí en la app.', 'Read the policy and sign the receipt here in the app.'],
+    ch_full: ['A empresa faz a consulta no Clearinghouse ($1.25) e você aprova no site.', 'La empresa hace la consulta en el Clearinghouse ($1.25) y tú la apruebas en el sitio.', 'The company runs the Clearinghouse query ($1.25) and you approve it online.'],
+    ch_annual: ['Consulta anual no Clearinghouse, feita pela empresa.', 'Consulta anual en el Clearinghouse, hecha por la empresa.', 'Annual Clearinghouse query, done by the company.'],
+  };
+  /* fotos do veículo: 4 lados + área de carga + 4 medidas com a trena (ou uma foto antiga já aprovada) */
+  H.VPHOTOS = ['Frente', 'Lado do motorista', 'Lado do passageiro', 'Traseira com a placa', 'Área de carga (por dentro)', 'Etiqueta da porta do motorista (GVWR)',
+    'Medida A: comprimento total', 'Medida B: largura entre as rodas', 'Medida C: altura da porta traseira', 'Medida D: largura da porta traseira'];
+  H.vpRow = (rows, k) => (rows || []).filter(x => x.item === 'vehicle_photos' && x.status !== 'rejeitado' && (x.note === k || String(x.note || '').startsWith(k + ' ='))).slice(-1)[0];
+  H.sidesOk = rows => (rows || []).some(x => x.item === 'vehicle_photos' && !x.note && x.status === 'aprovado') || H.VPHOTOS.every(k => H.vpRow(rows, k));
+  /* desenho das medidas (A comprimento, B entre as rodas, C altura da porta, D largura da porta) */
+  H.vanDiagram = L => `<svg viewBox="0 0 340 170" role="img" aria-label="${esc(L[0])}" style="width:100%;max-width:420px;background:#fff;border-radius:12px;color:#1b1f24">
+    <defs><marker id="ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#c8102e"/></marker></defs>
+    <text x="85" y="16" text-anchor="middle" font-size="11" font-weight="700" fill="#1b1f24">${esc(L[1])}</text>
+    <rect x="20" y="28" width="130" height="110" rx="10" fill="#f1f3f5" stroke="#1b1f24" stroke-width="2"/>
+    <rect x="20" y="58" width="16" height="34" fill="#9aa4ad"/><rect x="134" y="58" width="16" height="34" fill="#9aa4ad"/>
+    <line x1="160" y1="30" x2="160" y2="136" stroke="#c8102e" stroke-width="2" marker-start="url(#ar)" marker-end="url(#ar)"/><text x="170" y="86" font-size="16" font-weight="800" fill="#c8102e">A</text>
+    <line x1="38" y1="75" x2="132" y2="75" stroke="#c8102e" stroke-width="2" marker-start="url(#ar)" marker-end="url(#ar)"/><text x="80" y="70" font-size="16" font-weight="800" fill="#c8102e">B</text>
+    <text x="85" y="154" text-anchor="middle" font-size="9" fill="#1b1f24">${esc(L[2])}</text>
+    <text x="265" y="16" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1b1f24">${esc(L[3])}</text>
+    <path d="M205 140V52Q205 30 230 30H300Q325 30 325 52V140Z" fill="#f1f3f5" stroke="#1b1f24" stroke-width="2"/>
+    <rect x="220" y="46" width="90" height="94" fill="#fff" stroke="#1b1f24" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <line x1="232" y1="48" x2="232" y2="138" stroke="#c8102e" stroke-width="2" marker-start="url(#ar)" marker-end="url(#ar)"/><text x="238" y="98" font-size="16" font-weight="800" fill="#c8102e">C</text>
+    <line x1="222" y1="152" x2="308" y2="152" stroke="#c8102e" stroke-width="2" marker-start="url(#ar)" marker-end="url(#ar)"/><text x="260" y="167" font-size="14" font-weight="800" fill="#c8102e">D</text>
+  </svg>`;
+  H.howto = (k, lang) => { const h = H.HOWTO[k]; return h ? h[{ es: 1, en: 2 }[lang] || 0] : '' };
   /* status de um item a partir da última versão enviada */
   H.docStatus = (d, it, rows) => {
     const list = (rows || []).filter(r => r.item === it.k).sort((a, b) => b.created_at.localeCompare(a.created_at));
@@ -357,12 +412,23 @@ window.HTS = window.HTS || {};
     while ((m = reAmt.exec(txt))) { const v = money(m[1]); if (v >= 50) amts.push({ v, i: m.index }) }
     const kw = /(rate|pay|total|linehaul|line haul|offer|price|amount|all[- ]in)\s*[:=]?\s*\$?\s?([\d,]+(?:\.\d{1,2})?)/i.exec(txt);
     if (kw && money(kw[2]) >= 50) out.rate = money(kw[2]); else if (amts.length) out.rate = Math.max(...amts.map(a => a.v));
-    if (out.rate) found.push('valor');
     /* milhas */
-    const mi = /(?:loaded\s*)?(?:miles|mileage|distance)\s*[:=]?\s*(\d[\d,]*(?:\.\d+)?)/i.exec(txt) || /(\d[\d,]*(?:\.\d+)?)\s*(?:mi|miles|mile)\b(?!\s*\/)/i.exec(txt);
-    if (mi) { const v = money(mi[1]); if (v > 0 && v < 6000) { out.miles = Math.round(v); found.push('milhas') } }
-    const dh = /(?:deadhead|dead head|dh|empty)\s*(?:miles)?\s*[:=]?\s*([\d,]+)/i.exec(txt);
-    if (dh) out.deadhead = Math.round(money(dh[1]));
+    /* milhas vazias (até a coleta) e milhas carregadas (até a entrega) */
+    const dhRe = [/(?:dead\s*-?\s*head|\bdh(?:\s*-?\s*o)?\b|empty(?:\s*miles)?|miles?\s*to\s*pick\s*-?\s*up|to\s*pick\s*-?\s*up|origin\s*dh|away)\s*[:=\-]?\s*\(?\s*(\d[\d,]*)\s*(?:mi|miles)?/i,
+      /(\d[\d,]*)\s*(?:mi|miles)\s*(?:dead\s*-?\s*head|\bdh\b|empty|away|to\s*pick\s*-?\s*up|from\s*(?:you|truck|current))/i, /\(\s*(\d[\d,]*)\s*(?:mi|miles)?\s*\)/];
+    let dhM = null; for (const re of dhRe) { dhM = re.exec(txt); if (dhM) break }
+    if (dhM) { const v = Math.round(money(dhM[1])); if (v >= 0 && v < 1000) { out.deadhead = v; found.push('milhas vazio') } }
+    const loadedM = /(?:loaded|trip|total|route)\s*(?:miles|mileage|distance)\s*[:=\-]?\s*(\d[\d,]*(?:\.\d+)?)/i.exec(txt) || /(?:loaded|trip|total|route|distance)\s*[:=\-]?\s*(\d[\d,]*(?:\.\d+)?)\s*(?:mi|miles)\b/i.exec(txt) || /(?:miles|mileage|distance)\s*[:=]?\s*(\d[\d,]*(?:\.\d+)?)/i.exec(txt);
+    let miles = loadedM ? money(loadedM[1]) : 0;
+    if (!(miles > 0 && miles < 6000) || (dhM && loadedM && loadedM.index === dhM.index)) {
+      const all = []; const reMi = /(\d[\d,]*(?:\.\d+)?)\s*(?:mi|miles|mile)\b(?!\s*\/)/gi; let k;
+      while ((k = reMi.exec(txt))) { if (dhM && k.index >= dhM.index && k.index < dhM.index + dhM[0].length) continue; const v = money(k[1]); if (v > 0 && v < 6000) all.push(v) }
+      miles = all.length ? Math.max(...all) : 0;
+    }
+    if (miles > 0 && miles < 6000 && miles !== out.deadhead) { out.miles = Math.round(miles); found.push('milhas carregado') }
+    /* valor por milha → valor total, se o total não veio */
+    const rpm = /\$\s?(\d+(?:\.\d{1,2})?)\s*\/\s*(?:mi|mile)/i.exec(txt);
+    if (rpm) out.rpm = money(rpm[1]);
     /* datas */
     const MON = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 };
     const yr = new Date().getFullYear(), dates = [];
@@ -382,6 +448,8 @@ window.HTS = window.HTS || {};
     if (br) out.broker = br[1].trim();
     const eq = /\b(cargo van|sprinter|box truck|straight truck|26\s*'?\s*(?:ft|foot)?\s*box|16\s*'?\s*(?:ft|foot)?\s*box|dry van|reefer|flatbed|hot ?shot|power only|53\s*'?\s*(?:ft)?|26\s*ft|16\s*ft)\b/i.exec(txt);
     if (eq) out.equipment = eq[1];
+    if (!out.rate && out.rpm && out.miles) out.rate = Math.round(out.rpm * out.miles);
+    if (out.rate) found.push('valor'); delete out.rpm;
     return { data: out, found };
   };
 
@@ -458,6 +526,34 @@ window.HTS = window.HTS || {};
     const r = await window.Tesseract.recognize(file, 'eng', { logger: m => { if (onProgress && m.status === 'recognizing text') onProgress(Math.round(m.progress * 100)) } });
     return (r && r.data && r.data.text) || '';
   };
+
+  /* ---------------- ler o recibo / a bomba de combustível ---------------- */
+  H.parseFuel = raw => {
+    const txt = String(raw || '').replace(/\r/g, '').replace(/[|]/g, ' '), out = {}, found = [];
+    const n = s => +String(s).replace(/[$,\s]/g, '').replace(/[oO]/g, '0');
+    const pick = (res) => { for (const re of res) { const m = re.exec(txt); if (m) return m } return null };
+    const tot = pick([/(?:total\s*(?:sale|due|amount)?|fuel\s*sale|sale|amount|purchase|total\s*\$|balance|charged?)\s*[:=]?\s*\$?\s*(\d{1,4}[.,]\d{2})/i, /\$\s*(\d{1,4}\.\d{2})\s*$/m]);
+    if (tot) { out.total = n(tot[1].replace(',', '.')); found.push('total') }
+    const gal = pick([/(?:gallons?|gals?|volume|qty|quantity|gal\.?)\s*[:=]?\s*(\d{1,3}[.,]\d{1,3})/i, /(\d{1,3}[.,]\d{1,3})\s*(?:gallons?|gals?|g)\b/i]);
+    if (gal) { out.gallons = n(gal[1].replace(',', '.')); found.push('galões') }
+    const ppg = pick([/(?:price\s*\/?\s*gal(?:lon)?|\$\s*\/\s*gal|ppg|unit\s*price|price\s*per\s*gal(?:lon)?|@)\s*[:=]?\s*\$?\s*(\d\.\d{2,3})/i, /(\d\.\d{3})\s*(?:\/\s*gal|per\s*gal)/i, /\$?\s*(\d\.\d{2}9)\b/]);
+    if (ppg) { out.ppg = n(ppg[1]); found.push('preço/galão') }
+    if (!out.total && out.gallons && out.ppg) { out.total = Math.round(out.gallons * out.ppg * 100) / 100; found.push('total') }
+    if (!out.gallons && out.total && out.ppg) { out.gallons = Math.round(out.total / out.ppg * 1000) / 1000; found.push('galões') }
+    if (!out.ppg && out.total && out.gallons) out.ppg = Math.round(out.total / out.gallons * 1000) / 1000;
+    const odo = /(?:odometer|odo|mileage|hubometer)\s*[:=#]?\s*(\d{3,7})/i.exec(txt); if (odo) { out.odometer = n(odo[1]); found.push('odômetro') }
+    const d = /\b(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4})\b/.exec(txt);
+    if (d) { let y = +d[3]; if (y < 100) y += 2000; const mo = +d[1], dd = +d[2]; if (mo >= 1 && mo <= 12 && dd >= 1 && dd <= 31) { out.fuel_date = `${y}-${String(mo).padStart(2, '0')}-${String(dd).padStart(2, '0')}`; found.push('data') } }
+    const brand = /\b(love'?s|pilot|flying\s*j|ta\b|travelcenters|petro|speedway|wawa|racetrac|race\s*trac|circle\s*k|shell|exxon|mobil|chevron|bp|sunoco|marathon|valero|citgo|quiktrip|qt\b|buc-?ee'?s|sheetz|murphy|costco|sam'?s|7-?eleven|casey'?s|kwik|maverik|road\s*ranger|ambest|sapp)\b/i.exec(txt);
+    const city = /([A-Za-z][A-Za-z .'-]{2,30}),?\s+(AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|IA|ID|IL|IN|KS|KY|LA|MA|MD|ME|MI|MN|MO|MS|MT|NC|ND|NE|NH|NJ|NM|NV|NY|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VA|VT|WA|WI|WV|WY)\s*\d{5}/.exec(txt);
+    const st = [brand ? brand[1].replace(/\b[a-z]/g, c => c.toUpperCase()) : '', city ? city[1].trim().split(/\s{2,}/).pop().replace(/\b[a-z]/gi, c => c.toUpperCase()) + ', ' + city[2] : ''].filter(Boolean).join(' · ');
+    if (st) { out.station = st; found.push('posto') }
+    return { data: out, found };
+  };
+  /* dois botões: abrir a câmera direto, ou escolher da galeria/arquivo */
+  H.camLabels = lang => ({ pt: ['📷 Tirar foto', '🖼 Galeria ou arquivo'], es: ['📷 Tomar foto', '🖼 Galería o archivo'], en: ['📷 Take photo', '🖼 Gallery or file'] }[lang] || ['📷 Tirar foto', '🖼 Galeria ou arquivo']);
+  H.camBtns = (lang, attrs = '', o = {}) => { const L = H.camLabels(lang);
+    return `<div class="row cam2"><span class="btn upl ${o.gold ? 'gold' : ''} ${o.sm ? 'sm' : ''}">${L[0]}<input type="file" accept="image/*" capture="environment" ${attrs}></span><span class="btn upl ${o.sm ? 'sm' : ''}">${L[1]}<input type="file" accept="${o.accept || 'image/*,application/pdf'}" ${o.multiple ? 'multiple' : ''} ${attrs}></span></div>` };
 
   /* ---------------- login ---------------- */
   function setupScreen() {
@@ -552,6 +648,20 @@ window.HTS = window.HTS || {};
     'Data': ['Fecha', 'Date'], 'Total': ['Total', 'Total'], 'Total $': ['Total $', 'Total $'], 'Valor $': ['Monto $', 'Amount $'], 'Tipo': ['Tipo', 'Type'], 'Forma': ['Forma de pago', 'Method'],
     'Descrição': ['Descripción', 'Description'], 'Categoria': ['Categoría', 'Category'], 'Observações': ['Notas', 'Notes'], 'Telefone': ['Teléfono', 'Phone'], 'Telefone / WhatsApp': ['Teléfono / WhatsApp', 'Phone / WhatsApp'],
     'Dinheiro': ['Efectivo', 'Cash'], 'Cheque': ['Cheque', 'Check'], 'Cartão': ['Tarjeta', 'Card'], 'Outros': ['Otros', 'Other'], 'Novo': ['Nuevo', 'New'], 'novo': ['nuevo', 'new'],
+    /* atualização 3 */
+    '% que o motorista recebe (caminhão da empresa)': ['% que recibe el chofer (camión de la empresa)', '% the driver gets (company truck)'],
+    'Contatos de emergência': ['Contactos de emergencia', 'Emergency contacts'], 'Nome completo 1': ['Nombre completo 1', 'Full name 1'], 'Nome completo 2': ['Nombre completo 2', 'Full name 2'], 'Parentesco': ['Parentesco', 'Relationship'],
+    'Dono do veículo': ['Dueño del vehículo', 'Vehicle owner'], 'O motorista (owner-operator)': ['El conductor (owner-operator)', 'The driver (owner-operator)'], 'A empresa / a Helen (motorista só dirige)': ['La empresa / Helen (el conductor solo maneja)', 'The company / Helen (driver only drives)'],
+    'Área de carga (por dentro)': ['Área de carga (por dentro)', 'Cargo area (inside)'], 'Etiqueta da porta do motorista (GVWR)': ['Etiqueta de la puerta del conductor (GVWR)', 'Driver door sticker (GVWR)'],
+    'Medida A: comprimento total': ['Medida A: largo total', 'Measure A: total length'], 'Medida B: largura entre as rodas': ['Medida B: ancho entre las ruedas', 'Measure B: width between wheel wells'],
+    'Medida C: altura da porta traseira': ['Medida C: alto de la puerta trasera', 'Measure C: rear door height'], 'Medida D: largura da porta traseira': ['Medida D: ancho de la puerta trasera', 'Measure D: rear door width'],
+    'Empresa': ['Empresa', 'Company'], 'Liberar para teste': ['Liberar para prueba', 'Release for testing'], 'Liberado para cargas até': ['Liberado para cargas hasta', 'Released for loads until'],
+    'Até essa data, os documentos que faltam não bloqueiam as cargas. Depois, ele volta a ser cobrado. Deixe vazio para não liberar.': ['Hasta esa fecha, los documentos que faltan no bloquean las cargas. Después se le vuelve a cobrar. Déjalo vacío para no liberar.', 'Until that date, missing documents do not block loads. After that, they are required again. Leave empty to not release.'],
+    'Tipo de veículo': ['Tipo de vehículo', 'Vehicle type'], 'Van (menos de 10.001 lbs) — pasta simples': ['Van (menos de 10,001 lbs) — archivo simple', 'Van (under 10,001 lbs) — simple file'],
+    'Caminhão / box truck (10.001 lbs ou mais) — pasta completa do auditor': ['Camión / box truck (10,001 lbs o más) — archivo completo del auditor', 'Truck / box truck (10,001 lbs or more) — full auditor file'],
+    'Logs do ELD (HOS247)': ['Logs del ELD (HOS247)', 'ELD logs (HOS247)'], 'Semana que começa em': ['Semana que empieza el', 'Week starting'], 'Enviar log': ['Enviar log', 'Upload log'], 'Imprimir 6 meses': ['Imprimir 6 meses', 'Print 6 months'],
+    'Toda semana: no app HOS247, exporte o log da semana em PDF (ou tire print) e envie aqui. Fica guardado para a revisão de 6 meses e para o auditor.': ['Cada semana: en la app HOS247 exporta el log de la semana en PDF (o captura) y envíalo aquí. Queda guardado para la revisión de 6 meses y el auditor.', 'Every week: in the HOS247 app, export the week log as PDF (or screenshot) and upload it here. It is kept for the 6-month review and the auditor.'],
+    'Logs das últimas 8 semanas em dia': ['Logs de las últimas 8 semanas al día', 'Logs for the last 8 weeks are up to date'], 'Caminhão': ['Camión', 'Truck'], 'Van': ['Van', 'Van'], 'Ver': ['Ver', 'View'],
     /* painel */
     'Semana': ['Semana', 'Week'], 'Mês': ['Mes', 'Month'], 'Mês passado': ['Mes pasado', 'Last month'], 'Tudo': ['Todo', 'All'],
     'Todas as empresas': ['Todas las empresas', 'All companies'], 'Todos os motoristas': ['Todos los conductores', 'All drivers'],
@@ -616,7 +726,7 @@ window.HTS = window.HTS || {};
     'Application for Employment (assinada)': ['Solicitud de empleo (firmada)', 'Employment application (signed)'], 'Carteira de motorista': ['Licencia de conducir', "Driver's license"],
     'Autorização de trabalho (work permit / green card / cidadania)': ['Autorización de trabajo (work permit / green card / ciudadanía)', 'Work authorization (work permit / green card / citizenship)'],
     'Medical card (MCSA-5876)': ['Medical card (MCSA-5876)', 'Medical card (MCSA-5876)'], 'W-9': ['W-9', 'W-9'], 'Seguro do veículo (COI)': ['Seguro del vehículo (COI)', 'Vehicle insurance (COI)'],
-    'Registro do veículo': ['Registro del vehículo', 'Vehicle registration'], 'Fotos do veículo (frente, lados, traseira, placa)': ['Fotos del vehículo (frente, lados, atrás, placa)', 'Vehicle photos (front, sides, rear, plate)'],
+    'Registro do veículo': ['Registro del vehículo', 'Vehicle registration'], 'Fotos do veículo (frente, lados, traseira, placa e área de carga)': ['Fotos del vehículo (frente, lados, atrás, placa y área de carga)', 'Vehicle photos (front, sides, rear, plate and cargo area)'],
     'Contrato de lease assinado': ['Contrato de lease firmado', 'Signed lease agreement'], 'MVR pré-contratação (3 anos)': ['MVR previo a la contratación (3 años)', 'Pre-hire MVR (3 years)'],
     'Safety Performance History': ['Safety Performance History', 'Safety Performance History'], 'Road test ou cópia da CDL': ['Road test o copia de la CDL', 'Road test or CDL copy'],
     'Statement of On-Duty Hours (7 dias)': ['Statement of On-Duty Hours (7 días)', 'Statement of On-Duty Hours (7 days)'], 'MVR anual': ['MVR anual', 'Annual MVR'],
@@ -971,10 +1081,10 @@ The parties sign this Agreement electronically and agree that their electronic s
 (function (H) {
   const { $, $$, esc, num, fmt, fmtI, iso, today, brDate, addMonths, daysTo } = H;
   const A = H.Admin = {};
-  const D = { agr: [], bills: [], vehicles: [], vrecs: [], dvir: [], accidents: [], reviews: [], cdocs: [], companies: [], drivers: [], docs: [], loads: [], events: [], fuel: [], settlements: [], quickpay: [], ledger: [], apps: [] };
-  const NEWT = ['agr', 'bills', 'vehicles', 'vrecs', 'dvir', 'accidents', 'reviews', 'cdocs'];
-  const TABLES = { agr: 'agreements', bills: 'bills', vehicles: 'vehicles', vrecs: 'vehicle_records', dvir: 'dvir', accidents: 'accidents', reviews: 'annual_reviews', cdocs: 'company_docs', companies: 'companies', drivers: 'drivers', docs: 'driver_docs', loads: 'loads', events: 'load_events', fuel: 'fuel', settlements: 'settlements', quickpay: 'quickpay', ledger: 'ledger', apps: 'applications' };
-  const ORDER = { agr: 'created_at', bills: 'due_on', vehicles: 'unit', vrecs: 'done_on', dvir: 'created_at', accidents: 'occurred_at', reviews: 'review_date', cdocs: 'created_at', companies: 'name', drivers: 'name', docs: 'created_at', loads: 'load_date', events: 'created_at', fuel: 'fuel_date', settlements: 'created_at', quickpay: 'requested_at', ledger: 'entry_date', apps: 'created_at' };
+  const D = { hos: [], agr: [], bills: [], vehicles: [], vrecs: [], dvir: [], accidents: [], reviews: [], cdocs: [], companies: [], drivers: [], docs: [], loads: [], events: [], fuel: [], settlements: [], quickpay: [], ledger: [], apps: [] };
+  const NEWT = ['hos', 'agr', 'bills', 'vehicles', 'vrecs', 'dvir', 'accidents', 'reviews', 'cdocs'];
+  const TABLES = { hos: 'hos_logs', agr: 'agreements', bills: 'bills', vehicles: 'vehicles', vrecs: 'vehicle_records', dvir: 'dvir', accidents: 'accidents', reviews: 'annual_reviews', cdocs: 'company_docs', companies: 'companies', drivers: 'drivers', docs: 'driver_docs', loads: 'loads', events: 'load_events', fuel: 'fuel', settlements: 'settlements', quickpay: 'quickpay', ledger: 'ledger', apps: 'applications' };
+  const ORDER = { hos: 'week_start', agr: 'created_at', bills: 'due_on', vehicles: 'unit', vrecs: 'done_on', dvir: 'created_at', accidents: 'occurred_at', reviews: 'review_date', cdocs: 'created_at', companies: 'name', drivers: 'name', docs: 'created_at', loads: 'load_date', events: 'created_at', fuel: 'fuel_date', settlements: 'created_at', quickpay: 'requested_at', ledger: 'entry_date', apps: 'created_at' };
   const AD = {
     pt: { tabs: ['Painel', 'Cargas', 'Motoristas', 'Acertos', 'DOT', 'Mais'], panel: 'Painel', reload: 'Atualizar', out: 'Sair', loading: 'Carregando…',
       week: 'Semana', month: 'Mês', last: 'Mês passado', all: 'Tudo', allCo: 'Todas as empresas', allDrv: 'Todos os motoristas',
@@ -1001,12 +1111,12 @@ The parties sign this Agreement electronically and agree that their electronic s
       newResp: 'New answer from a driver', newDoc: 'New document to review', newQP: 'Quick Pay request', newApp: 'New applicant',
       paste: 'Paste the load', pasteHelp: 'Paste the load text here (broker email, Amazon Relay, DAT, message). The app fills in the fields and you check them.', fill: 'Fill in', filled: 'Filled: ', nothing: 'No details found. Fill it in by hand.', check: 'Check everything before saving.' } };
   const t = () => AD[H.lang()] || AD.pt;
-  const st = { route: 'painel', sub: 'empresas', period: 'month', company: 'all', driver: 'all', stage: 'ativas', search: '' };
+  const st = { route: 'painel', sub: 'empresas', period: 'month', company: (() => { try { return localStorage.getItem('hts_co') || 'all' } catch (e) { return 'all' } })(), driver: 'all', stage: 'ativas', search: '' };
 
   async function load(keys) {
     keys = keys || Object.keys(TABLES);
     await Promise.all(keys.map(async k => {
-      try { D[k] = await H.q(H.sb.from(TABLES[k]).select('*').order(ORDER[k], { ascending: !['created_at', 'load_date', 'fuel_date', 'requested_at', 'entry_date', 'done_on', 'occurred_at', 'review_date'].includes(ORDER[k]) }).limit(5000)) }
+      try { D[k] = await H.q(H.sb.from(TABLES[k]).select('*').order(ORDER[k], { ascending: !['week_start', 'created_at', 'load_date', 'fuel_date', 'requested_at', 'entry_date', 'done_on', 'occurred_at', 'review_date'].includes(ORDER[k]) }).limit(5000)) }
       catch (e) { if (NEWT.includes(k)) { D[k] = []; A.needSql = true } else throw e }
     }));
   }
@@ -1045,7 +1155,7 @@ The parties sign this Agreement electronically and agree that their electronic s
     $$('nav.tabs button').forEach(b => b.onclick = () => { location.hash = b.dataset.t });
   }
   /* sinal do que mudou, para avisar e redesenhar só quando precisa */
-  const sig = () => JSON.stringify([D.dvir.map(x => [x.id, x.status]), D.vehicles.map(v => [v.id, v.blocked]), D.loads.map(l => [l.id, l.stage, l.offer_response, l.counter_amount, l.responded_at]), D.quickpay.map(q => [q.id, q.status]), D.docs.map(x => [x.id, x.status]), D.apps.map(a => [a.id, a.status]), D.events.length]);
+  const sig = () => JSON.stringify([st.route === 'mapa' ? D.drivers.map(d => [d.id, d.last_seen]) : 0, D.dvir.map(x => [x.id, x.status]), D.vehicles.map(v => [v.id, v.blocked]), D.loads.map(l => [l.id, l.stage, l.offer_response, l.counter_amount, l.responded_at]), D.quickpay.map(q => [q.id, q.status]), D.docs.map(x => [x.id, x.status]), D.apps.map(a => [a.id, a.status]), D.events.length]);
   const counts = () => ({ v: D.dvir.filter(x => x.status === 'defeito').length, r: D.loads.filter(l => l.stage === 'oferta' && l.offer_response).length, d: D.docs.filter(x => x.status === 'enviado').length, q: D.quickpay.filter(x => x.status === 'pendente').length, a: D.apps.filter(x => x.status === 'novo').length });
   A.start = async () => {
     H.watchTr(); shell();
@@ -1054,23 +1164,81 @@ The parties sign this Agreement electronically and agree that their electronic s
     try { await load() } catch (e) { H.fail(e) }
     render();
     H.poll(async () => { const before = sig(), c0 = counts();
-      try { await load(['loads', 'quickpay', 'docs', 'apps', 'events', 'dvir', 'vehicles']) } catch (e) { return }
+      try { await load(['loads', 'quickpay', 'docs', 'apps', 'events', 'dvir', 'vehicles'].concat(st.route === 'mapa' ? ['drivers'] : [])) } catch (e) { return }
       if (sig() === before) return;
       const c1 = counts(), msg = c1.v > c0.v ? 'Inspeção (DVIR) com defeito' : c1.r > c0.r ? t().newResp : c1.d > c0.d ? t().newDoc : c1.q > c0.q ? t().newQP : c1.a > c0.a ? t().newApp : '';
       if (msg) { H.toast('🔔 ' + msg); H.ping() }
       if (!H.busyUI()) render() });
   };
-  function readHash() { const [r, s] = location.hash.replace('#', '').split('/'); st.route = TABK.includes(r) ? r : 'painel'; if (s) { if (r === 'dot') st.dsub = s; else st.sub = s } }
+  function readHash() { const [r, s] = location.hash.replace('#', '').split('/'); st.route = TABK.includes(r) || r === 'mapa' ? r : 'painel'; if (s) { if (r === 'dot') st.dsub = s; else st.sub = s } }
 
   function render() {
     $$('nav.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.t === st.route));
     const pend = pendings();
     const dot = $('nav.tabs button[data-t="painel"] .dot'); if (dot) { dot.hidden = !pend.length; dot.textContent = pend.length }
     const v = $('#view'); if (!v) return;
-    const fn = { painel: vPainel, cargas: vCargas, motoristas: vMotoristas, acertos: vAcertos, dot: vDot, mais: vMais }[st.route];
-    v.innerHTML = fn.html(); fn.wire && fn.wire(v);
+    const fn = { painel: vPainel, cargas: vCargas, motoristas: vMotoristas, acertos: vAcertos, dot: vDot, mais: vMais, mapa: vMapa }[st.route];
+    if (st.company !== 'all' && !comp(st.company).id && D.companies.length) st.company = 'all';
+    if (st.company !== 'all') { dotCo = st.company; contasCo = st.company }
+    v.innerHTML = coBar() + fn.html(); fn.wire && fn.wire(v);
+    const g = $('#gCo', v); if (g) g.onchange = () => { st.company = g.value || 'all'; try { localStorage.setItem('hts_co', st.company) } catch (e) { } if (st.company === 'all') { dotCo = null; contasCo = null } render() };
     H.trDom($('#app'));
   }
+
+  /* empresa escolhida no topo: separa motoristas, cargas, DOT e contas */
+  function coBar() {
+    if (D.companies.length < 2) return '';
+    return `<div class="card" style="padding:10px 12px;margin-bottom:12px"><label class="f" style="margin:0">Empresa<select id="gCo">${opt(D.companies.map(c => [c.id, c.name]), st.company === 'all' ? '' : st.company, 'Todas as empresas')}</select></label></div>`;
+  }
+  const inCo = cid => st.company === 'all' || cid === st.company;
+
+  /* ================= MAPA AO VIVO ================= */
+  const GEO = (() => { try { return JSON.parse(localStorage.getItem('hts-geo') || '{}') } catch (e) { return {} } })();
+  async function geocode(q) { q = String(q || '').trim(); if (!q) return null; if (GEO[q] !== undefined) return GEO[q];
+    try { const r = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=us&q=' + encodeURIComponent(q)); const j = await r.json(); GEO[q] = j[0] ? { lat: +j[0].lat, lng: +j[0].lon } : null } catch (e) { return null }
+    try { localStorage.setItem('hts-geo', JSON.stringify(GEO)) } catch (e) { } return GEO[q] }
+  const kmTo = (a, b) => { const r = x => x * Math.PI / 180, dLa = r(b.lat - a.lat), dLo = r(b.lng - a.lng), h = Math.sin(dLa / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(b.lat)) * Math.sin(dLo / 2) ** 2; return 12742 * Math.asin(Math.sqrt(h)) };
+  const ago = ts => { if (!ts) return 'nunca'; const m = Math.round((Date.now() - new Date(ts)) / 60e3); return m < 1 ? 'agora' : m < 60 ? m + ' min atrás' : m < 1440 ? Math.round(m / 60) + ' h atrás' : Math.round(m / 1440) + ' dia(s) atrás' };
+  function mapRows() {
+    return D.drivers.filter(d => d.status === 'ativo' && inCo(d.company_id)).map(d => {
+      const load = D.loads.filter(l => l.driver_id === d.id && ['coletada', 'confirmada'].includes(l.stage)).sort((a, b) => (a.stage === 'coletada' ? -1 : 1))[0];
+      const fresh = d.last_seen && Date.now() - new Date(d.last_seen) < 30 * 60e3;
+      const stt = !d.last_seen || !fresh ? 'nosig' : load && load.stage === 'coletada' ? 'route' : 'avail';
+      return { d, load, stt };
+    });
+  }
+  const STT = { route: ['Em rota', 'p-good', '#2fbf71'], avail: ['Disponível', 'p-info', '#4c7dff'], nosig: ['Sem sinal', '', '#9aa4ad'] };
+  const vMapa = {
+    html() { const R0 = mapRows(), n = k => R0.filter(x => x.stt === k).length;
+      return `<div class="stack"><div class="row between"><h1>Mapa ao vivo</h1><a class="btn sm" href="#painel">← Painel</a></div>
+        <p class="note">A posição vem do app OwnTracks (funciona com o celular fechado) ou do nosso app aberto (aba Cargas). "Sem sinal" = mais de 30 min sem atualizar.</p>
+        <div class="stats"><div class="stat"><span>Rastreados</span><b>${R0.filter(x => x.d.last_seen).length}</b></div><div class="stat"><span>Em rota</span><b>${n('route')}</b></div><div class="stat"><span>Disponíveis</span><b>${n('avail')}</b></div><div class="stat"><span>Sem sinal</span><b>${n('nosig')}</b></div></div>
+        <div id="map" style="height:340px;border-radius:14px;overflow:hidden;background:#20262d"></div>
+        ${R0.length ? R0.map(({ d, load, stt }) => { const v = d.vehicle || {}, ph = (d.phone || '').replace(/\D/g, '').replace(/^(?=\d{10}$)/, '1');
+          return `<div class="card" data-mp="${d.id}"><div class="top2"><div style="min-width:0"><b>${esc(d.name)}</b><div class="muted">${esc([v.year, v.make, v.model].filter(Boolean).join(' ') || 'veículo')}${v.plate ? ' · placa ' + esc(v.plate) : ''}${v.dims ? ' · ' + esc(v.dims) : ''}</div></div><span class="pill ${STT[stt][1]}">${STT[stt][0]}</span></div>
+            <div class="muted">📍 ${d.last_seen ? 'Atualizado ' + esc(ago(d.last_seen)) + (d.last_speed != null ? ' · ' + num(d.last_speed) + ' mph' : '') + (d.last_batt != null ? ' · 🔋 ' + num(d.last_batt) + '%' : '') : 'Ainda não ligou a localização'}</div>
+            ${load ? `<div class="muted">📦 ${esc(load.origin || '')} → ${esc(load.destination || '')}${load.delivery_window ? ' · entrega ' + esc(load.delivery_window) : ''} · ${fmtI(load.miles)} mi</div><div class="muted" data-eta="${d.id}"></div>` : ''}
+            <div class="row">${ph ? `<a class="btn sm" href="tel:+${ph}">📞</a><a class="btn sm" target="_blank" rel="noopener" href="${esc(H.wa('', ph))}">WhatsApp</a>` : ''}${d.last_lat ? `<a class="btn sm" target="_blank" rel="noopener" href="https://www.google.com/maps?q=${d.last_lat},${d.last_lng}">Ver no Google Maps</a>` : ''}${d.last_lat && load ? `<a class="btn sm" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&origin=${d.last_lat},${d.last_lng}&destination=${encodeURIComponent(load.destination || '')}">Rota até a entrega</a>` : ''}</div></div>` }).join('') : '<div class="empty">Nenhum motorista ativo nesta empresa.</div>'}</div>`;
+    },
+    async wire(v) {
+      const R0 = mapRows();
+      try { if (!document.getElementById('lfcss')) { const l = document.createElement('link'); l.id = 'lfcss'; l.rel = 'stylesheet'; l.href = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css'; document.head.appendChild(l) }
+        await H.loadScript('https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js') } catch (e) { $('#map', v).innerHTML = '<div class="empty">Sem internet para carregar o mapa.</div>'; return }
+      const el = $('#map', v); if (!el || !window.L) return;
+      const m = window.L.map(el).setView([28.5, -81.4], 6);
+      window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '© OpenStreetMap' }).addTo(m);
+      const pts = [];
+      R0.filter(x => x.d.last_lat).forEach(({ d, stt, load }) => { const p = [d.last_lat, d.last_lng]; pts.push(p);
+        window.L.circleMarker(p, { radius: 10, color: '#fff', weight: 2, fillColor: STT[stt][2], fillOpacity: 1 }).addTo(m).bindPopup(`<b>${esc(d.name)}</b><br>${STT[stt][0]} · ${esc(ago(d.last_seen))}${load ? '<br>' + esc(load.origin || '') + ' → ' + esc(load.destination || '') : ''}`) });
+      if (pts.length === 1) m.setView(pts[0], 9); else if (pts.length) m.fitBounds(pts, { padding: [30, 30] });
+      /* quanto falta e chegada estimada (linha reta × 1,2, a 55 mph) */
+      for (const { d, load } of R0) { if (!load || !d.last_lat) continue; const box = $(`[data-eta="${d.id}"]`, v); if (!box) continue;
+        const g = await geocode(load.delivery_zip || load.destination); if (!g) continue;
+        const mi = kmTo({ lat: d.last_lat, lng: d.last_lng }, g) * 0.621 * 1.2, hrs = mi / 55, tot = num(load.miles), pct = tot ? Math.max(0, Math.min(100, Math.round((1 - mi / tot) * 100))) : null;
+        box.innerHTML = `⏱ Faltam ≈ ${fmtI(Math.round(mi))} mi · chegada em ≈ ${hrs < 1 ? Math.round(hrs * 60) + ' min' : Math.floor(hrs) + 'h' + String(Math.round((hrs % 1) * 60)).padStart(2, '0')} (estimativa)${pct !== null ? `<div style="height:6px;background:#36404a;border-radius:4px;margin-top:6px"><div style="height:6px;width:${pct}%;background:#2fbf71;border-radius:4px"></div></div>` : ''}`;
+        window.L.marker([g.lat, g.lng], { title: 'Entrega' }).addTo(m).bindPopup('Entrega: ' + esc(load.destination || '')) }
+    }
+  };
 
   /* ================= pendências ================= */
   function pendings() {
@@ -1079,6 +1247,8 @@ The parties sign this Agreement electronically and agree that their electronic s
     D.docs.filter(x => x.status === 'enviado').forEach(x => { const it = H.DOCS.find(i => i.k === x.item) || { t: x.item }; out.push({ s: 'info', t: `${drv(x.driver_id).name || '—'} enviou documento`, d: it.t, go: 'motoristas/' + x.driver_id }) });
     D.quickpay.filter(q => q.status === 'pendente').forEach(q => out.push({ s: 'gold', t: `Quick Pay de ${drv(q.driver_id).name || '—'}`, d: fmt(q.amount) + ' · taxa ' + fmt(q.fee), go: 'acertos' }));
     D.quickpay.filter(q => q.status === 'aprovado' && q.eligible_on && q.eligible_on <= iso(today())).forEach(q => out.push({ s: 'warn', t: `Pagar Quick Pay de ${drv(q.driver_id).name || '—'}`, d: 'Liberado desde ' + brDate(q.eligible_on), go: 'acertos' }));
+    D.drivers.filter(d => d.status === 'ativo' && H.isTruck(d) && inCo(d.company_id)).forEach(d => { if (!D.hos.some(x => x.driver_id === d.id && x.week_start === H.lastWeek())) out.push({ s: 'warn', t: `${d.name}: log do ELD (HOS247) da semana passada`, d: 'Semana de ' + brDate(H.lastWeek()), go: 'motoristas/' + d.id }) });
+    D.drivers.filter(d => d.test_until && !H.testOn(d) && drvMissing(d, true).length && inCo(d.company_id)).forEach(d => out.push({ s: 'warn', t: `${d.name}: o teste acabou e faltam documentos`, d: 'Teste até ' + brDate(d.test_until), go: 'motoristas/' + d.id }));
     D.drivers.filter(d => d.status !== 'inativo').forEach(d => H.DOCS.forEach(it => { if (!H.docApplies(d, it)) return; const s = H.docStatus(d, it, D.docs.filter(x => x.driver_id === d.id)); if (s.s === 'bad' || s.s === 'warn') out.push({ s: s.s, t: `${d.name}: ${it.t}`, d: s.txt, go: 'motoristas/' + d.id }) }));
     D.loads.filter(l => l.stage === 'entregue' && !l.received_at).forEach(l => { const due = arDue(l), br = l.broker || 'broker';
       if (!l.invoiced_at) { if (daysTo(l.load_date) <= -2) out.push({ s: 'info', t: `Faturar carga: ${br}`, d: `${l.origin} → ${l.destination} · ${fmt(l.rate)}`, go: 'mais/contas' }) }
@@ -1100,7 +1270,7 @@ The parties sign this Agreement electronically and agree that their electronic s
       let rev = 0, pay = 0, mi = 0, dh = 0; L.forEach(l => { rev += num(l.rate); pay += num(l.driver_pay); mi += num(l.miles); dh += num(l.deadhead) });
       const disp = rev - pay, P = pendings();
       const byDrv = {}; L.forEach(l => { const k = l.driver_id || '-'; const g = byDrv[k] = byDrv[k] || { n: 0, rev: 0, mi: 0, disp: 0 }; g.n++; g.rev += num(l.rate); g.mi += num(l.miles); g.disp += num(l.rate) - num(l.driver_pay) });
-      return `<div class="stack">${filters(true)}
+      return `<div class="stack"><a class="btn gold wide" href="#mapa">🗺 Mapa ao vivo dos motoristas</a>${filters(true)}
         <div class="hero"><span class="muted">${esc(t().revenue)}</span><div class="big">${fmt(rev)}</div>
           <div class="g2"><div><span class="muted">${esc(t().yours)}</span><div class="money" style="text-align:left;font-size:20px">${fmt(disp)}</div></div><div><span class="muted">${esc(t().drivers)}</span><div class="money" style="text-align:left;font-size:20px">${fmt(pay)}</div></div></div></div>
         <div class="stats"><div class="stat"><span>${esc(t().loads)}</span><b>${L.length}</b></div><div class="stat"><span>${esc(t().rpm)}</span><b>${mi ? fmt(rev / mi) : '—'}</b></div><div class="stat"><span>${esc(t().miles)}</span><b>${fmtI(mi)}</b></div></div>
@@ -1183,7 +1353,7 @@ The parties sign this Agreement electronically and agree that their electronic s
     H.sheet(`<form id="lf" class="stack"><div class="row between"><h2>${isNew ? 'Nova carga' : 'Editar carga'}</h2><button type="button" class="btn sm" data-close>Fechar</button></div>
       <details class="card paste" ${isNew ? 'open' : ''}><summary><b>📋 ${esc(t().paste)}</b></summary>
         <p class="note">${esc(t().pasteHelp)}</p><textarea id="lfPaste" rows="5" placeholder="Pickup: Orlando, FL 32824 · 10/21 08:00&#10;Delivery: Atlanta, GA 30336 · 10/22&#10;Rate: $1,250 · 438 mi"></textarea>
-        <div class="row"><button type="button" class="btn gold" id="lfFill">${esc(t().fill)}</button><span class="btn upl">📷 Ler print<input type="file" id="lfOcr" accept="image/*"></span></div><p class="note" id="lfFound" role="status"></p></details>
+        <div class="row"><button type="button" class="btn gold" id="lfFill">${esc(t().fill)}</button><span class="btn upl">📷 Ler print(s)<input type="file" id="lfOcr" accept="image/*" multiple></span></div><p class="note" id="lfFound" role="status"></p></details>
       <p class="note">Só ofereça ao motorista depois de negociar com o broker. Não deixe valor em branco: se não souber, pergunte antes.</p>
       <div class="g2">
         <label class="f full">Etapa<select name="stage">${opt(Object.entries(STAGE).map(([k, v]) => [k, v[0] + (k === 'oferta' ? ' (aparece para o motorista aceitar)' : '')]), l.stage)}</select></label>
@@ -1216,8 +1386,8 @@ The parties sign this Agreement electronically and agree that their electronic s
       const f = $('#lf', api.el), dSel = $('#lfD', f), pIn = $('#lfP', f);
       const syncDrv = () => { const d = drv(dSel.value); if (isNew || pIn.value === '') pIn.value = d.dispatch_pct ?? 10; };
       dSel.onchange = () => { syncDrv(); calc() }; if (pIn.value === '') syncDrv();
-      $('#lfOcr', f).onchange = async e => { const fl = e.target.files[0]; e.target.value = ''; if (!fl) return; const msg = $('#lfFound', f);
-        try { msg.textContent = H.tr('Lendo o print…'); const txt = await H.ocr(fl, p => { msg.textContent = H.tr('Lendo o print…') + ' ' + p + '%' }); $('#lfPaste', f).value = txt; $('#lfFill', f).click() } catch (x) { msg.textContent = ''; H.fail(x) } };
+      $('#lfOcr', f).onchange = async e => { const fls = [...e.target.files]; e.target.value = ''; if (!fls.length) return; const msg = $('#lfFound', f);
+        try { let all = ''; for (const fl of fls) { msg.textContent = H.tr('Lendo o print…'); all += '\n' + await H.ocr(fl, p => { msg.textContent = H.tr('Lendo o print…') + ' ' + p + '%' }) } $('#lfPaste', f).value = all.trim(); $('#lfFill', f).click() } catch (x) { msg.textContent = ''; H.fail(x) } };
       $('#lfFill', f).onclick = () => { const r = H.parseLoad($('#lfPaste', f).value), d = r.data;
         Object.entries(d).forEach(([k, v]) => { const i = $(`[name="${k}"]`, f); if (i && v != null && v !== '') i.value = v });
         const lbl = Object.keys(d).filter(k => d[k] != null && d[k] !== '').length;
@@ -1245,19 +1415,19 @@ The parties sign this Agreement electronically and agree that their electronic s
       const id = location.hash.split('/')[1];
       if (id && drv(id).id) { setTimeout(() => driverSheet(drv(id)), 0); history.replaceState(null, '', '#motoristas') }
       return `<div class="stack"><div class="row between"><h1>Motoristas</h1><button class="btn gold" id="newDrv">+ Motorista</button></div>
-      ${D.drivers.length ? D.drivers.map(d => { const rows = D.docs.filter(x => x.driver_id === d.id); let bad = 0, warn = 0, miss = 0, rev = 0;
+      ${D.drivers.filter(d => inCo(d.company_id)).length ? D.drivers.filter(d => inCo(d.company_id)).map(d => { const rows = D.docs.filter(x => x.driver_id === d.id); let bad = 0, warn = 0, miss = 0, rev = 0;
         H.DOCS.forEach(it => { if (!H.docApplies(d, it)) return; const s = H.docStatus(d, it, rows).s; if (s === 'bad') bad++; else if (s === 'warn') warn++; else if (s === 'miss') miss++; else if (s === 'review') rev++ });
         const v = d.vehicle || {};
         return `<button class="card tap sev ${bad ? 'bad' : warn || miss ? 'warn' : 'good'}" data-d="${d.id}"><div class="top2"><div style="min-width:0"><b>${esc(d.name)}</b>
           <div class="muted">${esc(comp(d.company_id).name || 'sem empresa')} · ${num(d.dispatch_pct)}% · ${esc([v.year, v.make, v.model].filter(Boolean).join(' ') || 'veículo não cadastrado')}</div></div>
           <span class="pill ${d.user_id ? 'p-good' : ''}">${d.user_id ? 'App ativo' : 'Sem conta'}</span></div>
-          <div class="row"><span class="pill ${drvMissing(d).length ? 'p-bad' : 'p-good'}">${drvMissing(d).length ? 'Bloqueado para cargas' : 'Liberado para cargas'}</span></div>
+          <div class="row"><span class="pill ${drvMissing(d).length ? 'p-bad' : H.testOn(d) ? 'p-warn' : 'p-good'}">${drvMissing(d).length ? 'Bloqueado para cargas' : H.testOn(d) && drvMissing(d, true).length ? 'Liberado para teste até ' + brDate(d.test_until) : 'Liberado para cargas'}</span><span class="pill">${H.isCMV(d) ? 'Caminhão' : 'Van'}</span></div>
           <div class="row">${rev ? `<span class="pill p-info">${rev} para revisar</span>` : ''}${bad ? `<span class="pill p-bad">${bad} vencido/rejeitado</span>` : ''}${warn ? `<span class="pill p-warn">${warn} vencendo</span>` : ''}${miss ? `<span class="pill p-bad">${miss} faltando</span>` : ''}${!bad && !warn && !miss && !rev ? '<span class="pill p-good">Pasta completa</span>' : ''}${d.status !== 'ativo' ? `<span class="pill">${esc(d.status)}</span>` : ''}</div></button>` }).join('') : '<div class="empty">Nenhum motorista. Toque em <b>+ Motorista</b>.</div>'}</div>`;
     },
     wire(v) { $('#newDrv', v).onclick = () => driverSheet(null); $$('[data-d]', v).forEach(b => b.onclick = () => driverSheet(drv(b.dataset.d))) }
   };
   function driverSheet(d) {
-    const isNew = !d; d = d || { dispatch_pct: 10, lang: 'pt', show_gross: true, status: 'ativo', vehicle: {}, license_state: 'FL' };
+    const isNew = !d; d = d || { dispatch_pct: 12, lang: 'pt', show_gross: true, status: 'ativo', vehicle: {}, license_state: 'FL' };
     const v = d.vehicle || {}, rows = D.docs.filter(x => x.driver_id === d.id);
     const appUrl = location.origin + location.pathname;
     H.sheet(`<div class="row between"><h2>${esc(d.name || 'Novo motorista')}</h2><button class="btn sm" data-close>Fechar</button></div>
@@ -1269,6 +1439,7 @@ The parties sign this Agreement electronically and agree that their electronic s
         <label class="f">Roda pela empresa<select name="company_id">${opt(carriers().map(c => [c.id, c.name]), d.company_id, 'Escolha')}</select></label>
         <label class="f">Situação<select name="status">${opt([['ativo', 'Ativo'], ['candidato', 'Candidato'], ['inativo', 'Inativo']], d.status)}</select></label>
         <label class="f">% dispatch<input type="number" step="0.5" name="dispatch_pct" value="${esc(d.dispatch_pct)}"></label>
+        <label class="f">% que o motorista recebe (caminhão da empresa)<input type="number" step="0.5" name="drv_pct" value="${(d.vehicle || {}).owner === 'company' ? esc(100 - num(d.dispatch_pct)) : ''}" placeholder="ex.: 30"></label>
         <label class="f">Mínimo $/milha<input type="number" step="0.01" name="min_rpm" value="${esc(d.min_rpm ?? '')}"></label>
         <label class="f">Idioma do app<select name="lang">${opt([['pt', 'Português'], ['es', 'Español'], ['en', 'English']], d.lang)}</select></label>
         <label class="f">Nome que aparece no app<input name="brand" value="${esc(d.brand)}" placeholder="Empresa dele (ex.: Ramirez Express LLC)"></label>
@@ -1281,9 +1452,21 @@ The parties sign this Agreement electronically and agree that their electronic s
       </div><h3>Veículo</h3><div class="g3">
         <label class="f">Ano<input name="v_year" value="${esc(v.year)}" inputmode="numeric"></label><label class="f">Marca<input name="v_make" value="${esc(v.make)}"></label><label class="f">Modelo<input name="v_model" value="${esc(v.model)}"></label>
         <label class="f">VIN<input name="v_vin" value="${esc(v.vin)}"></label><label class="f">Placa<input name="v_plate" value="${esc(v.plate)}"></label><label class="f">GVWR (lbs)<input name="v_gvwr" value="${esc(v.gvwr)}" inputmode="numeric"></label>
+        <label class="f">Valor do veículo ($)<input name="v_value" value="${esc(v.value)}" inputmode="numeric"></label>
+        <label class="f full">Medidas da área de carga (pol.: comprimento × largura × altura)<input name="v_dims" value="${esc(v.dims)}" placeholder="110 x 57 x 67"></label>
+        <label class="f full">Dono do veículo<select name="v_owner">${opt([['driver', 'O motorista (owner-operator)'], ['company', 'A empresa / a Helen (motorista só dirige)']], v.owner || 'driver')}</select></label>
+        <label class="f full">Tipo de veículo<select name="v_type">${opt([['van', 'Van (menos de 10.001 lbs) — pasta simples'], ['truck', 'Caminhão / box truck (10.001 lbs ou mais) — pasta completa do auditor']], v.type || (num(v.gvwr) >= 10001 ? 'truck' : v.gvwr ? 'van' : ''), 'Escolha')}</select></label>
       </div>
+      <h3>Contatos de emergência</h3>
+      ${[0, 1].map(i => { const e = (d.emergency || [])[i] || {}; return `<div class="g3"><label class="f">Nome completo ${i + 1}<input name="ec${i}_name" value="${esc(e.name)}"></label><label class="f">Telefone<input type="tel" name="ec${i}_phone" value="${esc(e.phone)}"></label><label class="f">Parentesco<input name="ec${i}_rel" value="${esc(e.rel)}" placeholder="mãe, esposa, irmão…"></label></div>` }).join('')}
+      <h3>Liberar para teste</h3>
+      <div class="g2"><label class="f">Liberado para cargas até<input type="date" name="test_until" value="${esc(d.test_until || '')}"></label>
+        <p class="note">Até essa data, os documentos que faltam não bloqueiam as cargas. Depois, ele volta a ser cobrado. Deixe vazio para não liberar.</p></div>
       <button class="btn gold wide" id="dfSave">Salvar dados</button></form>
       ${isNew ? '<p class="note">Salve para liberar a logo, os documentos e o convite.</p>' : `
+      <h3>Seguro (Ruben Cargo)</h3>
+      <p class="note">Abre o SMS ou o e-mail já com o pedido de cotação em inglês para a Valéria: só o motorista, se o veículo é da empresa; motorista + veículo (seguro completo), se o veículo é dele. Salve os dados antes. O telefone e o e-mail dela ficam em Mais → Candidatos.</p>
+      ${quoteBtns(d.name, drvQuote(d))}
       <h3>Logo no app e nos acertos</h3>
       <div class="row">${d.logo_path ? `<img src="${esc(H.logoUrl(d.logo_path))}" alt="" style="width:64px;height:64px;object-fit:contain;background:#fff;border-radius:10px">` : '<span class="note">Sem logo: o app mostra as iniciais.</span>'}
         <span class="btn sm upl">${d.logo_path ? 'Trocar logo' : 'Enviar logo'}<input type="file" id="dLogo" accept="image/*"></span></div>
@@ -1292,20 +1475,24 @@ The parties sign this Agreement electronically and agree that their electronic s
         <a class="btn" target="_blank" rel="noopener" href="${esc(H.wa(inviteText(d, appUrl), (d.phone || '').replace(/\D/g, '').replace(/^(?=\d{10}$)/, '1')))}">Mandar convite pelo WhatsApp</a>`}
       <h3>Pasta (checklist do auditor)</h3>
       ${(() => { const m = drvMissing(d); return m.length ? `<div class="card sev bad"><b>Bloqueado para aceitar cargas</b><span class="muted">Falta o motorista enviar: ${esc(m.map(it => it.t).join(', '))}</span>${d.phone ? `<a class="btn gold" target="_blank" rel="noopener" href="${esc(H.wa(chargeText(d, m), (d.phone || '').replace(/\D/g, '').replace(/^(?=\d{10}$)/, '1')))}">Cobrar pelo WhatsApp</a>` : '<span class="muted">Cadastre o telefone para cobrar pelo WhatsApp.</span>'}</div>` : '<div class="card sev good"><b>Liberado para cargas</b><span class="muted">O motorista já enviou todos os documentos dele.</span></div>' })()}
-      ${!H.isCMV(d) ? '<p class="note">Veículo abaixo de 10,001 lbs: a pasta DQ federal não é obrigatória. Os itens aparecem como recomendados.</p>' : ''}
+      ${H.testOn(d) && drvMissing(d, true).length ? `<div class="card sev warn"><b>Liberado para teste até ${esc(brDate(d.test_until))}</b><span class="muted">Ainda faltam: ${esc(drvMissing(d, true).map(it => it.t).join(', '))}</span></div>` : ''}
+      ${!H.isCMV(d) ? '<p class="note">Van (abaixo de 10.001 lbs): só carteira, W-9, seguro, registro, fotos, lease e MVR são obrigatórios. O resto aparece como recomendado.</p>' : ''}
       <div class="stack" id="docs">${H.DOCS.filter(it => H.docApplies(d, it)).map(it => docRow(d, it, rows)).join('')}</div>
+      ${H.isCMV(d) ? hosBlock(d) : ''}
+      ${trackBlock(d)}
       <h3>Contratos e fichas assinadas</h3>
       <div class="stack">${D.agr.filter(a => a.driver_id === d.id).map(a => `<div class="card sev ${a.status === 'assinado' ? 'good' : 'gold'}" data-agr="${a.id}"><div class="top2"><div><b>${esc(AGT[a.kind] || a.kind)}</b><div class="muted">${new Date(a.created_at).toLocaleDateString('pt-BR')}${a.driver_signed_name ? ' · ' + esc(a.driver_signed_name) : ''}</div></div><span class="pill ${a.status === 'assinado' ? 'p-good' : 'p-warn'}">${esc(AGS[a.status])}</span></div>
         <div class="row"><button class="btn sm" data-a="pdf">Ver / PDF</button>${a.status === 'aguardando_empresa' ? '<button class="btn sm gold" data-a="csign">Assinar pela transportadora</button>' : ''}${a.status === 'aguardando_motorista' ? '<button class="btn sm bad" data-a="del">Cancelar</button>' : ''}</div></div>`).join('') || '<p class="note">Nenhum ainda. O motorista preenche e assina a ficha (application) e os outros formulários na aba Documentos do app dele.</p>'}</div>
       <button class="btn gold" id="newLease">+ Contrato de lease para ele assinar</button>
       <h3>Remover</h3><p class="note">A lei pede guardar a pasta até 3 anos depois que ele sair. Prefira marcar "Inativo".</p><button class="btn bad" id="dDel">Apagar motorista</button>`}`, api => {
       const f = $('#df', api.el);
-      f.onsubmit = async e => { e.preventDefault(); const o = H.form(f); const veh = { year: o.v_year, make: o.v_make, model: o.v_model, vin: o.v_vin, plate: o.v_plate, gvwr: o.v_gvwr };
-        ['v_year', 'v_make', 'v_model', 'v_vin', 'v_plate', 'v_gvwr'].forEach(k => delete o[k]); o.vehicle = veh; o.email = o.email ? o.email.toLowerCase() : null; o.dispatch_pct = o.dispatch_pct ?? 10;
+      f.onsubmit = async e => { e.preventDefault(); const o = H.form(f); const veh = { ...(d.vehicle || {}), year: o.v_year, make: o.v_make, model: o.v_model, vin: o.v_vin, plate: o.v_plate, gvwr: o.v_gvwr, type: o.v_type || null, owner: o.v_owner || 'driver', dims: (o.v_dims || '').trim() || null, value: (o.v_value || '').trim() || null }; o.test_until = o.test_until || null; if (o.v_owner === 'company' && num(o.drv_pct) > 0) o.dispatch_pct = 100 - num(o.drv_pct); delete o.drv_pct;
+        ['v_year', 'v_make', 'v_model', 'v_vin', 'v_plate', 'v_gvwr', 'v_type', 'v_owner', 'v_dims', 'v_value'].forEach(k => delete o[k]);
+        o.emergency = [0, 1].map(i => ({ name: (o['ec' + i + '_name'] || '').trim(), phone: (o['ec' + i + '_phone'] || '').trim(), rel: (o['ec' + i + '_rel'] || '').trim() })).filter(e => e.name || e.phone); [0, 1].forEach(i => ['name', 'phone', 'rel'].forEach(k => delete o['ec' + i + '_' + k])); o.vehicle = veh; o.email = o.email ? o.email.toLowerCase() : null; o.dispatch_pct = o.dispatch_pct ?? 10;
         await H.busy($('#dfSave', f), async () => { if (isNew) { const r = await H.q(H.sb.from('drivers').insert(o).select().single()); api.close(); await load(['drivers']); render(); driverSheet(drv(r.id)) } else { await H.q(H.sb.from('drivers').update(o).eq('id', d.id)); H.toast('Dados salvos'); await load(['drivers']); render(); api.close(); driverSheet(drv(d.id)) } }) };
       if (isNew) return;
       $('#dLogo', api.el).onchange = async e => { const file = e.target.files[0]; if (!file) return; try { H.toast('Enviando logo…'); const up = await H.upload('logos', d.id, file); await H.q(H.sb.from('drivers').update({ logo_path: up.path }).eq('id', d.id)); await load(['drivers']); api.close(); driverSheet(drv(d.id)); H.toast('Logo salva') } catch (x) { H.fail(x) } };
-      wireDocs(api, d);
+      wireDocs(api, d); wireHos(api, d); wireTrack(api, d);
       $('#newLease', api.el).onclick = () => { api.close(); leaseForm(d) };
       $$('[data-agr]', api.el).forEach(el => { const a = D.agr.find(x => x.id === el.dataset.agr), b = k => $(`[data-a="${k}"]`, el);
         b('pdf').onclick = () => H.printAgreement(a, comp(a.company_id), d.name);
@@ -1314,19 +1501,63 @@ The parties sign this Agreement electronically and agree that their electronic s
       H.confirmBtn($('#dDel', api.el), 'Toque de novo para apagar tudo', async () => { await H.q(H.sb.from('drivers').delete().eq('id', d.id)); api.close(); H.toast('Motorista apagado'); A.reload(['drivers', 'docs']) });
     });
   }
-  const drvMissing = d => H.DOCS.filter(it => it.drv && H.docRequired(d, it) && ['miss', 'bad'].includes(H.docStatus(d, it, D.docs.filter(x => x.driver_id === d.id)).s) && !(it.k === 'lease' && D.agr.some(g => g.driver_id === d.id && g.kind === 'lease' && g.status === 'aguardando_empresa')));
+  const drvMissing = (d, ignoreTest) => (!ignoreTest && H.testOn(d)) ? [] : H.DOCS.filter(it => it.drv && H.docRequired(d, it) && (['miss', 'bad'].includes(H.docStatus(d, it, D.docs.filter(x => x.driver_id === d.id)).s) || (it.k === 'vehicle_photos' && !H.sidesOk(D.docs.filter(x => x.driver_id === d.id)))) && !(it.k === 'lease' && D.agr.some(g => g.driver_id === d.id && g.kind === 'lease' && g.status === 'aguardando_empresa')));
   const chargeText = (d, m) => { const i = { es: 0, en: 1 }[d.lang], tt = it => i === undefined ? it.t : ((H.I18N[it.t] || [])[i] || it.t), url = location.origin + location.pathname;
     const head = { es: `Hola ${d.name}! Para poder aceptar cargas en la app, todavía falta enviar:`, en: `Hi ${d.name}! To accept loads in the app, you still need to send:` }[d.lang] || `Olá ${d.name}! Para poder aceitar cargas no app, ainda falta enviar:`;
     const foot = { es: 'Abre la app, pestaña Documentos, y toca Enviar archivo.', en: 'Open the app, Documents tab, and tap Upload file.' }[d.lang] || 'Abra o app, aba Documentos, e toque em Enviar arquivo.';
     return head + '\n' + m.map(it => '• ' + tt(it)).join('\n') + '\n\n' + foot + '\n' + url };
   const inviteText = (d, url) => ({ es: `Hola ${d.name}! Esta es la app de Helen Transport Services. Abra el enlace, toque en "Criar conta" y use este correo: ${d.email || ''}\n${url}\nEn el iPhone: Compartir → Agregar a inicio. En Android: menú ⋮ → Instalar app.`, en: `Hi ${d.name}! This is the Helen Transport Services app. Open the link, tap "Criar conta" (create account) and use this email: ${d.email || ''}\n${url}\niPhone: Share → Add to Home Screen. Android: ⋮ menu → Install app.` }[d.lang] || `Olá ${d.name}! Este é o app da Helen Transport Services. Abra o link, toque em "Criar conta" e use este e-mail: ${d.email || ''}\n${url}\nNo iPhone: Compartilhar → Adicionar à Tela de Início. No Android: menu ⋮ → Instalar app.`);
+  /* rastreamento com o OwnTracks (funciona com o celular fechado) */
+  const trackUrl = d => d.track_token ? `${H.cfg.url}/functions/v1/track?t=${d.track_token}` : '';
+  function trackText(d) { const u = trackUrl(d), es = d.lang === 'es', en = d.lang === 'en';
+    return es ? `Hola ${d.name}! Para que la empresa siga tu viaje (aunque la app esté cerrada):\n1) Instala la app gratis *OwnTracks* (App Store o Google Play).\n2) Ábrela y permite la ubicación *Siempre*.\n3) iPhone: toca la (i) arriba a la izquierda → *Settings* → *Mode*: HTTP → *URL*: pega el enlace de abajo.\n   Android: Menú → *Preferences* → *Connection* → *Mode*: HTTP → *Host*: pega el enlace.\n4) En la pantalla del mapa, elige el modo *Move*.\nEnlace:\n${u}`
+      : en ? `Hi ${d.name}! So the company can follow your trip (even with the app closed):\n1) Install the free app *OwnTracks* (App Store or Google Play).\n2) Open it and allow location *Always*.\n3) iPhone: tap the (i) at the top left → *Settings* → *Mode*: HTTP → *URL*: paste the link below.\n   Android: Menu → *Preferences* → *Connection* → *Mode*: HTTP → *Host*: paste the link.\n4) On the map screen, choose *Move* mode.\nLink:\n${u}`
+      : `Olá ${d.name}! Para a empresa acompanhar a sua viagem (mesmo com o app fechado):\n1) Instale o app grátis *OwnTracks* (App Store ou Google Play).\n2) Abra e permita a localização *Sempre*.\n3) iPhone: toque no (i) no alto à esquerda → *Settings* → *Mode*: HTTP → *URL*: cole o link abaixo.\n   Android: Menu → *Preferences* → *Connection* → *Mode*: HTTP → *Host*: cole o link.\n4) Na tela do mapa, escolha o modo *Move*.\nLink:\n${u}` }
+  function trackBlock(d) {
+    return `<h3>Rastreamento com o app fechado (OwnTracks)</h3>
+      <p class="note">O motorista instala o app grátis OwnTracks e coloca o link dele. A posição aparece no Mapa ao vivo mesmo com o celular bloqueado.</p>
+      ${d.track_token ? `<div class="card"><span class="muted" style="word-break:break-all">${esc(trackUrl(d))}</span>
+        <div class="row">${d.phone ? `<a class="btn sm gold" target="_blank" rel="noopener" href="${esc(H.wa(trackText(d), (d.phone || '').replace(/\D/g, '').replace(/^(?=\d{10}$)/, '1')))}">Mandar instruções pelo WhatsApp</a>` : ''}<button class="btn sm" id="trkCopy">Copiar o link</button><button class="btn sm" id="trkNew">Trocar o link</button></div>
+        <span class="muted">${d.last_seen ? 'Última posição: ' + esc(new Date(d.last_seen).toLocaleString('pt-BR')) + (d.last_batt != null ? ' · bateria ' + num(d.last_batt) + '%' : '') : 'Ainda não recebeu nenhuma posição.'}</span></div>`
+      : `<button class="btn" id="trkNew">Criar link de rastreamento</button>`}`;
+  }
+  function wireTrack(api, d) {
+    const nb = $('#trkNew', api.el); if (nb) nb.onclick = () => H.busy(nb, async () => { const tok = (crypto.randomUUID() + crypto.randomUUID()).replace(/-/g, '');
+      await H.q(H.sb.from('drivers').update({ track_token: tok }).eq('id', d.id)); await load(['drivers']); render(); api.close(); driverSheet(drv(d.id)) });
+    const cb = $('#trkCopy', api.el); if (cb) cb.onclick = () => { try { navigator.clipboard.writeText(trackUrl(d)).then(() => H.toast('Link copiado')) } catch (e) { } };
+  }
+  /* logs do ELD (HOS247): um PDF por semana, guardado por motorista e empresa */
+  function hosBlock(d) {
+    const L = D.hos.filter(x => x.driver_id === d.id).sort((a, b) => String(b.week_start).localeCompare(String(a.week_start)));
+    const weeks = []; for (let i = 1; i <= 26; i++) { const x = today(); x.setDate(x.getDate() - 7 * i); weeks.push(H.weekStart(x)) }
+    const have = new Set(L.map(x => x.week_start)), miss = weeks.slice(0, 8).filter(w => !have.has(w));
+    return `<h3>Logs do ELD (HOS247)</h3>
+      <p class="note">Toda semana: no app HOS247, exporte o log da semana em PDF (ou tire print) e envie aqui. Fica guardado para a revisão de 6 meses e para o auditor.</p>
+      ${miss.length ? `<div class="card sev warn"><b>Faltam ${miss.length} semana(s) das últimas 8</b><span class="muted">${esc(miss.map(brDate).join(', '))}</span></div>` : '<div class="card sev good"><b>Logs das últimas 8 semanas em dia</b></div>'}
+      <div class="row"><label class="f" style="flex:1 1 160px">Semana que começa em<select id="hosW">${opt(weeks.slice(0, 12).map(w => [w, brDate(w)]), H.lastWeek())}</select></label>
+        <span class="btn sm gold upl">Enviar log<input type="file" id="hosF" accept="image/*,application/pdf"></span>
+        <button class="btn sm" id="hosP">Imprimir 6 meses</button></div>
+      <div class="stack">${L.slice(0, 12).map(x => `<div class="card"><div class="top2"><div><b>Semana de ${esc(brDate(x.week_start))}</b><div class="muted">${esc(x.note || '')}</div></div>${x.file_path ? `<button class="btn sm" data-open="${esc(x.file_path)}">Ver</button>` : ''}</div></div>`).join('')}</div>`;
+  }
+  function wireHos(api, d) {
+    const f = $('#hosF', api.el); if (!f) return;
+    f.onchange = async e => { const file = e.target.files[0]; e.target.value = ''; if (!file) return; const w = $('#hosW', api.el).value;
+      try { H.toast('Enviando…'); const r = await H.upload('files', `${d.id}/hos/${w}`, file);
+        await H.q(H.sb.from('hos_logs').insert({ driver_id: d.id, company_id: d.company_id || null, week_start: w, file_path: r.path, note: 'Enviado pela Helen' }));
+        H.toast('Log salvo'); await load(['hos']); render(); api.close(); driverSheet(drv(d.id)) } catch (x) { H.fail(x) } };
+    $('#hosP', api.el).onclick = () => { const c = comp(d.company_id), weeks = []; for (let i = 1; i <= 26; i++) { const x = today(); x.setDate(x.getDate() - 7 * i); weeks.push(H.weekStart(x)) }
+      const by = {}; D.hos.filter(x => x.driver_id === d.id).forEach(x => by[x.week_start] = x);
+      $('#print').innerHTML = (`<h1>Hours of Service — 6-month log review</h1><p><b>Carrier:</b> ${esc(c.name || '')} ${c.dot ? '· USDOT ' + esc(c.dot) : ''}<br><b>Driver:</b> ${esc(d.name)}<br><b>Printed:</b> ${new Date().toLocaleDateString('en-US')}</p>
+        <table><tr><th>Week starting</th><th>ELD log on file</th><th>Uploaded</th></tr>${weeks.map(w => `<tr><td>${esc(w)}</td><td>${by[w] ? 'Yes' : 'MISSING'}</td><td>${by[w] ? esc(String(by[w].created_at).slice(0, 10)) : ''}</td></tr>`).join('')}</table>
+        <p>Reviewed by: ______________________ Date: __________</p>`); window.print() };
+  }
   function docRow(d, it, rows) {
     const s = H.docStatus(d, it, rows), last = s.last;
     const dateField = it.kind === 'expiry' || it.kind === 'work' ? ['expires_on', it.kind === 'work' ? 'Vence em (se tiver)' : 'Vence em'] : it.kind === 'yearly' ? ['done_on', 'Feito em'] : null;
     return `<div class="card" data-item="${it.k}"><div class="top2"><div style="min-width:0"><b>${esc(it.t)}</b> ${it.p ? `<span class="muted">${esc(it.p)}</span>` : ''}
-      ${last && last.note ? `<div class="muted">${esc(last.note)}</div>` : ''}</div><span class="pill ${H.pillCls[s.s]}">${esc(s.txt)}</span></div>
+      ${last && last.note ? `<div class="muted">${esc(last.note)}</div>` : ''}${!last && H.howto(it.k) ? `<div class="muted">💡 ${esc(H.howto(it.k))}</div>` : ''}</div><span class="pill ${H.pillCls[s.s]}">${esc(s.txt)}</span></div>
       ${last && last.agreement_id ? `<button class="btn sm" data-agrview="${esc(last.agreement_id)}">Ver documento assinado</button>` : ''}
-      ${last && last.file_path ? `<button class="btn sm" data-open="${esc(last.file_path)}">Ver arquivo (${esc(brDate(String(last.created_at).slice(0, 10)))})</button>` : ''}
+      ${it.k === 'vehicle_photos' ? `<div class="row">${H.VPHOTOS.map(k => { const x = H.vpRow(rows, k); return x && x.file_path ? `<button class="btn sm" data-open="${esc(x.file_path)}">✅ ${esc(x.note || k)}</button>` : `<span class="pill p-bad">Falta: ${esc(k)}</span>` }).join('')}</div>` : last && last.file_path ? `<button class="btn sm" data-open="${esc(last.file_path)}">Ver arquivo (${esc(brDate(String(last.created_at).slice(0, 10)))})</button>` : ''}
       ${last && last.status === 'enviado' ? `<div class="row">${dateField ? `<input type="date" data-date="${dateField[0]}" aria-label="${dateField[1]}" style="max-width:180px">` : ''}<button class="btn sm gold" data-a="approve">Aprovar</button></div>
         <div class="row"><input data-reason placeholder="Motivo da rejeição" style="flex:1"><button class="btn sm bad" data-a="reject">Rejeitar</button></div>` : `
       <div class="row">${dateField ? `<label class="f" style="flex:1 1 150px">${dateField[1]}<input type="date" data-date="${dateField[0]}" value="${esc(last && last.status === 'aprovado' ? last[dateField[0]] || '' : '')}"></label>` : ''}
@@ -1342,7 +1573,8 @@ The parties sign this Agreement electronically and agree that their electronic s
       const need = () => { if (it.kind === 'expiry' && !(dateIn && dateIn.value)) { H.toast('Coloque a data de vencimento', true); return false } return true };
       const refresh = async () => { await load(['docs']); render(); api.close(); driverSheet(drv(d.id)) };
       const b = a => $(`[data-a="${a}"]`, card);
-      if (b('approve')) b('approve').onclick = () => { if (!need()) return; H.busy(b('approve'), async () => { await H.q(H.sb.from('driver_docs').update({ status: 'aprovado', reviewed_at: new Date().toISOString(), ...dates(), ...(it.kind === 'yearly' && !(dateIn && dateIn.value) ? { done_on: iso(today()) } : {}) }).eq('id', last.id)); H.toast('Aprovado'); refresh() }) };
+      if (b('approve')) b('approve').onclick = () => { if (!need()) return; H.busy(b('approve'), async () => { const upd = H.sb.from('driver_docs').update({ status: 'aprovado', reviewed_at: new Date().toISOString(), ...dates(), ...(it.kind === 'yearly' && !(dateIn && dateIn.value) ? { done_on: iso(today()) } : {}) });
+        await H.q(it.k === 'vehicle_photos' ? upd.eq('driver_id', d.id).eq('item', 'vehicle_photos').eq('status', 'enviado') : upd.eq('id', last.id)); H.toast('Aprovado'); refresh() }) };
       if (b('reject')) b('reject').onclick = () => { const r = $('[data-reason]', card).value.trim(); if (!r) { H.toast('Escreva o motivo para o motorista', true); return } H.busy(b('reject'), async () => { await H.q(H.sb.from('driver_docs').update({ status: 'rejeitado', note: r, reviewed_at: new Date().toISOString() }).eq('id', last.id)); H.toast('Rejeitado'); refresh() }) };
       if (b('nofile')) b('nofile').onclick = () => { if (!need()) return; H.busy(b('nofile'), async () => { await H.q(H.sb.from('driver_docs').insert({ driver_id: d.id, item: it.k, status: 'aprovado', note: 'Registrado sem arquivo', reviewed_at: new Date().toISOString(), ...dates(), ...(it.kind === 'yearly' && !(dateIn && dateIn.value) ? { done_on: iso(today()) } : {}) })); H.toast('Registrado'); refresh() }) };
       const up = $('[data-up]', card); if (up) up.onchange = async e => { const file = e.target.files[0]; e.target.value = ''; if (!file) return; if (!need()) return;
@@ -1363,7 +1595,7 @@ The parties sign this Agreement electronically and agree that their electronic s
           <div class="row"><span class="pill ${q.status === 'pago' ? 'p-good' : q.status === 'aprovado' ? 'p-warn' : 'p-gold'}">${{ pendente: 'Esperando aprovação', aprovado: 'Aprovado', pago: 'Pago ' + brDate(q.paid_at) }[q.status]}</span></div>
           <div class="row">${q.status === 'pendente' ? '<button class="btn sm gold" data-a="ok">Aprovar</button><button class="btn sm bad" data-a="no">Negar</button>' : ''}${q.status === 'aprovado' ? '<button class="btn sm gold" data-a="pay">Registrar pagamento</button>' : ''}</div></div>`).join('') : '<div class="empty">Nenhum pedido de Quick Pay.</div>'}
         <h2>Acertos semanais</h2>
-        ${D.settlements.length ? D.settlements.map(s => `<div class="card sev ${s.status === 'pago' ? 'good' : s.status === 'aprovado' ? 'warn' : 'gold'}" data-set="${s.id}"><div class="top2"><div><b>${esc(drv(s.driver_id).name)}</b><div class="muted">${brDate(s.period_start)} a ${brDate(s.period_end)} · ${esc(comp(s.company_id).name || '')}</div></div><div class="money">${fmt(s.net)}<div class="muted">cargas ${fmt(s.loads_total)} · comb. −${fmt(s.fuel_total)}</div></div></div>
+        ${D.settlements.filter(s => inCo(s.company_id)).length ? D.settlements.filter(s => inCo(s.company_id)).map(s => `<div class="card sev ${s.status === 'pago' ? 'good' : s.status === 'aprovado' ? 'warn' : 'gold'}" data-set="${s.id}"><div class="top2"><div><b>${esc(drv(s.driver_id).name)}</b><div class="muted">${brDate(s.period_start)} a ${brDate(s.period_end)} · ${esc(comp(s.company_id).name || '')}</div></div><div class="money">${fmt(s.net)}<div class="muted">cargas ${fmt(s.loads_total)} · comb. −${fmt(s.fuel_total)}</div></div></div>
           <div class="row"><span class="pill ${s.status === 'pago' ? 'p-good' : s.status === 'aprovado' ? 'p-warn' : 'p-gold'}">${{ rascunho: 'Rascunho (só você vê)', aprovado: 'Aprovado (o motorista já vê)', pago: 'Pago ' + brDate(s.paid_at) + (s.method ? ' · ' + s.method : '') }[s.status]}</span></div>
           <div class="row"><button class="btn sm" data-a="pdf">Ver / PDF</button>${s.status === 'rascunho' ? '<button class="btn sm gold" data-a="approve">Aprovar</button><button class="btn sm bad" data-a="del">Desfazer</button>' : ''}${s.status === 'aprovado' ? '<button class="btn sm gold" data-a="pay">Registrar pagamento</button>' : ''}</div></div>`).join('') : '<div class="empty">Nenhum acerto ainda.</div>'}</div>`;
     },
@@ -1682,23 +1914,50 @@ The parties sign this Agreement electronically and agree that their electronic s
     });
   }
   const APPF = { license: 'Carteira de motorista', med: 'Medical card', coi: 'Seguro (COI)', registration: 'Registro do veículo', vehicle_photos: 'Fotos do veículo', workauth: 'Autorização de trabalho', mc_letter: 'Carta do MC / autoridade', w9: 'W-9' };
+  /* mensagem (em inglês) para a corretora Valéria cotar a inclusão de motorista e/ou veículo no seguro da Ruben Cargo */
+  const VALK = 'hts-valeria', VALE = 'hts-valeria-mail';
+  const lsGet = (k, dflt) => { try { const v = localStorage.getItem(k); return v === null ? dflt : v } catch (e) { return dflt } };
+  const valNum = () => lsGet(VALK, '(945) 277-8441').replace(/\D/g, '').replace(/^(?=\d{10}$)/, '1');
+  const valMail = () => lsGet(VALE, 'valeria@mrwilsoninsurance.com').trim();
+  const valSms = text => 'sms:' + (valNum() ? '+' + valNum() : '') + '?&body=' + encodeURIComponent(text);
+  const valEmail = (subj, text) => 'mailto:' + valMail() + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(text);
+  const quoteBtns = (name, text) => `<div class="row"><a class="btn sm" href="${esc(valSms(text))}">📱 Cotação do seguro por SMS (Valéria)</a><a class="btn sm" href="${esc(valEmail('Quote request – add ' + (name || 'driver') + ' – Ruben Cargo Transportation LLC', text))}">✉️ Por e-mail</a></div>`;
+  const enDate = x => { if (!x) return '—'; const m = String(x).match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? `${m[2]}/${m[3]}/${m[1]}` : String(x) };
+  function quoteMsg(o) { const L = [];
+    const v = o.veh || {}, newV = !!o.newVehicle;
+    L.push(`Hi Valéria! Please send me a quote to ADD ${newV ? 'a VEHICLE and a DRIVER' : 'a DRIVER'} to the policy of Ruben Cargo Transportation LLC.`, '');
+    L.push('DRIVER', 'Full name: ' + (o.name || '—'), 'Date of birth: ' + enDate(o.dob), 'Address: ' + (o.addr || '—'), 'Driver license #: ' + (o.lic || '—') + ' · State: ' + (o.licState || '—') + (o.cdl ? ' · CDL' : ''), '');
+    if (newV) L.push('VEHICLE (new)', 'Year / Make / Model: ' + ([v.year, v.make, v.model].filter(Boolean).join(' ') || '—'), 'VIN: ' + (v.vin || '—'), 'Vehicle value: ' + (v.value ? '$' + v.value : '—'), 'GVWR: ' + (v.gvwr ? v.gvwr + ' lbs' : '—'), '',
+      'Please quote FULL COVERAGE: auto liability, motor truck cargo and physical damage (comprehensive and collision) on the vehicle value. How much will it add per month?');
+    else L.push('Vehicle: ' + (v.vin || v.year || v.model ? [v.year, v.make, v.model].filter(Boolean).join(' ') + (v.vin ? ' · VIN ' + v.vin : '') + ' (already on the policy)' : 'our 14 ft box truck already on the policy'), '', 'How much will it add to the premium?');
+    L.push("It's urgent. Thank you!"); return L.join('\n') }
+  function quoteText(a) { const x = a.details || {};
+    return quoteMsg({ name: a.name, dob: x.dob, addr: [x.address, a.city, a.zip].filter(Boolean).join(', '), lic: x.license_no, licState: x.license_state, cdl: a.cdl, newVehicle: a.role === 'owner',
+      veh: { year: x.year, model: x.model, vin: x.vin, value: x.value } }) }
+  function drvQuote(d) { const v = d.vehicle || {}; const a = D.apps.find(x => (d.phone && x.phone && String(x.phone).replace(/\D/g, '').slice(-10) === String(d.phone).replace(/\D/g, '').slice(-10)) || (d.email && x.email && x.email.toLowerCase() === d.email.toLowerCase())) || {}; const x = a.details || {};
+    return quoteMsg({ name: d.name, dob: x.dob, addr: [x.address, a.city, a.zip || d.home_zip].filter(Boolean).join(', '), lic: d.license_no || x.license_no, licState: d.license_state || x.license_state, cdl: d.cdl, newVehicle: v.owner !== 'company',
+      veh: { year: v.year || x.year, make: v.make, model: v.model || x.model, vin: v.vin || x.vin, value: v.value || x.value, gvwr: v.gvwr } }) }
   SUBV.candidatos = {
     html: () => `<h1>Candidatos</h1><p class="note">Quem se cadastrou pela página pública. Link para divulgar: <b>${esc(location.origin + location.pathname.replace(/[^/]*$/, ''))}cadastro.html</b></p>
       <button class="btn" id="cpLink">Copiar o link de cadastro</button>
+      <div class="g2"><label class="f">Telefone da Valéria (SMS)<input type="tel" id="valNum"></label><label class="f">E-mail da Valéria<input type="email" id="valMail"></label></div>
       ${D.apps.length ? D.apps.map(a => { const F = Array.isArray(a.files) ? a.files : [];
         return `<div class="card sev ${a.status === 'novo' ? 'gold' : ''}" data-ap="${a.id}"><div class="top2"><div><b>${esc(a.name)}</b><div class="muted">${new Date(a.created_at).toLocaleDateString('pt-BR')} · ${esc(a.city || '')}${a.zip ? ' ' + esc(a.zip) : ''} · ${esc(a.vehicle || '')}</div>
         ${a.email || a.phone ? `<div class="muted">${esc(a.email || '')}${a.email && a.phone ? ' · ' : ''}${esc(a.phone || '')}</div>` : ''}
-        <div class="muted">${a.interest ? esc(a.interest) + ' · ' : ''}MC próprio: ${a.has_mc ? 'sim ' + esc(a.mc || '') : 'não'} · CDL: ${a.cdl ? 'sim' : 'não'} · Autorização de trabalho: ${a.work_auth ? 'sim' : 'não'} · ${esc(a.experience || '')}</div></div><span class="pill ${a.status === 'novo' ? 'p-gold' : ''}">${esc(a.status)}</span></div>
+        <div class="muted">${a.interest ? esc(a.interest) + ' · ' : ''}MC próprio: ${a.has_mc ? 'sim ' + esc(a.mc || '') : 'não'} · CDL: ${a.cdl ? 'sim' : 'não'} · Autorização de trabalho: ${a.work_auth ? 'sim' : 'não'} · ${esc(a.experience || '')}</div>${(a.emergency || []).length ? `<div class="muted">🆘 ${a.emergency.map(e => esc([e.name, e.rel, e.phone].filter(Boolean).join(' · '))).join(' | ')}</div>` : ''}</div><span class="pill ${a.status === 'novo' ? 'p-gold' : ''}">${esc(a.status)}</span></div>
+        ${(() => { const x = a.details || {}; const t = [x.dob ? 'Nasc. ' + brDate(x.dob) : '', x.license_no ? 'Carteira ' + x.license_no + (x.license_state ? ' (' + x.license_state + ')' : '') : '', [x.year, x.model].filter(Boolean).join(' '), x.vin ? 'VIN ' + x.vin : '', x.value ? 'Valor $' + x.value : '', x.insurance ? 'Seguro: ' + x.insurance : ''].filter(Boolean); return t.length ? `<div class="muted">🚐 ${esc(t.join(' · '))}</div>` : '' })()}
         ${F.length ? `<div class="row">${F.map(f => `<button class="btn sm" data-open="${esc(f.path)}">📎 ${esc(APPF[f.k] || f.k)}</button>`).join('')}</div>` : '<span class="muted">Sem documentos enviados.</span>'}
+        ${quoteBtns(a.name, quoteText(a))}
         <div class="row">${a.phone ? `<a class="btn sm gold" target="_blank" rel="noopener" href="${esc(H.wa((a.lang === 'es' ? 'Hola ' : a.lang === 'en' ? 'Hi ' : 'Olá ') + a.name + (a.lang === 'es' ? '! Soy Helen, de Helen Transport Services. Recibí tu registro.' : a.lang === 'en' ? "! This is Helen from Helen Transport Services. I got your application." : '! Aqui é a Helen, da Helen Transport Services. Recebi seu cadastro.'), String(a.phone).replace(/\D/g, '').replace(/^(?=\d{10}$)/, '1')))}">WhatsApp</a>` : ''}
         <select data-st style="max-width:170px">${opt([['novo', 'Novo'], ['contatado', 'Contatado'], ['aprovado', 'Aprovado'], ['descartado', 'Descartado']], a.status)}</select><button class="btn sm" data-a="mk">Virar motorista</button></div></div>` }).join('') : '<div class="empty">Nenhum cadastro ainda.</div>'}`,
     wire(v) {
+      [['#valNum', VALK, '(945) 277-8441'], ['#valMail', VALE, 'valeria@mrwilsoninsurance.com']].forEach(([id, k, d]) => { const el = $(id, v); el.value = lsGet(k, d); el.onchange = () => { try { localStorage.setItem(k, el.value.trim()) } catch (e) {} H.toast('Contato da Valéria salvo'); render() } });
       $('#cpLink', v).onclick = () => { const u = location.origin + location.pathname.replace(/[^/]*$/, '') + 'cadastro.html'; try { navigator.clipboard.writeText(u).then(() => H.toast('Link copiado'), () => H.toast(u)) } catch (e) { H.toast(u) } };
       $$('[data-open]', v).forEach(b => b.onclick = () => H.openFile(b.dataset.open));
       $$('[data-ap]', v).forEach(el => { const a = D.apps.find(x => x.id === el.dataset.ap);
       $('[data-st]', el).onchange = async e => { try { await H.q(H.sb.from('applications').update({ status: e.target.value }).eq('id', a.id)); A.reload(['apps']) } catch (x) { H.fail(x) } };
       $('[data-a="mk"]', el).onclick = () => H.busy($('[data-a="mk"]', el), async () => {
-        const r = await H.q(H.sb.from('drivers').insert({ name: a.name, phone: a.phone, email: a.email ? a.email.toLowerCase() : null, status: 'candidato', cdl: !!a.cdl, lang: a.lang || 'pt', home_zip: a.zip || null }).select().single());
+        const r = await H.q(H.sb.from('drivers').insert({ name: a.name, phone: a.phone, email: a.email ? a.email.toLowerCase() : null, status: 'candidato', cdl: !!a.cdl, lang: a.lang || 'pt', home_zip: a.zip || null, ...(Array.isArray(a.emergency) && a.emergency.length ? { emergency: a.emergency } : {}), vehicle: a.role === 'driver' ? { owner: 'company', type: 'truck' } : a.role === 'van' ? { owner: 'company', type: 'van' } : { owner: 'driver' } }).select().single());
         const docs = (Array.isArray(a.files) ? a.files : []).filter(f => H.DOCS.some(i => i.k === f.k)).map(f => ({ driver_id: r.id, item: f.k, status: 'enviado', file_path: f.path, file_name: f.name || null, note: 'Enviado no cadastro' }));
         if (docs.length) await H.q(H.sb.from('driver_docs').insert(docs));
         await H.q(H.sb.from('applications').update({ status: 'aprovado' }).eq('id', a.id)); await load(['drivers', 'apps', 'docs']); location.hash = 'motoristas/' + r.id }) }) }
@@ -2036,7 +2295,7 @@ The parties sign this Agreement electronically and agree that their electronic s
 (function (H) {
   const { $, $$, esc, num, fmt, fmtI, iso, today, brDate } = H;
   const R = H.Driver = {};
-  const S = { agr: [], veh: [], dvir: [], me: null, loads: [], docs: [], fuel: [], settlements: [], quickpay: [], tab: 'ofertas', lang: null };
+  const S = { hos: [], agr: [], veh: [], dvir: [], me: null, loads: [], docs: [], fuel: [], settlements: [], quickpay: [], tab: 'ofertas', lang: null };
 
   const T = {
     pt: { fillSign: '✍️ Preencher e assinar no app', readSign: '✍️ Ler e assinar o contrato', leaseWait: 'Contrato de lease esperando a sua assinatura', signName: 'Seu nome completo', signHere: 'Assine aqui com o dedo', signAgree: 'Li, concordo e esta é a minha assinatura.', signSend: 'Assinar e enviar', needSig: 'Assine no quadro branco.', needFields: 'Falta preencher: ', signedOk: 'Assinado e enviado!', leaseCarrier: 'Depois a transportadora assina também.', ckT: 'Para trabalhar com a gente', ckDocs: 'Documentos enviados', ckAppr: 'Aprovados pela Helen', ckVeh: 'Veículo cadastrado pela Helen', ckDvir: 'Inspeção de saída de hoje', ckMiss: 'Falta enviar', ckGo: 'Enviar agora', ckLock: 'Para aceitar cargas, envie primeiro os documentos que faltam.', ckReady: 'Tudo pronto! Você está liberado para receber cargas.', ckPopT: 'Faltam documentos', ckPop: 'Você ainda não pode aceitar cargas. Envie estes documentos:', later: 'Depois', lockDvir: 'Faça a inspeção de saída (DVIR) de hoje antes da coleta.', lockBlocked: 'Veículo bloqueado: espere a Helen registrar o reparo.', waitAppr: 'em análise pela Helen', dvirT: 'Inspeção do veículo (DVIR)', dvirPre: 'Inspeção de saída', dvirPost: 'Inspeção de chegada', dvirDone: 'feita', dvirTodo: 'falta', dvirHelp: 'Confira cada item. Toque no item que tiver problema para marcar como defeito.', dvirOk: 'OK', dvirBad: 'Defeito', dvirOdo: 'Odômetro', dvirNotes: 'Explique o defeito', dvirSign: 'Seu nome completo (assinatura)', dvirCert: 'Declaro que inspecionei o veículo e as informações são verdadeiras.', dvirSend: 'Enviar inspeção', dvirSent: 'Inspeção enviada', dvirSentBad: 'Inspeção enviada. A Helen foi avisada do defeito.', dvirNeedPhoto: 'Com defeito, tire pelo menos uma foto.', dvirNeedCert: 'Marque a declaração e escreva seu nome.', blocked: 'Veículo bloqueado: tem defeito na inspeção. Não rode até a Helen registrar o reparo.', today: 'Hoje', route: 'Rota, pedágio e tempo', seeRoute: 'Ver rota', withTolls: 'Com pedágio', noTolls: 'Sem pedágio', tollAuto: 'Pedágio calculado pelo Google', tollManual: 'Pedágio $ (veja no Google Maps e coloque aqui)', tollNote: 'O Google calcula o pedágio de carro. Van e caminhão podem pagar mais em algumas estradas.', trip: 'Plano da viagem', driveT: 'Dirigindo', totalT: 'Tempo total (com carga e descarga)', fuelStops: 'Paradas para abastecer', breaks: 'Pausas de 30 min', rests: 'Descansos de 10 h', eta: 'Chegada prevista', onTime: 'Chega a tempo ✓', late: 'Pode atrasar ⚠', tank: 'Tanque (galões)', speed: 'Velocidade média (mph)', needPay: 'Para compensar, você precisa receber pelo menos', useCounter: 'Usar como contraproposta', planNote: 'Estimativa com as regras de horas: 11 h dirigindo, pausa de 30 min a cada 8 h e descanso de 10 h. 1 h para carregar e 1 h para descarregar.', routeLoading: 'Calculando a rota…', fromGoogle: 'Milhas e tempo calculados pelo Google', chooseRoute: 'Escolha a rota', empty: 'vazio', worth: 'Compensa?', costs: 'Meus custos', mpg: 'Consumo (milhas por galão)', fprice: 'Preço do combustível $/galão', cpm: 'Outros custos por milha $ (manutenção, pneus, seguro)', minNet: 'Meu mínimo: sobra por milha $', fuelCost: 'Combustível', tolls: 'Pedágios', other: 'Outros custos', left: 'Sobra para você', perMi: '/milha rodada', good: 'Compensa ✓', low: 'Abaixo do seu mínimo', setCosts: 'Coloque seus custos em "Meus custos" para ver quanto sobra.', calcOther: 'Calcular outra carga', offered: 'Valor da carga $', loadedMi: 'Milhas carregado', emptyMi: 'Milhas vazio', dpct: '% dispatch', newOffer: 'Nova oferta!', costsHelp: 'Fica salvo só neste celular. Serve para a calculadora mostrar quanto sobra de verdade.', offers: 'Ofertas', loads: 'Cargas', pay: 'Pagamentos', docs: 'Documentos', fuel: 'Combustível', out: 'Sair', runs: 'Rodando por',
@@ -2052,7 +2311,7 @@ The parties sign this Agreement electronically and agree that their electronic s
       qpSt: { pendente: 'Esperando aprovação', aprovado: 'Aprovado · pagamento a partir de', pago: 'Pago em', negado: 'Negado' },
       statements: 'Acertos', paidOn: 'Pago em', approved: 'Aprovado, aguardando pagamento', net: 'Líquido', noPay: 'Nenhum acerto ainda.',
       docSt: { miss: 'Não enviado', review: 'Em análise', bad: 'Rejeitado', ok: 'Aprovado', warn: 'Vencendo', opt: 'Opcional' }, upload: 'Enviar arquivo', reupload: 'Enviar de novo',
-      docsHelp: 'Tire foto ou escolha o PDF. Ele só fica "Aprovado" depois que a Helen conferir.', sent: 'Enviado! Aguardando a aprovação.',
+      sides: ['Frente', 'Lado do motorista', 'Lado do passageiro', 'Traseira com a placa', 'Área de carga (por dentro)', 'Etiqueta na porta do motorista (peso GVWR)', 'A · Comprimento total (por dentro)', 'B · Largura entre as rodas', 'C · Altura da porta traseira', 'D · Largura da porta traseira'], sidesHelp: 'Tire uma foto de cada lado e uma de dentro da área de carga. Depois, meça com a trena como no desenho: escreva a medida em polegadas e tire a foto mostrando a trena.', inches: 'Medida (pol.)', diag: ['Medidas da área de carga', 'Vista de cima (piso)', 'A = comprimento · B = entre as rodas', 'Porta traseira: C altura · D largura'], needMeasure: 'Escreva a medida antes da foto.', reading: 'Lendo o recibo…', readOk: 'Preenchido pelo recibo: ', readNo: 'Não consegui ler o recibo. Preencha à mão.', ppg: 'Preço por galão $', ecT: 'Contatos de emergência', ecHelp: 'Duas pessoas para a gente avisar se acontecer alguma coisa na estrada.', ecName: 'Nome completo', ecPhone: 'Telefone', ecRel: 'Parentesco (mãe, esposa, irmão…)', ecSave: 'Salvar contatos', ecMiss: 'Falta preencher', ecNeed: 'Coloque pelo menos um contato com nome e telefone.', locOff: 'Ligue a localização para a Helen acompanhar a sua viagem (só funciona com o app aberto).', locBtn: '📍 Ligar localização', locOn: '📍 Localização ligada', locLast: 'última atualização', locStop: 'Desligar', locDenied: 'O celular bloqueou a localização. Vá em Ajustes → Safari → Localização → Permitir.', hosT: 'Log do ELD (HOS247) da semana', hosHelp: 'No app HOS247, exporte o log da semana em PDF (ou tire print) e envie aqui toda segunda-feira.', hosSend: 'Enviar log', hosOk: 'Log da semana passada enviado ✓', hosMiss: 'Falta o log da semana passada', testOn: 'Liberado para teste até', docsHelp: 'Tire foto ou escolha o PDF. Ele só fica "Aprovado" depois que a Helen conferir.', sent: 'Enviado! Aguardando a aprovação.',
       fuelAdd: '+ Abastecimento', fuelHelp: 'Foto da bomba (ou do recibo) e do odômetro.', gallons: 'Galões', total: 'Total $', odometer: 'Odômetro', station: 'Posto e cidade', payer: 'Quem pagou', card: 'Cartão da empresa', mine: 'Eu paguei', date: 'Data',
       waitT: 'Quase pronto', wait: 'Sua conta ainda não está ligada a um motorista. Confirme com a Helen se o e-mail que ela cadastrou é o mesmo que você usou.', talk: 'Falar com a dispatch', mi: 'mi' },
     es: { fillSign: '✍️ Llenar y firmar en la app', readSign: '✍️ Leer y firmar el contrato', leaseWait: 'Contrato de lease esperando su firma', signName: 'Su nombre completo', signHere: 'Firme aquí con el dedo', signAgree: 'Leí, estoy de acuerdo y esta es mi firma.', signSend: 'Firmar y enviar', needSig: 'Firme en el recuadro blanco.', needFields: 'Falta llenar: ', signedOk: '¡Firmado y enviado!', leaseCarrier: 'Después la transportista firma también.', ckT: 'Para trabajar con nosotros', ckDocs: 'Documentos enviados', ckAppr: 'Aprobados por Helen', ckVeh: 'Vehículo registrado por Helen', ckDvir: 'Inspección de salida de hoy', ckMiss: 'Falta enviar', ckGo: 'Enviar ahora', ckLock: 'Para aceptar cargas, primero envía los documentos que faltan.', ckReady: '¡Todo listo! Ya puedes recibir cargas.', ckPopT: 'Faltan documentos', ckPop: 'Todavía no puedes aceptar cargas. Envía estos documentos:', later: 'Después', lockDvir: 'Haz la inspección de salida (DVIR) de hoy antes de recoger.', lockBlocked: 'Vehículo bloqueado: espera que Helen registre la reparación.', waitAppr: 'en revisión por Helen', dvirT: 'Inspección del vehículo (DVIR)', dvirPre: 'Inspección de salida', dvirPost: 'Inspección de llegada', dvirDone: 'hecha', dvirTodo: 'falta', dvirHelp: 'Revisa cada ítem. Toca el ítem que tenga problema para marcarlo como defecto.', dvirOk: 'OK', dvirBad: 'Defecto', dvirOdo: 'Odómetro', dvirNotes: 'Explica el defecto', dvirSign: 'Tu nombre completo (firma)', dvirCert: 'Declaro que inspeccioné el vehículo y la información es verdadera.', dvirSend: 'Enviar inspección', dvirSent: 'Inspección enviada', dvirSentBad: 'Inspección enviada. Helen recibió el aviso del defecto.', dvirNeedPhoto: 'Con defecto, toma al menos una foto.', dvirNeedCert: 'Marca la declaración y escribe tu nombre.', blocked: 'Vehículo bloqueado: tiene un defecto en la inspección. No lo manejes hasta que Helen registre la reparación.', today: 'Hoy', route: 'Ruta, peajes y tiempo', seeRoute: 'Ver ruta', withTolls: 'Con peajes', noTolls: 'Sin peajes', tollAuto: 'Peajes calculados por Google', tollManual: 'Peajes $ (míralo en Google Maps y ponlo aquí)', tollNote: 'Google calcula el peaje de auto. Van y camión pueden pagar más en algunas carreteras.', trip: 'Plan del viaje', driveT: 'Manejando', totalT: 'Tiempo total (con carga y descarga)', fuelStops: 'Paradas para combustible', breaks: 'Pausas de 30 min', rests: 'Descansos de 10 h', eta: 'Llegada estimada', onTime: 'Llega a tiempo ✓', late: 'Puede llegar tarde ⚠', tank: 'Tanque (galones)', speed: 'Velocidad promedio (mph)', needPay: 'Para que convenga, necesitas recibir al menos', useCounter: 'Usar como contraoferta', planNote: 'Estimado con las reglas de horas: 11 h manejando, pausa de 30 min cada 8 h y descanso de 10 h. 1 h para cargar y 1 h para descargar.', routeLoading: 'Calculando la ruta…', fromGoogle: 'Millas y tiempo calculados por Google', chooseRoute: 'Elige la ruta', empty: 'vacío', worth: '¿Conviene?', costs: 'Mis costos', mpg: 'Consumo (millas por galón)', fprice: 'Precio del combustible $/galón', cpm: 'Otros costos por milla $ (mantenimiento, llantas, seguro)', minNet: 'Mi mínimo: ganancia por milla $', fuelCost: 'Combustible', tolls: 'Peajes', other: 'Otros costos', left: 'Te queda', perMi: '/milla recorrida', good: 'Conviene ✓', low: 'Por debajo de tu mínimo', setCosts: 'Pon tus costos en "Mis costos" para ver cuánto te queda.', calcOther: 'Calcular otra carga', offered: 'Valor de la carga $', loadedMi: 'Millas cargado', emptyMi: 'Millas vacío', dpct: '% dispatch', newOffer: '¡Nueva oferta!', costsHelp: 'Se guarda solo en este celular. Sirve para que la calculadora muestre cuánto te queda de verdad.', offers: 'Ofertas', loads: 'Cargas', pay: 'Pagos', docs: 'Documentos', fuel: 'Combustible', out: 'Salir', runs: 'Trabajando con',
@@ -2068,7 +2327,7 @@ The parties sign this Agreement electronically and agree that their electronic s
       qpSt: { pendente: 'Esperando aprobación', aprovado: 'Aprobado · pago desde', pago: 'Pagado el', negado: 'Negado' },
       statements: 'Liquidaciones', paidOn: 'Pagado el', approved: 'Aprobado, esperando pago', net: 'Neto', noPay: 'Todavía no hay liquidaciones.',
       docSt: { miss: 'No enviado', review: 'En revisión', bad: 'Rechazado', ok: 'Aprobado', warn: 'Por vencer', opt: 'Opcional' }, upload: 'Enviar archivo', reupload: 'Enviar de nuevo',
-      docsHelp: 'Toma una foto o elige el PDF. Queda "Aprobado" después de que Helen lo revise.', sent: '¡Enviado! Esperando aprobación.',
+      sides: ['Frente', 'Lado del conductor', 'Lado del pasajero', 'Atrás con la placa', 'Área de carga (por dentro)', 'Etiqueta en la puerta del conductor (peso GVWR)', 'A · Largo total (por dentro)', 'B · Ancho entre las ruedas', 'C · Alto de la puerta trasera', 'D · Ancho de la puerta trasera'], sidesHelp: 'Toma una foto de cada lado y una de adentro del área de carga. Después mide con la cinta como en el dibujo: escribe la medida en pulgadas y toma la foto mostrando la cinta.', inches: 'Medida (pulg.)', diag: ['Medidas del área de carga', 'Vista de arriba (piso)', 'A = largo · B = entre las ruedas', 'Puerta trasera: C alto · D ancho'], needMeasure: 'Escribe la medida antes de la foto.', reading: 'Leyendo el recibo…', readOk: 'Llenado por el recibo: ', readNo: 'No pude leer el recibo. Llénalo a mano.', ppg: 'Precio por galón $', ecT: 'Contactos de emergencia', ecHelp: 'Dos personas a quien avisar si pasa algo en la carretera.', ecName: 'Nombre completo', ecPhone: 'Teléfono', ecRel: 'Parentesco (madre, esposa, hermano…)', ecSave: 'Guardar contactos', ecMiss: 'Falta llenar', ecNeed: 'Pon al menos un contacto con nombre y teléfono.', locOff: 'Activa la ubicación para que Helen siga tu viaje (solo funciona con la app abierta).', locBtn: '📍 Activar ubicación', locOn: '📍 Ubicación activada', locLast: 'última actualización', locStop: 'Apagar', locDenied: 'El celular bloqueó la ubicación. Ve a Ajustes → Safari → Ubicación → Permitir.', hosT: 'Log del ELD (HOS247) de la semana', hosHelp: 'En la app HOS247, exporta el log de la semana en PDF (o toma captura) y envíalo aquí cada lunes.', hosSend: 'Enviar log', hosOk: 'Log de la semana pasada enviado ✓', hosMiss: 'Falta el log de la semana pasada', testOn: 'Liberado de prueba hasta', docsHelp: 'Toma una foto o elige el PDF. Queda "Aprobado" después de que Helen lo revise.', sent: '¡Enviado! Esperando aprobación.',
       fuelAdd: '+ Carga de combustible', fuelHelp: 'Foto de la bomba (o del recibo) y del odómetro.', gallons: 'Galones', total: 'Total $', odometer: 'Odómetro', station: 'Estación y ciudad', payer: 'Quién pagó', card: 'Tarjeta de la empresa', mine: 'Yo pagué', date: 'Fecha',
       waitT: 'Casi listo', wait: 'Tu cuenta todavía no está vinculada a un conductor. Confirma con Helen que el correo que registró es el mismo que usaste.', talk: 'Hablar con dispatch', mi: 'mi' },
     en: { fillSign: '✍️ Fill out and sign in the app', readSign: '✍️ Read and sign the lease', leaseWait: 'Lease agreement waiting for your signature', signName: 'Your full name', signHere: 'Sign here with your finger', signAgree: 'I have read and agree, and this is my signature.', signSend: 'Sign and send', needSig: 'Sign in the white box.', needFields: 'Still missing: ', signedOk: 'Signed and sent!', leaseCarrier: 'The carrier will sign next.', ckT: 'To work with us', ckDocs: 'Documents sent', ckAppr: 'Approved by Helen', ckVeh: 'Vehicle set up by Helen', ckDvir: "Today's pre-trip inspection", ckMiss: 'Still missing', ckGo: 'Send now', ckLock: 'To accept loads, first send the missing documents.', ckReady: 'All set! You can now receive loads.', ckPopT: 'Documents missing', ckPop: 'You cannot accept loads yet. Send these documents:', later: 'Later', lockDvir: "Do today's pre-trip inspection (DVIR) before pickup.", lockBlocked: 'Vehicle out of service: wait for Helen to log the repair.', waitAppr: 'in review by Helen', dvirT: 'Vehicle inspection (DVIR)', dvirPre: 'Pre-trip inspection', dvirPost: 'Post-trip inspection', dvirDone: 'done', dvirTodo: 'to do', dvirHelp: 'Check every item. Tap any item with a problem to mark it as a defect.', dvirOk: 'OK', dvirBad: 'Defect', dvirOdo: 'Odometer', dvirNotes: 'Describe the defect', dvirSign: 'Your full name (signature)', dvirCert: 'I certify that I inspected the vehicle and this information is true.', dvirSend: 'Submit inspection', dvirSent: 'Inspection sent', dvirSentBad: 'Inspection sent. Helen was notified of the defect.', dvirNeedPhoto: 'With a defect, take at least one photo.', dvirNeedCert: 'Check the statement and type your name.', blocked: 'Vehicle out of service: the inspection found a defect. Do not drive until Helen logs the repair.', today: 'Today', route: 'Route, tolls and time', seeRoute: 'See route', withTolls: 'With tolls', noTolls: 'No tolls', tollAuto: 'Tolls calculated by Google', tollManual: 'Tolls $ (check Google Maps and enter here)', tollNote: 'Google prices tolls for cars. Vans and trucks may pay more on some roads.', trip: 'Trip plan', driveT: 'Driving', totalT: 'Total time (incl. loading and unloading)', fuelStops: 'Fuel stops', breaks: '30-min breaks', rests: '10-h rests', eta: 'Estimated arrival', onTime: 'On time ✓', late: 'May be late ⚠', tank: 'Tank (gallons)', speed: 'Average speed (mph)', needPay: 'To be worth it, you need at least', useCounter: 'Use as counter offer', planNote: 'Estimate using hours rules: 11 h driving, 30-min break every 8 h and 10-h rest. 1 h to load and 1 h to unload.', routeLoading: 'Calculating route…', fromGoogle: 'Miles and time from Google', chooseRoute: 'Choose the route', empty: 'empty', worth: 'Worth it?', costs: 'My costs', mpg: 'Fuel economy (miles per gallon)', fprice: 'Fuel price $/gallon', cpm: 'Other costs per mile $ (maintenance, tires, insurance)', minNet: 'My minimum: profit per mile $', fuelCost: 'Fuel', tolls: 'Tolls', other: 'Other costs', left: 'You keep', perMi: '/mile driven', good: 'Worth it ✓', low: 'Below your minimum', setCosts: 'Add your costs in "My costs" to see what you keep.', calcOther: 'Check another load', offered: 'Load rate $', loadedMi: 'Loaded miles', emptyMi: 'Empty miles', dpct: '% dispatch', newOffer: 'New offer!', costsHelp: 'Saved on this phone only. It lets the calculator show what you really keep.', offers: 'Offers', loads: 'Loads', pay: 'Pay', docs: 'Documents', fuel: 'Fuel', out: 'Sign out', runs: 'Running with',
@@ -2084,13 +2343,13 @@ The parties sign this Agreement electronically and agree that their electronic s
       qpSt: { pendente: 'Waiting for approval', aprovado: 'Approved · paid from', pago: 'Paid on', negado: 'Denied' },
       statements: 'Statements', paidOn: 'Paid on', approved: 'Approved, waiting for payment', net: 'Net', noPay: 'No statements yet.',
       docSt: { miss: 'Not sent', review: 'In review', bad: 'Rejected', ok: 'Approved', warn: 'Expiring', opt: 'Optional' }, upload: 'Upload file', reupload: 'Upload again',
-      docsHelp: 'Take a photo or choose the PDF. It shows "Approved" after Helen checks it.', sent: 'Sent! Waiting for approval.',
+      sides: ['Front', 'Driver side', 'Passenger side', 'Rear with plate', 'Cargo area (inside)', 'Driver door sticker (GVWR)', 'A · Total length (inside)', 'B · Width between wheel wells', 'C · Rear door height', 'D · Rear door width'], sidesHelp: 'Take one photo of each side and one inside the cargo area. Then measure with a tape like the drawing: type the measure in inches and take the photo showing the tape.', inches: 'Measure (in.)', diag: ['Cargo area measurements', 'Top view (floor)', 'A = length · B = between wheel wells', 'Rear door: C height · D width'], needMeasure: 'Type the measure before the photo.', reading: 'Reading the receipt…', readOk: 'Filled from the receipt: ', readNo: 'Could not read the receipt. Fill it in by hand.', ppg: 'Price per gallon $', ecT: 'Emergency contacts', ecHelp: 'Two people we can call if something happens on the road.', ecName: 'Full name', ecPhone: 'Phone', ecRel: 'Relationship (mother, wife, brother…)', ecSave: 'Save contacts', ecMiss: 'Missing', ecNeed: 'Add at least one contact with name and phone.', locOff: 'Turn on location so Helen can follow your trip (works only while the app is open).', locBtn: '📍 Turn on location', locOn: '📍 Location on', locLast: 'last update', locStop: 'Turn off', locDenied: 'Your phone blocked location. Go to Settings → Safari → Location → Allow.', hosT: 'Weekly ELD log (HOS247)', hosHelp: 'In the HOS247 app, export the week log as a PDF (or screenshot) and send it here every Monday.', hosSend: 'Send log', hosOk: 'Last week log sent ✓', hosMiss: 'Last week log is missing', testOn: 'Released for testing until', docsHelp: 'Take a photo or choose the PDF. It shows "Approved" after Helen checks it.', sent: 'Sent! Waiting for approval.',
       fuelAdd: '+ Fuel up', fuelHelp: 'Photo of the pump (or receipt) and the odometer.', gallons: 'Gallons', total: 'Total $', odometer: 'Odometer', station: 'Station and city', payer: 'Who paid', card: 'Company card', mine: 'I paid', date: 'Date',
       waitT: 'Almost there', wait: 'Your account is not linked to a driver yet. Check with Helen that the email she registered is the one you used.', talk: 'Message dispatch', mi: 'mi' },
   };
   const DOCT = {
-    es: { application: 'Solicitud de empleo (firmada)', license: 'Licencia de conducir', workauth: 'Autorización de trabajo (work permit / green card / ciudadanía)', med: 'Medical card (MCSA-5876)', w9: 'W-9', coi: 'Seguro del vehículo (COI)', registration: 'Registro del vehículo', vehicle_photos: 'Fotos del vehículo (frente, lados, atrás, placa)', lease: 'Contrato de lease firmado', onduty: 'Horas de servicio de los últimos 7 días', violations: 'Certificación de infracciones (anual)', inspection: 'Inspección anual del vehículo', da_policy: 'Recibo de la política de drogas y alcohol' },
-    en: { application: 'Employment application (signed)', license: "Driver's license", workauth: 'Work authorization (work permit / green card / citizenship)', med: 'Medical card (MCSA-5876)', w9: 'W-9', coi: 'Vehicle insurance (COI)', registration: 'Vehicle registration', vehicle_photos: 'Vehicle photos (front, sides, rear, plate)', lease: 'Signed lease agreement', onduty: 'On-duty hours, last 7 days', violations: 'Certification of violations (annual)', inspection: 'Annual vehicle inspection', da_policy: 'Drug and alcohol policy receipt' } };
+    es: { application: 'Solicitud de empleo (firmada)', license: 'Licencia de conducir', workauth: 'Autorización de trabajo (work permit / green card / ciudadanía)', med: 'Medical card (MCSA-5876)', w9: 'W-9', coi: 'Seguro del vehículo (COI)', registration: 'Registro del vehículo', vehicle_photos: 'Fotos del vehículo (frente, lados, atrás, placa y área de carga)', lease: 'Contrato de lease firmado', onduty: 'Horas de servicio de los últimos 7 días', violations: 'Certificación de infracciones (anual)', inspection: 'Inspección anual del vehículo', da_policy: 'Recibo de la política de drogas y alcohol' },
+    en: { application: 'Employment application (signed)', license: "Driver's license", workauth: 'Work authorization (work permit / green card / citizenship)', med: 'Medical card (MCSA-5876)', w9: 'W-9', coi: 'Vehicle insurance (COI)', registration: 'Vehicle registration', vehicle_photos: 'Vehicle photos (front, sides, rear, plate and cargo area)', lease: 'Signed lease agreement', onduty: 'On-duty hours, last 7 days', violations: 'Certification of violations (annual)', inspection: 'Annual vehicle inspection', da_policy: 'Drug and alcohol policy receipt' } };
   const docTitle = it => (DOCT[lang()] || {})[it.k] || it.t;
   const lang = () => S.lang || (() => { try { const l = localStorage.getItem('hts-lang'); if (T[l]) return l } catch (e) { } return S.me && T[S.me.lang] ? S.me.lang : 'pt' })();
   const t = () => T[lang()];
@@ -2109,6 +2368,7 @@ The parties sign this Agreement electronically and agree that their electronic s
     Object.assign(S, { loads, docs, fuel, settlements: sets, quickpay: qp });
     try { S.agr = await H.q(H.sb.from('agreements').select('*').order('created_at', { ascending: false })) } catch (e) { S.agr = [] }
     try { S.veh = await H.q(H.sb.from('vehicles').select('*').eq('status', 'ativo')); S.dvir = await H.q(H.sb.from('dvir').select('*').order('created_at', { ascending: false }).limit(60)) } catch (e) { S.veh = []; S.dvir = [] }
+    try { S.hos = await H.q(H.sb.from('hos_logs').select('*').order('week_start', { ascending: false }).limit(60)) } catch (e) { S.hos = [] }
     void uid;
   }
   R.reload = async () => { try { await load(); render() } catch (e) { H.fail(e) } };
@@ -2119,6 +2379,7 @@ The parties sign this Agreement electronically and agree that their electronic s
     render(); if (S.me) nagOnce();
     const sig = () => JSON.stringify([S.veh.map(v => [v.id, v.blocked]), S.dvir.length, S.loads.map(l => [l.id, l.stage, l.offer_response, l.driver_pay, l.paid]), S.docs.map(x => [x.id, x.status]), S.settlements.map(x => [x.id, x.status]), S.quickpay.map(x => [x.id, x.status])]);
     const nOff = () => S.loads.filter(l => l.stage === 'oferta' && !l.offer_response).length;
+    try { H.Driver.locResume() } catch (e) { }
     H.poll(async () => { const b = sig(), o0 = nOff(); try { await load() } catch (e) { return } if (sig() === b) return;
       if (nOff() > o0) { H.toast('🔔 ' + t().newOffer); H.ping() } if (!H.busyUI()) render() });
   };
@@ -2138,7 +2399,7 @@ The parties sign this Agreement electronically and agree that their electronic s
       wireHead(); $('#rl').onclick = R.reload; return;
     }
     const offers = S.loads.filter(l => l.stage === 'oferta' && !l.offer_response).length;
-    const missing = H.DOCS.filter(it => it.drv && H.docApplies(S.me, it)).filter(it => ['miss', 'bad'].includes(H.docStatus(S.me, it, S.docs).s)).length;
+    const missing = missingDocs().length;
     $('#app').innerHTML = header() + `<main class="wrap" id="view"></main>
       <nav class="tabs" style="grid-template-columns:repeat(5,1fr)" role="tablist">${TABS().map(([k, l]) => `<button role="tab" data-t="${k}" aria-selected="${S.tab === k}">${esc(l)}${k === 'ofertas' && offers ? `<span class="dot">${offers}</span>` : ''}${k === 'documentos' && missing ? `<span class="dot">${missing}</span>` : ''}${k === 'cargas' && S.veh.some(v => v.blocked || !dvirToday(v.id, 'saida')) ? '<span class="dot">!</span>' : ''}</button>`).join('')}</nav>`;
     wireHead();
@@ -2217,7 +2478,7 @@ The parties sign this Agreement electronically and agree that their electronic s
 
   /* ---------------- checklist: o que falta para trabalhar ---------------- */
   const reqDocs = () => H.DOCS.filter(it => it.drv && H.docRequired(S.me, it)).map(it => ({ it, st: H.docStatus(S.me, it, S.docs) }));
-  const missingDocs = () => reqDocs().filter(x => ['miss', 'bad'].includes(x.st.s) && !(x.it.k === 'lease' && S.agr.some(g => g.kind === 'lease' && g.status === 'aguardando_empresa')));
+  const missingDocs = () => H.testOn(S.me) ? [] : reqDocs().filter(x => (['miss', 'bad'].includes(x.st.s) || (x.it.k === 'vehicle_photos' && !H.sidesOk(S.docs))) && !(x.it.k === 'lease' && S.agr.some(g => g.kind === 'lease' && g.status === 'aguardando_empresa')));
   const docsReady = () => !missingDocs().length;
   const dvirReady = () => !S.veh.length || (S.veh.every(v => !v.blocked) && S.veh.some(v => dvirToday(v.id, 'saida')));
   function checklist(force) {
@@ -2336,12 +2597,34 @@ The parties sign this Agreement electronically and agree that their electronic s
     })) }
   };
   /* ---------------- cargas (coleta e entrega) ---------------- */
+  /* ---------------- localização ao vivo ---------------- */
+  const LOC = { watch: null, last: 0, lastPos: null, at: null };
+  const locPref = () => { try { return localStorage.getItem('hts-loc') === '1' } catch (e) { return false } };
+  const locSave = on => { try { localStorage.setItem('hts-loc', on ? '1' : '0') } catch (e) { } };
+  const distKm = (a, b) => { const R = 6371, r = x => x * Math.PI / 180, dLa = r(b.lat - a.lat), dLo = r(b.lng - a.lng), h = Math.sin(dLa / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(b.lat)) * Math.sin(dLo / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)) };
+  function locStart(ask) {
+    if (!navigator.geolocation || LOC.watch !== null) return;
+    LOC.watch = navigator.geolocation.watchPosition(async p => {
+      const pos = { lat: p.coords.latitude, lng: p.coords.longitude }, now = Date.now();
+      if (LOC.lastPos && now - LOC.last < 90e3 && distKm(LOC.lastPos, pos) < 0.8) return;
+      LOC.last = now; LOC.lastPos = pos;
+      try { await H.q(H.sb.rpc('driver_ping', { p_lat: pos.lat, p_lng: pos.lng, p_speed: p.coords.speed != null ? Math.round(p.coords.speed * 2.237) : null, p_heading: p.coords.heading != null ? Math.round(p.coords.heading) : null, p_acc: Math.round(p.coords.accuracy || 0) })); LOC.at = new Date(); const el = $('#locAt'); if (el) el.textContent = LOC.at.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) } catch (e) { }
+    }, err => { if (err.code === 1) { locSave(false); locStop(); if (ask) H.toast(t().locDenied, true); if (S.tab === 'cargas') render() } }, { enableHighAccuracy: true, maximumAge: 60e3, timeout: 30e3 });
+  }
+  function locStop() { if (LOC.watch !== null && navigator.geolocation) navigator.geolocation.clearWatch(LOC.watch); LOC.watch = null }
+  H.Driver.locResume = () => { if (locPref()) locStart(false) };
+  function locCard() {
+    const active = S.loads.some(l => ['confirmada', 'coletada'].includes(l.stage));
+    if (LOC.watch !== null) return `<div class="card sev good" style="margin-bottom:12px"><div class="row between"><b>${esc(t().locOn)}</b><button class="btn sm" id="locOff">${esc(t().locStop)}</button></div><span class="muted">${esc(t().locLast)}: <span id="locAt">${LOC.at ? LOC.at.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—'}</span></span></div>`;
+    return active ? `<div class="card sev warn" style="margin-bottom:12px"><span class="muted">${esc(t().locOff)}</span><button class="btn gold" id="locOnB">${esc(t().locBtn)}</button></div>` : '';
+  }
+  function wireLoc(v) { const on = $('#locOnB', v), off = $('#locOff', v); if (on) on.onclick = () => { locSave(true); locStart(true); setTimeout(render, 400) }; if (off) off.onclick = () => { locSave(false); locStop(); render() } }
   VIEWS.cargas = {
     html() {
       const L = S.loads.filter(l => ['confirmada', 'coletada'].includes(l.stage) || (l.stage === 'entregue' && H.daysTo(l.load_date) > -21));
-      if (!L.length) return checklist() + dvirCard() + `<div class="empty">${esc(t().noLoads)}</div>`;
+      if (!L.length) return checklist() + locCard() + dvirCard() + `<div class="empty">${esc(t().noLoads)}</div>`;
       const sg = { confirmada: [t().confirmed, 'p-info'], coletada: [t().picked, 'p-info'], entregue: [t().delivered, 'p-good'] };
-      return checklist() + dvirCard() + `<div class="stack">${L.map(l => `<div class="card sev ${l.stage === 'entregue' ? 'good' : 'gold'}" data-l="${l.id}"><div class="top2"><div style="min-width:0"><div class="route">${route(l)}</div>
+      return checklist() + locCard() + dvirCard() + `<div class="stack">${L.map(l => `<div class="card sev ${l.stage === 'entregue' ? 'good' : 'gold'}" data-l="${l.id}"><div class="top2"><div style="min-width:0"><div class="route">${route(l)}</div>
         <div class="muted">${brDate(l.load_date)}${l.ref ? ' · #' + esc(l.ref) : ''} · ${fmtI(l.miles)} mi</div>${l.pickup_window ? `<div class="muted">↑ ${esc(l.pickup_window)}</div>` : ''}${l.delivery_window ? `<div class="muted">↓ ${esc(l.delivery_window)}</div>` : ''}${l.notes ? `<div class="muted">${esc(l.notes)}</div>` : ''}</div>
         <div class="money">${fmt(l.driver_pay)}${l.rate != null ? `<div class="muted">${esc(t().rate)} ${fmt(l.rate)}</div>` : ''}</div></div>
         <div class="row"><span class="pill ${sg[l.stage][1]}">${esc(sg[l.stage][0])}</span>${l.paid ? `<span class="pill p-good">${esc(t().paidOn)} ${brDate(l.paid_at)}</span>` : ''}</div>
@@ -2349,7 +2632,7 @@ The parties sign this Agreement electronically and agree that their electronic s
         ${l.stage === 'confirmada' && !dvirReady() ? `<span class="err">${esc(S.veh.some(v => v.blocked) ? t().lockBlocked : t().lockDvir)}</span>` : ''}
         ${l.stage === 'confirmada' ? `<button class="btn gold wide" data-a="pickup" ${dvirReady() ? '' : 'disabled'}>${esc(t().pickup)}</button>` : ''}${l.stage === 'coletada' ? `<button class="btn gold wide" data-a="delivery">${esc(t().delivery)}</button>` : ''}</div>`).join('')}</div>`;
     },
-    wire(v) { $$('[data-dvk]', v).forEach(b => b.onclick = () => dvirSheet(S.veh.find(x => x.id === b.dataset.vid), b.dataset.dvk));
+    wire(v) { wireLoc(v); $$('[data-dvk]', v).forEach(b => b.onclick = () => dvirSheet(S.veh.find(x => x.id === b.dataset.vid), b.dataset.dvk));
       $$('[data-l]', v).forEach(el => { const l = S.loads.find(x => x.id === el.dataset.l); $$('[data-a]', el).forEach(b => b.onclick = () => eventSheet(l, b.dataset.a)) }); $$('[data-trip]', v).forEach(b => b.onclick = () => tripSheet(S.loads.find(x => x.id === b.dataset.trip))) }
   };
   function eventSheet(l, kind) {
@@ -2404,18 +2687,38 @@ The parties sign this Agreement electronically and agree that their electronic s
     html() {
       const items = H.DOCS.filter(it => it.drv && H.docApplies(S.me, it));
       const pl = S.agr.filter(a => a.kind === 'lease' && a.status === 'aguardando_motorista');
-      return checklist(true) + pl.map(a => `<div class="card sev gold" style="margin-bottom:12px"><b>📝 ${esc(t().leaseWait)}</b><button class="btn gold" data-lease="${a.id}">${esc(t().readSign)}</button></div>`).join('') + `<div class="stack"><p class="note">${esc(t().docsHelp)}</p>${items.map(it => { const s = H.docStatus(S.me, it, S.docs), last = s.last;
+      const hosOk = S.hos.some(x => x.week_start === H.lastWeek());
+      const hos = H.isTruck(S.me) ? `<div class="card sev ${hosOk ? 'good' : 'warn'}" style="margin-bottom:12px"><b>🕒 ${esc(t().hosT)}</b><span class="muted">${esc(hosOk ? t().hosOk : t().hosMiss)}</span><span class="muted">${esc(t().hosHelp)}</span><span class="btn gold upl">${esc(t().hosSend)}<input type="file" id="hosUp" accept="image/*,application/pdf"></span></div>` : '';
+      const test = H.testOn(S.me) ? `<div class="card sev warn" style="margin-bottom:12px"><b>${esc(t().testOn)} ${esc(brDate(S.me.test_until))}</b></div>` : '';
+      const ec = S.me.emergency || [], ecOk = ec.some(e => e.name && e.phone);
+      const ecCard = `<form class="card sev ${ecOk ? 'good' : 'warn'}" id="ecF" style="margin-bottom:12px"><b>🆘 ${esc(t().ecT)}${ecOk ? ' ✓' : ' · ' + esc(t().ecMiss)}</b><span class="muted">${esc(t().ecHelp)}</span>
+        ${[0, 1].map(i => { const e = ec[i] || {}; return `<div class="g2"><label class="f full">${esc(t().ecName)} ${i + 1}<input name="n${i}" value="${esc(e.name)}"></label><label class="f">${esc(t().ecPhone)}<input type="tel" name="p${i}" value="${esc(e.phone)}"></label><label class="f">${esc(t().ecRel)}<input name="r${i}" value="${esc(e.rel)}"></label></div>` }).join('')}
+        <button class="btn gold">${esc(t().ecSave)}</button></form>`;
+      return test + checklist(true) + ecCard + hos + pl.map(a => `<div class="card sev gold" style="margin-bottom:12px"><b>📝 ${esc(t().leaseWait)}</b><button class="btn gold" data-lease="${a.id}">${esc(t().readSign)}</button></div>`).join('') + `<div class="stack"><p class="note">${esc(t().docsHelp)}</p>${items.map(it => { const s = H.docStatus(S.me, it, S.docs), last = s.last;
         const label = s.s === 'ok' || s.s === 'warn' ? (s.due ? t().docSt[s.s] + ' · ' + brDate(s.due) : t().docSt.ok) : t().docSt[s.s];
         return `<div class="card sev ${s.s === 'ok' ? 'good' : s.s === 'review' ? 'gold' : s.s === 'opt' ? '' : s.s === 'warn' ? 'warn' : 'bad'}" data-doc="${it.k}"><div class="top2"><b>${esc(docTitle(it))}</b><span class="pill ${H.pillCls[s.s]}">${esc(label)}</span></div>
-          ${last && last.status === 'rejeitado' && last.note ? `<span class="err">${esc(last.note)}</span>` : ''}
+          ${last && last.status === 'rejeitado' && last.note ? `<span class="err">${esc(last.note)}</span>` : ''}${!last && H.howto(it.k, lang()) ? `<span class="muted">💡 ${esc(H.howto(it.k, lang()))}</span>` : ''}
           ${s.s !== 'review' && H.FORMS[it.k] ? `<button class="btn gold" data-form="${it.k}">${esc(t().fillSign)}</button>` : ''}
           ${s.s !== 'review' && it.k === 'lease' && pl.length ? `<button class="btn gold" data-lease="${pl[0].id}">${esc(t().readSign)}</button>` : ''}
-          ${s.s !== 'review' ? `<span class="btn upl">${esc(last ? t().reupload : t().upload)}<input type="file" accept="image/*,application/pdf"></span>` : ''}</div>` }).join('')}</div>`;
+          ${it.k === 'vehicle_photos' ? sidesHtml() : s.s !== 'review' ? H.camBtns(lang(), 'data-up') : ''}</div>` }).join('')}</div>`;
     },
-    wire(v) { $$('[data-form]', v).forEach(b => b.onclick = () => formSheet(b.dataset.form)); $$('[data-lease]', v).forEach(b => b.onclick = () => leaseSheet(S.agr.find(a => a.id === b.dataset.lease)));
-      $$('[data-doc]', v).forEach(el => { const inp = $('input[type=file]', el); if (!inp) return; inp.onchange = async e => { const file = e.target.files[0]; e.target.value = ''; if (!file) return;
-      try { H.toast('…'); const r = await H.upload('files', `${S.me.id}/docs/${el.dataset.doc}`, file); await H.q(H.sb.from('driver_docs').insert({ driver_id: S.me.id, item: el.dataset.doc, status: 'enviado', file_path: r.path, file_name: r.name })); H.toast(t().sent); await R.reload() } catch (x) { H.fail(x) } } }) }
+    wire(v) { const hu = $('#hosUp', v); if (hu) hu.onchange = async e => { const file = e.target.files[0]; e.target.value = ''; if (!file) return; const w = H.lastWeek();
+        try { H.toast('…'); const r = await H.upload('files', `${S.me.id}/hos/${w}`, file); await H.q(H.sb.from('hos_logs').insert({ driver_id: S.me.id, week_start: w, file_path: r.path, note: 'Enviado pelo motorista' })); H.toast(t().sent); await R.reload() } catch (x) { H.fail(x) } };
+      const ecF = $('#ecF', v); if (ecF) ecF.onsubmit = async e => { e.preventDefault(); const o = H.form(ecF); const list = [0, 1].map(i => ({ name: (o['n' + i] || '').trim(), phone: (o['p' + i] || '').trim(), rel: (o['r' + i] || '').trim() })).filter(x => x.name || x.phone);
+        if (!list.some(x => x.name && x.phone)) { H.toast(t().ecNeed, true); return }
+        await H.busy($('button', ecF), async () => { await H.q(H.sb.rpc('driver_set_emergency', { p: list })); H.toast('✓'); await R.reload() }) };
+      $$('[data-form]', v).forEach(b => b.onclick = () => formSheet(b.dataset.form)); $$('[data-lease]', v).forEach(b => b.onclick = () => leaseSheet(S.agr.find(a => a.id === b.dataset.lease)));
+      $$('[data-doc]', v).forEach(el => $$('input[data-up]', el).forEach(inp => inp.onchange = async e => { const file = e.target.files[0]; e.target.value = ''; if (!file) return;
+      try { H.toast('…'); const r = await H.upload('files', `${S.me.id}/docs/${el.dataset.doc}`, file); await H.q(H.sb.from('driver_docs').insert({ driver_id: S.me.id, item: el.dataset.doc, status: 'enviado', file_path: r.path, file_name: r.name })); H.toast(t().sent); await R.reload() } catch (x) { H.fail(x) } }));
+      $$('input[data-side]', v).forEach(inp => inp.onchange = async e => { const file = e.target.files[0]; e.target.value = ''; if (!file) return; let side = SIDE_KEYS[+inp.dataset.side]; const mi = $(`[data-meas="${inp.dataset.side}"]`, v); if (mi) { if (!mi.value) { H.toast(t().needMeasure, true); return } side += ' = ' + mi.value + ' in' }
+        try { H.toast('…'); const r = await H.upload('files', `${S.me.id}/docs/vehicle_photos`, file); await H.q(H.sb.from('driver_docs').insert({ driver_id: S.me.id, item: 'vehicle_photos', status: 'enviado', file_path: r.path, file_name: r.name, note: side })); H.toast(t().sent); await R.reload() } catch (x) { H.fail(x) } }) }
   };
+  /* fotos do veículo: um quadro para cada lado */
+  const SIDE_KEYS = H.VPHOTOS;
+  function sidesHtml() {
+    return `<span class="muted">${esc(t().sidesHelp)}</span>${H.vanDiagram(t().diag)}<div class="g2">${SIDE_KEYS.map((k, i) => { const x = H.vpRow(S.docs, k), m = i >= 6, val = x && x.note && x.note.includes(' = ') ? x.note.split(' = ')[1] : '';
+      return `<div class="card ${x ? 'sev good' : ''}" style="padding:10px"><b>${x ? '✅' : '⬜'} ${esc(t().sides[i])}${val ? ' · ' + esc(val) : ''}</b>${m ? `<label class="f">${esc(t().inches)}<input type="number" inputmode="decimal" step="0.5" data-meas="${i}" value="${esc(String(val).replace(/[^\d.]/g, ''))}"></label>` : ''}${H.camBtns(lang(), `data-side="${i}"`, { sm: true, accept: 'image/*' })}</div>` }).join('')}</div>`;
+  }
   /* ---------------- combustível ---------------- */
   VIEWS.combustivel = {
     html: () => `<div class="stack"><button class="btn gold wide" id="fAdd">${esc(t().fuelAdd)}</button>
@@ -2425,13 +2728,21 @@ The parties sign this Agreement electronically and agree that their electronic s
   function fuelSheet() {
     const photos = [];
     H.sheet(`<form id="fs" class="stack"><div class="row between"><h2>${esc(t().fuel)}</h2><button type="button" class="btn sm" data-close>✕</button></div><p class="note">${esc(t().fuelHelp)}</p>
-      <div class="thumbs" id="fsT"></div><span class="btn upl wide">${esc(t().photos)}<input type="file" id="fsF" accept="image/*" multiple></span>
+      <div class="thumbs" id="fsT"></div>${H.camBtns(lang(), 'data-fs', { gold: true, accept: 'image/*', multiple: true })}<p class="note" id="fsRead" role="status"></p>
       <div class="g2"><label class="f">${esc(t().date)}<input type="date" name="fuel_date" value="${iso(today())}" required></label><label class="f">${esc(t().total)}<input type="number" inputmode="decimal" step="0.01" name="total" required></label>
-      <label class="f">${esc(t().gallons)}<input type="number" inputmode="decimal" step="0.001" name="gallons"></label><label class="f">${esc(t().odometer)}<input type="number" inputmode="numeric" name="odometer"></label>
+      <label class="f">${esc(t().gallons)}<input type="number" inputmode="decimal" step="0.001" name="gallons"></label><label class="f">${esc(t().ppg)}<input type="number" inputmode="decimal" step="0.001" name="ppg"></label>
+      <label class="f">${esc(t().odometer)}<input type="number" inputmode="numeric" name="odometer"></label>
       <label class="f full">${esc(t().station)}<input name="station"></label><label class="f full">${esc(t().payer)}<select name="payer"><option value="cartao">${esc(t().card)}</option><option value="motorista">${esc(t().mine)}</option></select></label></div>
       <button class="btn gold wide" id="fsGo">${esc(t().save)}</button></form>`, api => {
       const f = $('#fs', api.el);
-      $('#fsF', f).onchange = async e => { const files = [...e.target.files]; e.target.value = ''; for (const file of files) { try { H.toast('…'); photos.push((await H.upload('files', `${S.me.id}/fuel`, file)).path); await H.thumbs($('#fsT', f), photos) } catch (x) { H.fail(x) } } };
+      let read = false;
+      const fillFrom = async file => { const msg = $('#fsRead', f);
+        try { msg.textContent = t().reading; const txt = await H.ocr(file, p => { msg.textContent = t().reading + ' ' + p + '%' }); const r = H.parseFuel(txt);
+          const done = []; Object.entries(r.data).forEach(([k, v]) => { const i = $(`[name="${k}"]`, f); if (i && v != null && v !== '' && (!i.value || (k === 'fuel_date' && !read))) { i.value = v; done.push(k) } });
+          const FL = { es: { 'galões': 'galones', 'preço/galão': 'precio/galón', 'odômetro': 'odómetro', data: 'fecha', posto: 'estación' }, en: { 'galões': 'gallons', 'preço/galão': 'price/gal', 'odômetro': 'odometer', data: 'date', posto: 'station' } }[lang()] || {};
+          msg.textContent = r.found.length ? t().readOk + r.found.map(k => FL[k] || k).join(', ') : t().readNo; if (r.found.length) read = true } catch (x) { msg.textContent = t().readNo } };
+      $$('input[data-fs]', f).forEach(inp => inp.onchange = async e => { const files = [...e.target.files]; e.target.value = ''; for (const file of files) { try { H.toast('…'); photos.push((await H.upload('files', `${S.me.id}/fuel`, file)).path); await H.thumbs($('#fsT', f), photos) } catch (x) { H.fail(x) } }
+        if (files[0] && !read) for (const file of files) { await fillFrom(file); if (read) break } });
       f.onsubmit = async e => { e.preventDefault(); const o = H.form(f); if (!photos.length) { H.toast(t().needPhoto, true); return }
         await H.busy($('#fsGo', f), async () => { await H.q(H.sb.from('fuel').insert({ ...o, driver_id: S.me.id, photos })); api.close(); H.toast('✓'); await R.reload() }) };
     });
