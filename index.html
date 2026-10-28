@@ -304,7 +304,7 @@ window.HTS = window.HTS || {};
     license: ['Foto da frente e do verso da sua carteira de motorista.', 'Foto del frente y reverso de tu licencia.', 'Photo of the front and back of your license.'],
     workauth: ['Foto do green card, passaporte americano, work permit (EAD) ou certidão de nascimento dos EUA.', 'Foto de green card, pasaporte de EE.UU., permiso de trabajo (EAD) o acta de nacimiento de EE.UU.', 'Photo of your green card, US passport, work permit (EAD) or US birth certificate.'],
     med: ['Exame DOT em clínica do registro nacional (nationalregistry.fmcsa.dot.gov). Custa cerca de $75–125. Mande a foto do cartão.', 'Examen DOT en clínica del registro nacional (nationalregistry.fmcsa.dot.gov). Cuesta unos $75–125. Envía la foto de la tarjeta.', 'DOT physical at a clinic from nationalregistry.fmcsa.dot.gov (about $75–125). Send a photo of the card.'],
-    w9: ['Baixe o W-9 em irs.gov/w9, preencha com o seu nome ou o da sua empresa e assine.', 'Descarga el W-9 en irs.gov/w9, llénalo con tu nombre o el de tu empresa y fírmalo.', 'Download the W-9 at irs.gov/w9, fill it in and sign it.'],
+    w9: ['Abra irs.gov/pub/irs-pdf/fw9.pdf → compartilhar → Salvar em Arquivos. No app Arquivos, toque na caneta (Marcação): linha 1 seu nome, 3a "Individual/sole proprietor", linhas 5 e 6 endereço, Part I o SSN, Part II assine e date. Envie aqui. Não mande pelo WhatsApp.', 'Abre irs.gov/pub/irs-pdf/fw9.pdf → compartir → Guardar en Archivos. En la app Archivos, toca el lápiz (Marcación): línea 1 tu nombre, 3a "Individual/sole proprietor", líneas 5 y 6 dirección, Part I el SSN, Part II firma y fecha. Envíalo aquí. No lo mandes por WhatsApp.', 'Open irs.gov/pub/irs-pdf/fw9.pdf → Share → Save to Files. In Files, tap the pen (Markup): line 1 your name, 3a "Individual/sole proprietor", lines 5-6 address, Part I your SSN, Part II sign and date. Upload it here. Do not send it by WhatsApp.'],
     coi: ['Peça ao seu agente de seguro o certificado (COI) do veículo, em PDF.', 'Pide a tu agente de seguros el certificado (COI) del vehículo, en PDF.', 'Ask your insurance agent for the vehicle certificate (COI) as a PDF.'],
     registration: ['Foto do registro do veículo que fica no porta-luvas.', 'Foto del registro del vehículo (guantera).', 'Photo of the vehicle registration (glove box).'],
     vehicle_photos: ['Fotos de fora (4 lados), da área de carga por dentro, da etiqueta na porta do motorista (mostra o peso GVWR) e 4 fotos da trena mostrando as medidas (veja o desenho).', 'Fotos de afuera (4 lados), del área de carga por dentro, de la etiqueta en la puerta del conductor (muestra el GVWR) y 4 fotos de la cinta métrica con las medidas (mira el dibujo).', 'Outside photos (4 sides), inside the cargo area, the driver door sticker (shows the GVWR) and 4 tape-measure photos (see the drawing).'],
@@ -1046,6 +1046,78 @@ This Agreement is made on ${v(t.date)} between ${v(t.carrier)}, USDOT ${v(t.dot)
 
 The parties sign this Agreement electronically and agree that their electronic signatures are binding.`;
   };
+  /* contrato do motorista autônomo (1099) que dirige o veículo da empresa */
+  H.icBody = t => {
+    const v = x => x || '________';
+    return `INDEPENDENT CONTRACTOR DRIVER AGREEMENT (1099)
+
+This Agreement is made on ${v(t.date)} between ${v(t.company)}${t.dot ? ', USDOT ' + t.dot : ''}${t.mc ? ', MC ' + t.mc : ''} ("Company"), and ${v(t.driver)}, residing at ${v(t.address)} ("Contractor").
+
+1. RELATIONSHIP. Contractor is an independent contractor and not an employee, partner or agent of the Company. The Company will not withhold income taxes, Social Security or Medicare from Contractor's pay and will issue a Form 1099-NEC each year. Contractor is responsible for paying his or her own taxes and for any personal insurance (including health insurance). Contractor has provided a signed Form W-9.
+
+2. SERVICES. Contractor will drive the Company's equipment (${v(t.equipment)}) to pick up and deliver loads offered by the Company. Contractor may accept or decline any load offered. There are no minimum hours. Contractor chooses his or her own routes, stops and rest periods, always within safety laws and the delivery times agreed for each load.
+
+3. COMPENSATION. For each load completed, Contractor will receive ${v(t.pct)}% of the gross line-haul amount paid by the broker or shipper. The Company will show Contractor the rate of each load in the app.
+
+4. PAYMENT. ${v(t.payment)}
+
+5. EXPENSES. The Company pays: ${v(t.company_pays)}. Contractor pays: ${v(t.driver_pays)}.
+
+6. TIME ON THE ROAD. ${v(t.schedule)}
+
+7. USE OF THE EQUIPMENT. The equipment may be used only for loads booked by the Company. Contractor will: (a) carry no passengers without written permission; (b) do the daily vehicle inspection and report any defect before driving; (c) never drive under the influence of alcohol or drugs, or while using a phone in hand; (d) obey all traffic laws and Federal and State safety rules; (e) report any accident, damage, ticket or police stop to the Company immediately. Traffic tickets and fines caused by Contractor are Contractor's responsibility.
+
+8. NON-EXCLUSIVE. Contractor is free to work for other companies when not on a load for the Company, as long as he or she does not use the Company's equipment.
+
+9. INSURANCE. The Company keeps auto liability and cargo insurance on the equipment and will list Contractor as a driver with its insurer. Contractor may drive only after the insurer approves him or her.
+
+10. DOCUMENTS. Contractor will keep a valid driver's license and give the Company: driver's license, W-9, driving record (MVR), proof of work authorization and two emergency contacts. Contractor authorizes the Company and its insurer to check his or her driving record.
+
+11. CONFIDENTIALITY. Contractor will keep confidential the Company's customers, brokers, rates and documents.
+
+12. TERM. This Agreement begins on ${v(t.start)} and continues until either party ends it with ${v(t.notice)} days notice (text message accepted). The Company may end it immediately for unsafe driving, use of alcohol or drugs, unauthorized use of the equipment or loss of insurance approval. Pay for loads already delivered remains due.
+
+13. OTHER TERMS. ${v(t.other || 'None.')}
+
+14. LAW. This Agreement is governed by the laws of the State of Florida. The parties sign electronically and agree that their electronic signatures are binding.`;
+  };
+  H.IC_SUMMARY = {
+    pt: 'Resumo em português: você trabalha como autônomo (1099), não como empregado. Dirige o veículo da empresa e pode aceitar ou recusar cada carga. Recebe a porcentagem combinada de cada carga, sem desconto de imposto: você mesmo paga os seus impostos. As despesas do veículo ficam com a empresa; alimentação e despesas pessoais ficam com você. Multas causadas por você são suas. Pode trabalhar para outras empresas quando não estiver numa carga. Qualquer um pode encerrar o contrato avisando com antecedência.',
+    es: 'Resumen en español: trabajas como contratista independiente (1099), no como empleado. Manejas el vehículo de la empresa y puedes aceptar o rechazar cada carga. Recibes el porcentaje acordado de cada carga, sin retención de impuestos: tú pagas tus impuestos. Los gastos del vehículo son de la empresa; comida y gastos personales son tuyos. Las multas causadas por ti son tuyas. Puedes trabajar para otras empresas cuando no estés en una carga. Cualquiera puede terminar el contrato avisando con anticipación.',
+    en: 'Summary: you work as an independent contractor (1099), not as an employee. You drive the company vehicle and may accept or decline each load. You receive the agreed percentage of each load with no tax withheld: you pay your own taxes. Vehicle expenses are paid by the company; food and personal expenses are yours. Fines you cause are yours. You may work for other companies when not on a load. Either party may end the agreement with notice.'
+  };
+  /* contrato de dispatch com a transportadora (como o da Phoenix) */
+  H.dispatchBody = t => {
+    const v = x => x || '________';
+    return `LOAD MANAGEMENT AND DISPATCH AUTHORIZATION AGREEMENT
+
+This Agreement is entered into on ${v(t.date)}, by and between:
+COMPANY (Carrier): ${v(t.company)} — USDOT # ${v(t.dot)} · MC # ${v(t.mc)} · Address: ${v(t.address)}
+COMPANY REPRESENTATIVE: ${v(t.rep)}, Title: ${v(t.title)}
+AUTHORIZED REPRESENTATIVE (Dispatcher): ${v(t.dispatcher)}, doing business as ${v(t.dba)}
+
+1. PURPOSE. ${v(t.company)} ("Company"), represented by ${v(t.rep)}, appoints ${v(t.dispatcher)} ("Dispatcher") as its authorized representative for load management, freight negotiations and dispatch operations.
+
+2. AUTHORIZED RESPONSIBILITIES. (1) Search for and secure loads on behalf of the Company. (2) Negotiate freight rates. (3) Accept and confirm loads with brokers, logistics companies and customers, after the Company or its driver confirms availability (by text message or in writing). (4) Sign rate confirmations and transportation documents for approved loads, always in the Company's legal name. (5) Coordinate pickup and delivery schedules. (6) Communicate with brokers, customers and drivers. (7) Monitor load status. (8) Complete broker carrier set-up packets using the documents provided by the Company.
+
+3. LIMITATIONS OF AUTHORITY. The Dispatcher acts solely on behalf of the Company. This Agreement grants no ownership or membership interest and no authority to sell or transfer the Company or its assets. The Dispatcher may not access or withdraw Company funds, obtain loans or make financial commitments unrelated to freight operations without written approval.
+
+4. COMPANY RESPONSIBILITIES. The Company shall: (a) keep its USDOT/MC operating authority active; (b) keep auto liability and cargo insurance active and provide a current Certificate of Insurance (COI), W-9 and MC authority letter for broker set-ups; (c) ensure its drivers and vehicles comply with all FMCSA/DOT and state regulations; (d) inform the Dispatcher promptly of driver and vehicle availability, delays and any incident during a load. The driver/Company may decline a load before it is confirmed.
+
+5. DISPATCH FEE AND PAYMENT. (1) The Company shall pay the Dispatcher ${v(t.pct)}% of the gross amount of each load booked by the Dispatcher, including accessorials paid by the broker (detention, layover, TONU; lumper reimbursements excluded). (2) The fee is paid ${v(t.freq)}, for the loads paid by the broker or factoring company, and no later than 7 days after the Company receives each payment. (3) Payment method: ${v(t.method)}. (4) Fees for loads booked before termination remain due after termination.
+
+6. RESPONSIBILITY AND LIABILITY. All freight agreements are entered into under the Company's legal name and operating authority. The Dispatcher is not a motor carrier or freight broker and is not responsible for cargo loss or damage, accidents, traffic or regulatory violations, breakdowns, late deliveries caused by the driver or vehicle, or non-payment by brokers or customers. The Company is solely responsible for its drivers, vehicles, insurance and compliance, and agrees to hold the Dispatcher harmless from claims arising from the transportation services.
+
+7. INDEPENDENT CONTRACTOR. The Dispatcher is an independent contractor, not an employee, partner or member of the Company, and may provide dispatch services to other carriers. Each party is responsible for its own taxes.
+
+8. CONFIDENTIALITY. Both parties keep confidential the other party's business information, including rates, broker contacts, driver data and documents, during and after this Agreement.
+
+9. TERM AND TERMINATION. This Agreement is effective upon signature and remains valid until terminated. Either party may terminate it with ${v(t.notice)} days' written notice (text message accepted). Termination does not affect loads already confirmed or fees already earned.
+
+10. NO TRANSFER OF OWNERSHIP. This Agreement grants limited operational authority only and does not transfer ownership or corporate control.
+
+11. GOVERNING LAW. This Agreement is governed by the laws of the State of Florida.`;
+  };
   H.LEASE_SUMMARY = {
     pt: 'Resumo em português: você aluga o veículo (com você dirigindo) para a transportadora, que fica responsável pela operação. Você recebe a porcentagem combinada de cada carga e tem direito de ver o valor que o broker pagou. O pagamento sai em até 15 dias depois de mandar os papéis da entrega. Os descontos só podem ser os da lista, sempre com recibo. O contrato vale até um dos dois avisar com antecedência. O texto oficial está em inglês, abaixo.',
     es: 'Resumen en español: usted alquila el vehículo (con usted manejando) a la transportista, que queda responsable de la operación. Recibe el porcentaje acordado de cada carga y tiene derecho a ver lo que pagó el broker. El pago sale a más tardar 15 días después de enviar los papeles de entrega. Los descuentos solo pueden ser los de la lista, siempre con recibo. El contrato dura hasta que una de las partes avise con anticipación. El texto oficial está en inglés, abajo.',
@@ -1066,9 +1138,9 @@ The parties sign this Agreement electronically and agree that their electronic s
     }).join('') + `<p><i>${esc(en(F.cert))}</i></p>`;
     const ds = await sig(a.driver_sig_path), cs = await sig(a.carrier_sig_path);
     $('#print').innerHTML = `<div class="head"><div><h1>${esc((company || {}).name || '')}</h1><div>${(company || {}).dot ? 'USDOT ' + esc(company.dot) : ''}${(company || {}).mc ? ' · MC ' + esc(company.mc) : ''}</div></div></div>
-      <h1>${esc(F ? en(F.title) : 'Equipment Lease Agreement')}</h1>${F ? `<p>49 CFR ${esc(F.rule)} · Driver: ${esc(driverName || '')}</p>` : ''}${body}
-      <table style="margin-top:20px"><tr><td style="width:50%">${ds}<br>${esc(a.driver_signed_name || '')}<br>${a.kind === 'lease' ? 'Owner / Driver' : 'Driver'} · ${a.driver_signed_at ? new Date(a.driver_signed_at).toLocaleString('en-US') : ''}</td>
-      ${a.kind === 'lease' ? `<td>${cs}<br>${esc(a.carrier_signed_name || '')}${a.carrier_signer_title ? ', ' + esc(a.carrier_signer_title) : ''}<br>Carrier · ${a.carrier_signed_at ? new Date(a.carrier_signed_at).toLocaleString('en-US') : ''}</td>` : ''}</tr></table>
+      <h1>${esc(F ? en(F.title) : (a.title || 'Equipment Lease Agreement'))}</h1>${F ? `<p>49 CFR ${esc(F.rule)} · Driver: ${esc(driverName || '')}</p>` : ''}${body}
+      <table style="margin-top:20px"><tr><td style="width:50%">${ds}<br>${esc(a.driver_signed_name || '')}<br>${a.kind === 'lease' ? ((a.data || {}).tpl === 'ic' ? 'Contractor' : 'Owner / Driver') : 'Driver'} · ${a.driver_signed_at ? new Date(a.driver_signed_at).toLocaleString('en-US') : ''}</td>
+      ${a.kind === 'lease' ? `<td>${cs}<br>${esc(a.carrier_signed_name || '')}${a.carrier_signer_title ? ', ' + esc(a.carrier_signer_title) : ''}<br>${(a.data || {}).tpl === 'ic' ? 'Company' : 'Carrier'} · ${a.carrier_signed_at ? new Date(a.carrier_signed_at).toLocaleString('en-US') : ''}</td>` : ''}</tr></table>
       <p style="font-size:9px">Signed electronically in the Helen Transport app. Record ID ${esc(a.id)}.</p>`;
     window.print();
   };
@@ -1495,9 +1567,10 @@ The parties sign this Agreement electronically and agree that their electronic s
       ${H.isCMV(d) ? hosBlock(d) : ''}
       ${trackBlock(d)}
       <h3>Contratos e fichas assinadas</h3>
-      <div class="stack">${D.agr.filter(a => a.driver_id === d.id).map(a => `<div class="card sev ${a.status === 'assinado' ? 'good' : 'gold'}" data-agr="${a.id}"><div class="top2"><div><b>${esc(AGT[a.kind] || a.kind)}</b><div class="muted">${new Date(a.created_at).toLocaleDateString('pt-BR')}${a.driver_signed_name ? ' · ' + esc(a.driver_signed_name) : ''}</div></div><span class="pill ${a.status === 'assinado' ? 'p-good' : 'p-warn'}">${esc(AGS[a.status])}</span></div>
+      <div class="stack">${D.agr.filter(a => a.driver_id === d.id).map(a => `<div class="card sev ${a.status === 'assinado' ? 'good' : 'gold'}" data-agr="${a.id}"><div class="top2"><div><b>${esc((a.data || {}).tpl === 'ic' ? 'Contrato de motorista autônomo (1099)' : AGT[a.kind] || a.kind)}</b><div class="muted">${new Date(a.created_at).toLocaleDateString('pt-BR')}${a.driver_signed_name ? ' · ' + esc(a.driver_signed_name) : ''}</div></div><span class="pill ${a.status === 'assinado' ? 'p-good' : 'p-warn'}">${esc(AGS[a.status])}</span></div>
         <div class="row"><button class="btn sm" data-a="pdf">Ver / PDF</button>${a.status === 'aguardando_empresa' ? '<button class="btn sm gold" data-a="csign">Assinar pela transportadora</button>' : ''}${a.status === 'aguardando_motorista' ? '<button class="btn sm bad" data-a="del">Cancelar</button>' : ''}</div></div>`).join('') || '<p class="note">Nenhum ainda. O motorista preenche e assina a ficha (application) e os outros formulários na aba Documentos do app dele.</p>'}</div>
-      <button class="btn gold" id="newLease">+ Contrato de lease para ele assinar</button>
+      <div class="row"><button class="btn ${H.companyVeh(d) ? '' : 'gold'}" id="newLease">+ Contrato de lease (veículo dele)</button><button class="btn ${H.companyVeh(d) ? 'gold' : ''}" id="newIC">+ Contrato de motorista autônomo (1099)</button></div>
+      <p class="note">Lease: quando o veículo é do motorista. Autônomo (1099): quando ele dirige o veículo da empresa.</p>
       <h3>Remover</h3><p class="note">A lei pede guardar a pasta até 3 anos depois que ele sair. Prefira marcar "Inativo".</p><button class="btn bad" id="dDel">Apagar motorista</button>`}`, api => {
       const f = $('#df', api.el);
       f.onsubmit = async e => { e.preventDefault(); const o = H.form(f); const veh = { ...(d.vehicle || {}), year: o.v_year, make: o.v_make, model: o.v_model, vin: o.v_vin, plate: o.v_plate, gvwr: o.v_gvwr, type: o.v_type || null, owner: o.v_owner || 'driver', dims: (o.v_dims || '').trim() || null, value: (o.v_value || '').trim() || null }; o.test_until = o.test_until || null; o.dob = o.dob || null; o.address = (o.address || '').trim() || null; if (o.v_owner === 'company' && num(o.drv_pct) > 0) o.dispatch_pct = 100 - num(o.drv_pct); delete o.drv_pct;
@@ -1508,6 +1581,7 @@ The parties sign this Agreement electronically and agree that their electronic s
       $('#dLogo', api.el).onchange = async e => { const file = e.target.files[0]; if (!file) return; try { H.toast('Enviando logo…'); const up = await H.upload('logos', d.id, file); await H.q(H.sb.from('drivers').update({ logo_path: up.path }).eq('id', d.id)); await load(['drivers']); api.close(); driverSheet(drv(d.id)); H.toast('Logo salva') } catch (x) { H.fail(x) } };
       wireDocs(api, d); wireHos(api, d); wireTrack(api, d);
       $('#newLease', api.el).onclick = () => { api.close(); leaseForm(d) };
+      $('#newIC', api.el).onclick = () => { api.close(); icForm(d) };
       $$('[data-agr]', api.el).forEach(el => { const a = D.agr.find(x => x.id === el.dataset.agr), b = k => $(`[data-a="${k}"]`, el);
         b('pdf').onclick = () => H.printAgreement(a, comp(a.company_id), d.name);
         if (b('csign')) b('csign').onclick = () => { api.close(); carrierSign(a, d) };
@@ -1704,8 +1778,8 @@ The parties sign this Agreement electronically and agree that their electronic s
       <label class="f">MCS-150 atualizado em<input type="date" name="mcs150_date" value="${esc(c.mcs150_date)}"></label><label class="f">UCR pago para o ano<input type="number" name="ucr_year" value="${esc(c.ucr_year ?? '')}"></label>
       <label class="f">Seguro vence em<input type="date" name="insurance_exp" value="${esc(c.insurance_exp)}"></label><label class="f">Telefone<input name="phone" value="${esc(c.phone)}"></label>
       <label class="f full">Observações<textarea name="notes">${esc(c.notes)}</textarea></label></div>
-      <button class="btn gold wide" id="cfGo">Salvar</button>${!isNew ? '<button type="button" class="btn bad wide" id="cfDel">Apagar empresa</button>' : ''}</form>`, api => {
-      const f = $('#cf', api.el);
+      <button class="btn gold wide" id="cfGo">Salvar</button>${!isNew && c.type !== 'dispatch' ? '<button type="button" class="btn wide" id="cfDc">📄 Contrato de dispatch com esta empresa</button>' : ''}${!isNew ? '<button type="button" class="btn bad wide" id="cfDel">Apagar empresa</button>' : ''}</form>`, api => {
+      const f = $('#cf', api.el); if ($('#cfDc', f)) $('#cfDc', f).onclick = () => { api.close(); dispatchForm(c) };
       f.onsubmit = async e => { e.preventDefault(); const o = H.form(f); await H.busy($('#cfGo', f), async () => { if (isNew) await H.q(H.sb.from('companies').insert(o)); else await H.q(H.sb.from('companies').update(o).eq('id', c.id)); api.close(); H.toast('Empresa salva'); A.reload(['companies']) }) };
       if ($('#cfDel', f)) H.confirmBtn($('#cfDel', f), 'Toque de novo para apagar', async () => { await H.q(H.sb.from('companies').delete().eq('id', c.id)); api.close(); A.reload(['companies']) });
     });
@@ -2227,7 +2301,7 @@ The parties sign this Agreement electronically and agree that their electronic s
   }
 
   /* ---------- pasta da empresa ---------- */
-  const CDK = { auditoria: 'Resultado da auditoria', carta_fmcsa: 'Carta de confirmação da FMCSA', seguro: 'Seguro (apólice / COI)', ucr: 'Comprovante do UCR', mcs150: 'Comprovante do MCS-150 / bienal', autoridade: 'Autoridade (MC)', formulario: 'Formulário em branco (para imprimir)', outro: 'Outro' };
+  const CDK = { auditoria: 'Resultado da auditoria', carta_fmcsa: 'Carta de confirmação da FMCSA', seguro: 'Seguro (apólice / COI)', ucr: 'Comprovante do UCR', mcs150: 'Comprovante do MCS-150 / bienal', autoridade: 'Autoridade (MC)', contrato_dispatch: 'Contrato de dispatch (assinado)', w9: 'W-9 da empresa', formulario: 'Formulário em branco (para imprimir)', outro: 'Outro' };
   DV.empresa = {
     html() { dotCo = dotCo || (carriers()[0] || {}).id; const c = comp(dotCo), docs = D.cdocs.filter(x => x.company_id === dotCo), al = H.companyAlerts(c);
       const ne = c.new_entrant_start ? addMonths(c.new_entrant_start, 18) : null;
@@ -2281,6 +2355,42 @@ The parties sign this Agreement electronically and agree that their electronic s
       f.onsubmit = async e => { e.preventDefault(); const o = H.form(f);
         await H.busy($('#lf2Go', f), async () => { await H.q(H.sb.from('agreements').insert({ driver_id: d.id, company_id: d.company_id, kind: 'lease', title: 'Equipment Lease Agreement', body: H.leaseBody(o), data: o, status: 'aguardando_motorista' }));
           await load(['agr']); api.close(); H.toast('Contrato enviado para o app do motorista'); driverSheet(drv(d.id)) }) };
+    });
+  }
+  function icForm(d) {
+    const c = comp(d.company_id), v = d.vehicle || {};
+    const t0 = { date: iso(today()), start: iso(today()), company: c.name || '', dot: c.dot || '', mc: c.mc || '', driver: d.name || '', address: d.address || '', equipment: [v.year, v.make, v.model].filter(Boolean).join(' ') + (v.vin ? ', VIN ' + v.vin : '') || '14 ft box truck', pct: H.companyVeh(d) && num(d.dispatch_pct) ? 100 - num(d.dispatch_pct) : 30, notice: 7,
+      payment: 'Paid weekly, every Friday, by Zelle, for the loads already paid by the broker or factoring company. The first payment is made about 15 days after the first load, because the Company must wait for the first deliveries to be paid.',
+      company_pays: 'fuel, maintenance, repairs, tolls and the vehicle insurance', driver_pays: 'food, lodging, personal expenses and his or her own taxes',
+      schedule: 'Trips usually last 20 to 30 days on the road. After 30 days worked, Contractor may take 1 week off (unpaid), which may be taken in his or her hometown.', other: '' };
+    const F = [['company', 'Empresa (nome legal)'], ['dot', 'USDOT'], ['mc', 'MC'], ['driver', 'Motorista (nome completo)'], ['address', 'Endereço do motorista'], ['equipment', 'Veículo da empresa'], ['pct', '% da carga que o motorista recebe', 'number'], ['date', 'Data do contrato', 'date'], ['start', 'Começa em', 'date'], ['notice', 'Aviso para encerrar (dias)', 'number'], ['payment', 'Pagamento (em inglês)', 'area'], ['company_pays', 'A empresa paga (em inglês)', 'area'], ['driver_pays', 'O motorista paga (em inglês)', 'area'], ['schedule', 'Tempo na estrada e folga (em inglês)', 'area'], ['other', 'Outras condições (em inglês)', 'area']];
+    H.sheet(`<form id="ic" class="stack"><div class="row between"><h2>Motorista autônomo (1099) · ${esc(d.name)}</h2><button type="button" class="btn sm" data-close>Fechar</button></div>
+      <p class="note">Para quem dirige o veículo da empresa e recebe por carga, sem ser empregado. O texto oficial fica em inglês e o motorista vê um resumo no idioma dele. Ele assina no app e depois você assina pela empresa. Peça para um contador ou advogado revisar o modelo uma vez.</p>
+      <div class="g2">${F.map(([k, l, ty]) => ty === 'area' ? `<label class="f full">${esc(l)}<textarea name="${k}">${esc(t0[k])}</textarea></label>` : `<label class="f">${esc(l)}<input name="${k}" ${ty ? `type="${ty}"` : ''} value="${esc(t0[k])}" ${['pct', 'company', 'driver'].includes(k) ? 'required' : ''}></label>`).join('')}</div>
+      <details class="card"><summary><b>Ver o contrato</b></summary><div id="icPrev" style="white-space:pre-wrap;font-size:13px"></div></details>
+      <button class="btn gold wide" id="icGo">Enviar para o motorista assinar</button></form>`, api => {
+      const f = $('#ic', api.el), prev = () => { $('#icPrev', f).textContent = H.icBody(H.form(f)) }; f.oninput = prev; prev();
+      f.onsubmit = async e => { e.preventDefault(); const o = H.form(f);
+        await H.busy($('#icGo', f), async () => { await H.q(H.sb.from('agreements').insert({ driver_id: d.id, company_id: d.company_id, kind: 'lease', title: 'Independent Contractor Driver Agreement', body: H.icBody(o), data: { ...o, tpl: 'ic' }, status: 'aguardando_motorista' }));
+          await load(['agr']); api.close(); H.toast('Contrato enviado para o app do motorista'); driverSheet(drv(d.id)) }) };
+    });
+  }
+  /* contrato de dispatch com uma transportadora (gera o PDF para assinar) */
+  function dispatchForm(c) {
+    let saved = {}; try { saved = JSON.parse(localStorage.getItem('hts-dc-' + c.id) || '{}') || {} } catch (e) { }
+    const t0 = { date: iso(today()), company: c.name || '', dot: c.dot || '', mc: c.mc || '', address: '', rep: '', title: 'Owner', dispatcher: 'HELEN CHRISTINY DA SILVA', dba: 'Helen Transport Services', pct: 10, freq: 'weekly', method: 'Zelle', notice: 7, ...saved };
+    const F = [['company', 'Transportadora (nome legal)'], ['dot', 'USDOT'], ['mc', 'MC'], ['address', 'Endereço da transportadora'], ['rep', 'Dono / responsável (nome completo)'], ['title', 'Cargo (ex.: Owner)'], ['dispatcher', 'Seu nome completo'], ['dba', 'Sua marca'], ['pct', '% de dispatch', 'number'], ['freq', 'Quando paga (em inglês: weekly, every Friday…)'], ['method', 'Forma de pagamento (Zelle, ACH…)'], ['notice', 'Aviso para encerrar (dias)', 'number'], ['date', 'Data do contrato', 'date']];
+    H.sheet(`<form id="dc" class="stack"><div class="row between"><h2>Contrato de dispatch · ${esc(c.name || '')}</h2><button type="button" class="btn sm" data-close>Fechar</button></div>
+      <p class="note">Mesmo modelo do contrato da Phoenix. Preencha, toque em Gerar PDF e escolha "Salvar como PDF" (ou imprima). Depois que os dois assinarem, guarde o contrato assinado em DOT → Pasta da empresa → "Contrato de dispatch (assinado)".</p>
+      <div class="g2">${F.map(([k, l, ty]) => `<label class="f">${esc(l)}<input name="${k}" ${ty ? `type="${ty}"` : ''} value="${esc(t0[k])}"></label>`).join('')}</div>
+      <details class="card"><summary><b>Ver o contrato</b></summary><div id="dcPrev" style="white-space:pre-wrap;font-size:13px"></div></details>
+      <button class="btn gold wide" id="dcGo">📄 Gerar PDF para assinar</button></form>`, api => {
+      const f = $('#dc', api.el), prev = () => { $('#dcPrev', f).textContent = H.dispatchBody(H.form(f)) }; f.oninput = prev; prev();
+      f.onsubmit = e => { e.preventDefault(); const o = H.form(f); try { localStorage.setItem('hts-dc-' + c.id, JSON.stringify(o)) } catch (x) { }
+        $('#print').innerHTML = `<div style="white-space:pre-wrap;font-size:12px">${esc(H.dispatchBody(o))}</div>
+          <table style="margin-top:30px"><tr><td style="width:50%;padding-top:40px">______________________________<br><b>${esc(o.company)}</b><br>${esc(o.rep)}, ${esc(o.title)}<br>Date: ____________</td>
+          <td style="padding-top:40px">______________________________<br><b>Dispatcher</b><br>${esc(o.dispatcher)} — ${esc(o.dba)}<br>Date: ____________</td></tr></table>`;
+        window.print() };
     });
   }
   function carrierSign(a, d) {
@@ -2532,8 +2642,8 @@ The parties sign this Agreement electronically and agree that their electronic s
   }
   function leaseSheet(a) {
     if (!a) return;
-    H.sheet(`<form id="ls" class="stack"><div class="row between"><h2>📝 Lease</h2><button type="button" class="btn sm" data-close>✕</button></div>
-      <p class="note">${esc(H.LEASE_SUMMARY[lang()] || H.LEASE_SUMMARY.pt)}</p>
+    H.sheet(`<form id="ls" class="stack"><div class="row between"><h2>📝 ${esc((a.data || {}).tpl === 'ic' ? (a.title || 'Contrato') : 'Lease')}</h2><button type="button" class="btn sm" data-close>✕</button></div>
+      <p class="note">${esc(((a.data || {}).tpl === 'ic' ? H.IC_SUMMARY : H.LEASE_SUMMARY)[lang()] || H.LEASE_SUMMARY.pt)}</p>
       <div class="card" style="white-space:pre-wrap;max-height:45vh;overflow:auto;font-size:13px">${esc(a.body || '')}</div>${signBlock()}
       <p class="note">${esc(t().leaseCarrier)}</p><button class="btn gold wide" id="lsGo">${esc(t().signSend)}</button></form>`, api => {
       const f = $('#ls', api.el), pad = H.sigPad($('#sigBox', f));
