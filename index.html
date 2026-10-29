@@ -746,7 +746,7 @@ window.HTS = window.HTS || {};
     'Marcar como pago': ['Marcar como pagado', 'Mark as paid'], 'Comprovante / nº da transação': ['Comprobante / nº de transacción', 'Receipt / transaction #'],
     'Confirmation code do Zelle, nº do cheque…': ['Código de Zelle, nº de cheque…', 'Zelle confirmation code, check #…'], 'Conferi no banco que a transferência saiu': ['Revisé en el banco que la transferencia salió', 'I checked with the bank that the transfer went out'],
     /* mais */
-    'Empresas': ['Empresas', 'Companies'], 'Combustível': ['Combustible', 'Fuel'], 'Contas': ['Cuentas', 'Books'], 'Candidatos': ['Candidatos', 'Applicants'], 'Backup': ['Copia de seguridad', 'Backup'],
+    'Empresas': ['Empresas', 'Companies'], 'Combustível': ['Combustible', 'Fuel'], 'Contas': ['Cuentas', 'Books'], 'Candidatos': ['Candidatos', 'Applicants'], 'Backup': ['Copia de seguridad', 'Backup'], 'Alertas': ['Alertas', 'Alerts'],
     '+ Empresa': ['+ Empresa', '+ Company'], 'Nova empresa': ['Nueva empresa', 'New company'], 'Empresa': ['Empresa', 'Company'],
     'As transportadoras são donas do DOT/MC que vai na carga. A empresa de dispatch é a sua marca, que recebe a comissão. Os dados de cada uma ficam separados.': ['Las transportistas son dueñas del DOT/MC que va en la carga. La empresa de dispatch es tu marca, que cobra la comisión. Los datos de cada una quedan separados.', 'Carriers own the DOT/MC on the load. The dispatch company is your brand, which earns the commission. Each one keeps its own records.'],
     'Nome legal': ['Nombre legal', 'Legal name'], 'Transportadora (DOT/MC)': ['Transportista (DOT/MC)', 'Carrier (DOT/MC)'], 'Dispatch (sua marca)': ['Dispatch (tu marca)', 'Dispatch (your brand)'],
@@ -1065,7 +1065,7 @@ This Agreement is made on ${v(t.date)} between ${v(t.company)}${t.dot ? ', USDOT
 
 6. TIME ON THE ROAD. ${v(t.schedule)}
 
-7. USE OF THE EQUIPMENT. The equipment may be used only for loads booked by the Company. Contractor will: (a) carry no passengers without written permission; (b) do the daily vehicle inspection and report any defect before driving; (c) never drive under the influence of alcohol or drugs, or while using a phone in hand; (d) obey all traffic laws and Federal and State safety rules; (e) report any accident, damage, ticket or police stop to the Company immediately. Traffic tickets and fines caused by Contractor are Contractor's responsibility.
+7. USE OF THE EQUIPMENT. The equipment may be used only for loads booked by the Company. Contractor will: (a) carry no passengers without written permission; (b) do the daily vehicle inspection and report any defect before driving; (c) never drive under the influence of alcohol or drugs, or while using a phone in hand; (d) obey all traffic laws and Federal and State safety rules; (e) report any accident, damage, ticket or police stop to the Company immediately. Traffic tickets, parking tickets, toll violations, camera tickets and any other fines or penalties caused by Contractor are Contractor's responsibility. If the Company pays any of them, the Company will give Contractor a copy of the ticket or notice and may deduct the amount from Contractor's next settlement(s).
 
 8. NON-EXCLUSIVE. Contractor is free to work for other companies when not on a load for the Company, as long as he or she does not use the Company's equipment.
 
@@ -1082,9 +1082,9 @@ This Agreement is made on ${v(t.date)} between ${v(t.company)}${t.dot ? ', USDOT
 14. LAW. This Agreement is governed by the laws of the State of Florida. The parties sign electronically and agree that their electronic signatures are binding.`;
   };
   H.IC_SUMMARY = {
-    pt: 'Resumo em português: você trabalha como autônomo (1099), não como empregado. Dirige o veículo da empresa. Antes de fechar cada carga, a empresa confirma a sua disponibilidade; depois que você confirma e a carga é fechada, você precisa fazer a viagem. Recebe a porcentagem combinada de cada carga, sem desconto de imposto: você mesmo paga os seus impostos. As despesas do veículo ficam com a empresa; alimentação e despesas pessoais ficam com você. Multas causadas por você são suas. Pode trabalhar para outras empresas quando não estiver numa carga. Qualquer um pode encerrar o contrato avisando com antecedência.',
-    es: 'Resumen en español: trabajas como contratista independiente (1099), no como empleado. Manejas el vehículo de la empresa. Antes de cerrar cada carga, la empresa confirma tu disponibilidad; después de que confirmas y la carga se cierra, debes hacer el viaje. Recibes el porcentaje acordado de cada carga, sin retención de impuestos: tú pagas tus impuestos. Los gastos del vehículo son de la empresa; comida y gastos personales son tuyos. Las multas causadas por ti son tuyas. Puedes trabajar para otras empresas cuando no estés en una carga. Cualquiera puede terminar el contrato avisando con anticipación.',
-    en: 'Summary: you work as an independent contractor (1099), not as an employee. You drive the company vehicle. Before booking each load, the company confirms your availability; once you confirm and the load is booked, you must complete the trip. You receive the agreed percentage of each load with no tax withheld: you pay your own taxes. Vehicle expenses are paid by the company; food and personal expenses are yours. Fines you cause are yours. You may work for other companies when not on a load. Either party may end the agreement with notice.'
+    pt: 'Resumo em português: você trabalha como autônomo (1099), não como empregado. Dirige o veículo da empresa. Antes de fechar cada carga, a empresa confirma a sua disponibilidade; depois que você confirma e a carga é fechada, você precisa fazer a viagem. Recebe a porcentagem combinada de cada carga, sem desconto de imposto: você mesmo paga os seus impostos. As despesas do veículo ficam com a empresa; alimentação e despesas pessoais ficam com você. Multas causadas por você (trânsito, estacionamento, pedágio, radar) são suas: se a empresa pagar, você recebe a cópia da multa e o valor é descontado do seu próximo pagamento. Pode trabalhar para outras empresas quando não estiver numa carga. Qualquer um pode encerrar o contrato avisando com antecedência.',
+    es: 'Resumen en español: trabajas como contratista independiente (1099), no como empleado. Manejas el vehículo de la empresa. Antes de cerrar cada carga, la empresa confirma tu disponibilidad; después de que confirmas y la carga se cierra, debes hacer el viaje. Recibes el porcentaje acordado de cada carga, sin retención de impuestos: tú pagas tus impuestos. Los gastos del vehículo son de la empresa; comida y gastos personales son tuyos. Las multas causadas por ti (tránsito, estacionamiento, peaje, cámara) son tuyas: si la empresa las paga, recibes la copia y el monto se descuenta de tu próximo pago. Puedes trabajar para otras empresas cuando no estés en una carga. Cualquiera puede terminar el contrato avisando con anticipación.',
+    en: 'Summary: you work as an independent contractor (1099), not as an employee. You drive the company vehicle. Before booking each load, the company confirms your availability; once you confirm and the load is booked, you must complete the trip. You receive the agreed percentage of each load with no tax withheld: you pay your own taxes. Vehicle expenses are paid by the company; food and personal expenses are yours. Fines you cause (traffic, parking, tolls, cameras) are yours: if the company pays one, you get a copy and the amount is deducted from your next settlement. You may work for other companies when not on a load. Either party may end the agreement with notice.'
   };
   /* contrato de dispatch com a transportadora (como o da Phoenix) */
   H.dispatchBody = t => {
@@ -1756,7 +1756,7 @@ AUTHORIZED REPRESENTATIVE (Dispatcher): ${v(t.dispatcher)}, doing business as ${
   }
 
   /* ================= MAIS ================= */
-  const SUBS = [['empresas', 'Empresas'], ['combustivel', 'Combustível'], ['contas', 'Contas'], ['candidatos', 'Candidatos'], ['backup', 'Backup']];
+  const SUBS = [['empresas', 'Empresas'], ['combustivel', 'Combustível'], ['contas', 'Contas'], ['candidatos', 'Candidatos'], ['alertas', 'Alertas'], ['backup', 'Backup']];
   const vMais = {
     html() { const s = SUBS.some(x => x[0] === st.sub) ? st.sub : 'empresas'; return `<div class="stack"><div class="chips">${SUBS.map(([k, l]) => `<button class="chip" data-sub="${k}" aria-pressed="${s === k}">${l}${k === 'candidatos' && D.apps.filter(a => a.status === 'novo').length ? ' (' + D.apps.filter(a => a.status === 'novo').length + ')' : ''}</button>`).join('')}</div>${SUBV[s].html()}</div>` },
     wire(v) { $$('[data-sub]', v).forEach(b => b.onclick = () => { location.hash = 'mais/' + b.dataset.sub }); const s = SUBS.some(x => x[0] === st.sub) ? st.sub : 'empresas'; SUBV[s].wire && SUBV[s].wire(v) }
@@ -2051,6 +2051,19 @@ AUTHORIZED REPRESENTATIVE (Dispatcher): ${v(t.dispatcher)}, doing business as ${
         const docs = (Array.isArray(a.files) ? a.files : []).filter(f => H.DOCS.some(i => i.k === f.k)).map(f => ({ driver_id: r.id, item: f.k, status: 'enviado', file_path: f.path, file_name: f.name || null, note: 'Enviado no cadastro' }));
         if (docs.length) await H.q(H.sb.from('driver_docs').insert(docs));
         await H.q(H.sb.from('applications').update({ status: 'aprovado' }).eq('id', a.id)); await load(['drivers', 'apps', 'docs']); location.hash = 'motoristas/' + r.id }) }) }
+  };
+  SUBV.alertas = {
+    html: () => `<h1>Alertas no Telegram</h1>
+      <p class="note">O app manda uma mensagem no seu Telegram quando chega candidato novo, documento para aprovar, resposta de oferta, "Cheguei" do motorista, Quick Pay, defeito no DVIR ou contrato assinado. Todo dia de manhã chega também um resumo do que está pendente.</p>
+      <div class="card"><b>Testar</b><span class="muted">Toque para receber uma mensagem de teste no Telegram.</span><button class="btn gold" id="alTest">🔔 Mandar alerta de teste</button><span class="muted" id="alMsg" role="status"></span></div>
+      <div class="card"><b>Trocar o celular que recebe</b><span class="muted">Use se trocar de conta do Telegram. Depois, mande /start para o seu robô e toque em "Mandar alerta de teste".</span><button class="btn" id="alReset">Reconectar o Telegram</button></div>`,
+    wire(v) {
+      const msg = $('#alMsg', v);
+      $('#alTest', v).onclick = () => H.busy($('#alTest', v), async () => { msg.textContent = 'Enviando…';
+        try { const r = await fetch(H.cfg.url + '/functions/v1/notify', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ test: true }) }); const j = await r.json().catch(() => ({}));
+          msg.textContent = j.ok ? '✅ Enviado! Confira o Telegram.' : j.reason === 'no_token' ? 'Falta colocar o TELEGRAM_TOKEN nos Secrets do Supabase.' : j.reason === 'no_chat' ? 'Abra o seu robô no Telegram, toque em Iniciar (/start) e tente de novo.' : r.status === 404 ? 'A função "notify" ainda não foi criada no Supabase.' : r.status === 401 ? 'Desligue o "Enforce JWT verification" da função notify.' : 'Não deu certo (' + (j.reason || r.status) + ').' } catch (e) { msg.textContent = 'Sem conexão com a função notify.' } });
+      H.confirmBtn($('#alReset', v), 'Toque de novo para reconectar', async () => { await H.q(H.sb.from('app_settings').delete().eq('key', 'tg_chat')); msg.textContent = 'Pronto. Mande /start para o robô e teste de novo.' });
+    }
   };
   SUBV.backup = {
     html: () => `<h1>Backup</h1><p class="note">Baixe uma cópia completa toda semana e guarde no iCloud Drive ou no Google Drive. O arquivo .zip leva os dados de todas as telas e os documentos e fotos.</p>
