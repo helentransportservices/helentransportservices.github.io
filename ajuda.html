@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Helen Transport · Ajuda para motoristas</title>
+<meta name="description" content="Vídeos: como se cadastrar, enviar documentos e usar o app do motorista da Helen Transport Services.">
+<meta property="og:title" content="Helen Transport · Vídeos para motoristas">
+<meta property="og:description" content="Cadastro, documentos e como usar o app · PT / ES / EN">
+<meta property="og:image" content="https://helentransportservices.github.io/video-1-capa-pt.jpg">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{--bg:#0b0b0d;--panel:#16161a;--ink:#f3efe6;--muted:#a9a397;--gold:#d4a537;--gold2:#f0cf7a;--line:#2c2c33;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.w{max-width:640px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-right)) 60px max(16px,env(safe-area-inset-left));display:flex;flex-direction:column;gap:16px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{font-weight:800;letter-spacing:.12em;color:var(--gold);font-size:14px}
+.langs{display:flex;gap:6px}
+.langs button{font:700 14px system-ui;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:7px 12px;cursor:pointer}
+.langs button[aria-pressed="true"]{background:var(--gold);color:#1a1305;border-color:var(--gold)}
+h1{margin:6px 0 0;font-size:30px;line-height:1.15;text-wrap:balance}
+.sub{color:var(--muted);margin:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.card h2{margin:0;font-size:18px;color:var(--gold2)}
+video{width:100%;max-height:78vh;border-radius:12px;background:#000;aspect-ratio:9/16}
+a.btn{display:block;text-align:center;text-decoration:none;font:700 16px system-ui;border-radius:12px;padding:14px;border:1px solid var(--line);background:#222228;color:var(--ink)}
+a.btn.gold{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#1a1305;border:0}
+a:focus-visible,button:focus-visible{outline:3px solid var(--gold2);outline-offset:2px}
+</style>
+</head>
+<body>
+<main class="w">
+  <div class="top"><span class="brand">HELEN TRANSPORT SERVICES</span>
+    <div class="langs" role="group" aria-label="Idioma">
+      <button data-l="pt">🇧🇷 PT</button><button data-l="es">🇪🇸 ES</button><button data-l="en">🇺🇸 EN</button>
+    </div></div>
+  <h1 id="h"></h1>
+  <p class="sub" id="s"></p>
+  <section class="card"><h2 id="t1"></h2><video id="v1" controls playsinline preload="metadata"></video></section>
+  <section class="card"><h2 id="t2"></h2><video id="v2" controls playsinline preload="metadata"></video></section>
+  <a class="btn gold" id="reg" href="#"></a>
+  <a class="btn" id="app" href="./"></a>
+  <a class="btn" id="wa" href="https://wa.me/14073760990" target="_blank" rel="noopener"></a>
+</main>
+<script>
+const T={
+ pt:{h:'Vídeos para motoristas',s:'Assista antes de começar: como se cadastrar, enviar os documentos e usar o app no dia a dia.',t1:'Vídeo 1: cadastro e documentos',t2:'Vídeo 2: como usar o app',reg:'Quero me cadastrar',app:'Já tenho conta: entrar no app',wa:'Dúvidas? WhatsApp (407) 376-0990'},
+ es:{h:'Videos para conductores',s:'Míralos antes de empezar: cómo registrarte, enviar tus documentos y usar la app todos los días.',t1:'Video 1: registro y documentos',t2:'Video 2: cómo usar la app',reg:'Quiero registrarme',app:'Ya tengo cuenta: entrar a la app',wa:'¿Dudas? WhatsApp (407) 376-0990'},
+ en:{h:'Videos for drivers',s:'Watch before you start: how to sign up, send your documents and use the app every day.',t1:'Video 1: sign-up and documents',t2:'Video 2: how to use the app',reg:'I want to apply',app:'I have an account: open the app',wa:'Questions? WhatsApp (407) 376-0990'}};
+function pick(){let l=new URLSearchParams(location.search).get('l');if(T[l])return l;try{l=localStorage.getItem('hts-lang');if(T[l])return l}catch(e){}l=(navigator.language||'pt').slice(0,2);return T[l]?l:'pt'}
+function set(l){const t=T[l];document.documentElement.lang=l;
+ for(const k of ['h','s','t1','t2','reg','app','wa'])document.getElementById(k).textContent=t[k];
+ const v1=document.getElementById('v1'),v2=document.getElementById('v2');
+ v1.src=`video-1-cadastro-${l}.mp4`;v1.poster=`video-1-capa-${l}.jpg`;v2.src=`video-2-como-usar-${l}.mp4`;v2.poster=`video-2-capa-${l}.jpg`;
+ document.getElementById('reg').href=`cadastro.html?tipo=motorista${l==='pt'?'':'&l='+l}`;
+ document.querySelectorAll('[data-l]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===l));
+ try{localStorage.setItem('hts-lang',l)}catch(e){}}
+document.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>set(b.dataset.l));
+set(pick());
+</script>
+</body>
+</html>
