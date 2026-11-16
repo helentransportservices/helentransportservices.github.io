@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Relatório da transportadora · Helen Transport Services</title>
+<link rel="icon" href="icon-192.png">
+<style>
+:root{--bg:#0b0b0d;--panel:#16161a;--panel2:#1d1d23;--ink:#f3efe6;--muted:#a9a397;--gold:#d4a537;--gold2:#f0cf7a;--good:#4cc283;--bad:#e56b6b;--line:#2c2c33;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.w{max-width:760px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-right)) 60px max(16px,env(safe-area-inset-left));display:flex;flex-direction:column;gap:14px}
+.brand{font-weight:800;letter-spacing:.1em;color:var(--gold);font-size:13px}
+h1{margin:0;font-size:26px;line-height:1.15}
+h2{margin:6px 0 0;font-size:18px}
+.muted{color:var(--muted);font-size:14px;margin:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px}
+label{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--muted)}
+input,select{font:16px system-ui;background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:11px;width:100%}
+button{font:700 16px system-ui;border:0;border-radius:12px;padding:13px;cursor:pointer;background:#26262c;color:var(--ink);border:1px solid var(--line)}
+button.gold{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#1a1305;border:0}
+button.link{background:none;border:0;color:var(--gold2);padding:6px;font-weight:600;text-decoration:underline}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chips button{padding:8px 12px;font-size:14px;border-radius:999px}
+.chips button[aria-pressed="true"]{background:var(--gold);color:#1a1305;border-color:var(--gold)}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:620px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px}
+.stat span{display:block;color:var(--muted);font-size:13px}
+.stat b{font-size:21px;font-variant-numeric:tabular-nums}
+.stat.hl b{color:var(--gold2)}
+table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+td.r,th.r{text-align:right}
+.scroll{overflow-x:auto}
+.err{color:var(--bad);font-size:14px;margin:0}
+.ok{color:var(--good);font-size:14px;margin:0}
+.pill{font-size:12px;padding:2px 8px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);white-space:nowrap}
+[hidden]{display:none!important}
+@media print{body{background:#fff;color:#000}.noprint{display:none!important}.card,.stat{background:#fff;border-color:#ccc}.stat b,.stat.hl b{color:#000}th{color:#555}}
+</style>
+</head>
+<body>
+<main class="w">
+  <div class="row" style="justify-content:space-between"><span class="brand">HELEN TRANSPORT SERVICES</span><button class="link noprint" id="out" hidden>Sair</button></div>
+
+  <section id="login" class="card" hidden>
+    <h1>Relatório da transportadora</h1>
+    <p class="muted">Entre com o e-mail que a Helen cadastrou para a sua empresa. Primeira vez? Toque em <b>Criar senha</b>.</p>
+    <label>E-mail<input id="em" type="email" autocomplete="username" inputmode="email"></label>
+    <label>Senha<input id="pw" type="password" autocomplete="current-password"></label>
+    <button class="gold" id="goIn">Entrar</button>
+    <div class="row"><button class="link" id="goUp">Criar senha (primeira vez)</button><button class="link" id="goReset">Esqueci a senha</button></div>
+    <p class="err" id="lerr" hidden></p><p class="ok" id="lok" hidden></p>
+  </section>
+
+  <section id="app" hidden>
+    <div class="card">
+      <h1 id="coName">Relatório</h1>
+      <p class="muted" id="coInfo"></p>
+      <div class="row chips noprint" id="per">
+        <button data-p="week">Esta semana</button><button data-p="lastweek">Semana passada</button><button data-p="month">Este mês</button><button data-p="lastmonth">Mês passado</button><button data-p="custom">Escolher datas</button>
+      </div>
+      <div class="row noprint" id="custom" hidden>
+        <label style="flex:1">De<input type="date" id="dFrom"></label><label style="flex:1">Até<input type="date" id="dTo"></label>
+        <button id="apply" style="align-self:flex-end">Ver</button>
+      </div>
+      <p class="muted" id="perTxt"></p>
+    </div>
+
+    <h2>Cargas</h2>
+    <div class="stats">
+      <div class="stat"><span>Cargas</span><b id="sN">0</b></div>
+      <div class="stat"><span>Valor bruto</span><b id="sG">$0</b></div>
+      <div class="stat"><span>Dispatch</span><b id="sD">$0</b></div>
+      <div class="stat hl"><span>Líquido da empresa</span><b id="sL">$0</b></div>
+    </div>
+    <div class="card scroll"><table><thead><tr><th>Data</th><th>Rota</th><th>Motorista</th><th class="r">Milhas</th><th class="r">Bruto</th><th class="r">Dispatch</th><th class="r">Líquido</th></tr></thead><tbody id="tL"></tbody></table></div>
+
+    <h2>Combustível</h2>
+    <div class="stats">
+      <div class="stat"><span>Abastecimentos</span><b id="fN">0</b></div>
+      <div class="stat"><span>Galões</span><b id="fG">0</b></div>
+      <div class="stat hl"><span>Total gasto</span><b id="fT">$0</b></div>
+      <div class="stat"><span>Líquido − combustível</span><b id="fR">$0</b></div>
+    </div>
+    <div class="card scroll"><table><thead><tr><th>Data</th><th>Motorista</th><th>Posto</th><th class="r">Galões</th><th class="r">Total</th><th>Pago por</th></tr></thead><tbody id="tF"></tbody></table></div>
+
+    <button class="noprint" onclick="print()">🖨️ Imprimir / salvar em PDF</button>
+  </section>
+  <p class="err" id="gerr" hidden></p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>window.HTS_CONFIG={supabaseUrl:'https://xwioljkfbeyrizvcxhff.supabase.co',supabaseAnonKey:'sb_publishable_0NIsBJ5JZKI1wQUoke7k1w_4y7whapU',whatsapp:'14073760990',dispatchName:'Helen Transport Services',quickPayPct:5};</script>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const num=v=>Number(v)||0;
+const fmt=v=>'$'+num(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const iso=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const br=s=>s?s.slice(8,10)+'/'+s.slice(5,7)+'/'+s.slice(0,4):'';
+const PAY={cartao:'Cartão da empresa',empresa:'Empresa',motorista:'Motorista'};
+let sb=null,per='week';
+function showErr(el,m){el.textContent=m;el.hidden=false}
+try{sb=window.supabase.createClient(HTS_CONFIG.supabaseUrl,HTS_CONFIG.supabaseAnonKey,{auth:{storageKey:'hts-empresa'}})}catch(e){showErr($('gerr'),'Não foi possível conectar. Tente de novo mais tarde.')}
+function range(p){const t=new Date();t.setHours(12,0,0,0);const dow=(t.getDay()+6)%7;let a,b;
+  if(p==='week'){a=new Date(t);a.setDate(t.getDate()-dow);b=new Date(a);b.setDate(a.getDate()+6)}
+  else if(p==='lastweek'){a=new Date(t);a.setDate(t.getDate()-dow-7);b=new Date(a);b.setDate(a.getDate()+6)}
+  else if(p==='month'){a=new Date(t.getFullYear(),t.getMonth(),1,12);b=new Date(t.getFullYear(),t.getMonth()+1,0,12)}
+  else if(p==='lastmonth'){a=new Date(t.getFullYear(),t.getMonth()-1,1,12);b=new Date(t.getFullYear(),t.getMonth(),0,12)}
+  else{return [$('dFrom').value,$('dTo').value]}
+  return [iso(a),iso(b)]}
+async function load(){const [f,t]=range(per);if(!f||!t)return;$('perTxt').textContent='Período: '+br(f)+' a '+br(t);
+  document.querySelectorAll('#per button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.p===per));
+  const {data,error}=await sb.rpc('company_report',{p_from:f,p_to:t});
+  if(error){showErr($('gerr'),'Erro ao carregar: '+error.message);return}
+  const co=data.companies||[];
+  if(!co.length){$('coName').textContent='Acesso ainda não liberado';$('coInfo').textContent='Este e-mail ainda não está ligado a nenhuma empresa. Peça à Helen para cadastrar o seu e-mail na sua empresa.';}
+  else{$('coName').textContent=co.map(c=>c.name).join(' · ');$('coInfo').textContent=co.map(c=>[c.dot?'USDOT '+c.dot:'',c.mc?'MC '+c.mc:''].filter(Boolean).join(' · ')).join(' | ')}
+  const L=data.loads||[],F=data.fuel||[];
+  let G=0,D=0,N=0;
+  $('tL').innerHTML=L.map(l=>{const g=num(l.rate),base=Math.max(g-num(l.broker_extra),0),d=Math.round(base*num(l.dispatch_pct))/100,n=num(l.driver_pay);G+=g;D+=d;N+=n;
+    return `<tr><td>${br(l.load_date)}</td><td>${esc(l.origin)} → ${esc(l.destination)}${l.ref?`<br><span class="muted">#${esc(l.ref)}</span>`:''}</td><td>${esc(l.driver)}</td><td class="r">${num(l.miles)||''}</td><td class="r">${fmt(g)}</td><td class="r">${fmt(d)}<br><span class="muted">${num(l.dispatch_pct)}%</span></td><td class="r"><b>${fmt(n)}</b></td></tr>`}).join('')||'<tr><td colspan="7" class="muted">Nenhuma carga neste período.</td></tr>';
+  $('sN').textContent=L.length;$('sG').textContent=fmt(G);$('sD').textContent=fmt(D);$('sL').textContent=fmt(N);
+  let FT=0,GA=0;
+  $('tF').innerHTML=F.map(x=>{FT+=num(x.total);GA+=num(x.gallons);return `<tr><td>${br(x.fuel_date)}</td><td>${esc(x.driver)}</td><td>${esc(x.station)}</td><td class="r">${x.gallons?num(x.gallons).toFixed(1):''}</td><td class="r">${fmt(x.total)}</td><td><span class="pill">${esc(PAY[x.payer]||x.payer)}</span></td></tr>`}).join('')||'<tr><td colspan="6" class="muted">Nenhum abastecimento neste período.</td></tr>';
+  $('fN').textContent=F.length;$('fG').textContent=GA.toFixed(1);$('fT').textContent=fmt(FT);$('fR').textContent=fmt(N-FT)}
+async function boot(){if(!sb)return;const {data}=await sb.auth.getSession();
+  if(data.session){$('login').hidden=true;$('app').hidden=false;$('out').hidden=false;load()}
+  else{$('login').hidden=false;$('app').hidden=true;$('out').hidden=true}}
+async function auth(mode){const le=$('lerr'),lo=$('lok');le.hidden=lo.hidden=true;const email=$('em').value.trim().toLowerCase(),password=$('pw').value;
+  if(!email){showErr(le,'Escreva o seu e-mail.');return}
+  const redirect=location.origin+location.pathname;
+  try{
+    if(mode==='reset'){const r=await sb.auth.resetPasswordForEmail(email,{redirectTo:redirect});if(r.error)throw r.error;lo.textContent='Enviamos um link para o seu e-mail para criar uma nova senha.';lo.hidden=false;return}
+    if(password.length<6){showErr(le,'A senha precisa ter pelo menos 6 caracteres.');return}
+    if(mode==='up'){const r=await sb.auth.signUp({email,password,options:{emailRedirectTo:redirect}});if(r.error)throw r.error;if(!r.data.session){lo.textContent='Pronto! Abra o e-mail de confirmação que enviamos e toque no link. Depois volte aqui e entre.';lo.hidden=false;return}}
+    else{const r=await sb.auth.signInWithPassword({email,password});if(r.error)throw r.error}
+    boot()
+  }catch(e){showErr(le,/invalid login/i.test(e.message)?'E-mail ou senha incorretos.':/already registered/i.test(e.message)?'Este e-mail já tem senha. Toque em Entrar ou em Esqueci a senha.':e.message)}}
+$('goIn').onclick=()=>auth('in');$('goUp').onclick=()=>auth('up');$('goReset').onclick=()=>auth('reset');
+$('pw').addEventListener('keydown',e=>{if(e.key==='Enter')auth('in')});
+$('out').onclick=async()=>{await sb.auth.signOut();boot()};
+document.querySelectorAll('#per button').forEach(b=>b.onclick=()=>{per=b.dataset.p;$('custom').hidden=per!=='custom';if(per!=='custom')load()});
+$('apply').onclick=load;
+if(sb){sb.auth.onAuthStateChange(ev=>{if(ev==='PASSWORD_RECOVERY'){const p=prompt('Escreva a nova senha (mínimo 6 caracteres):');if(p&&p.length>=6)sb.auth.updateUser({password:p}).then(boot)}});}
+boot();
+</script>
+</body>
+</html>
