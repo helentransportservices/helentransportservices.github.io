@@ -180,7 +180,7 @@ footer a{color:var(--ink)}
 </div></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script src="config.js"></script>
+<script>window.HTS_CONFIG={supabaseUrl:'https://xwioljkfbeyrizvcxhff.supabase.co',supabaseAnonKey:'sb_publishable_0NIsBJ5JZKI1wQUoke7k1w_4y7whapU',whatsapp:'14073760990',dispatchName:'Helen Transport Services',quickPayPct:5};</script>
 <script>
 const T={
 pt:{eyebrow:"Owner operators · Lease operators",h1:"Sua van ou box truck <em>rodando</em> com a gente",lead:"Você dirige. A gente encontra as cargas, cuida da papelada e te manda o recibo toda semana. Atendimento por mensagem em português, espanhol e inglês.",ctaApply:"Quero me cadastrar",ctaHow:"Como funciona",
@@ -265,7 +265,7 @@ $('send').onclick=async()=>{const t=T[L],er=$('err');er.hidden=true;const show=m
     const id=uid(),files=[];
     for(const k of DK){for(const f0 of (picked[k]||[])){const f=await shrink(f0);if(f.size>20e6)continue;
       const path=`candidatos/${id}/${k}-${Date.now()}-${f.name.normalize('NFD').replace(/[^\w.-]+/g,'-').slice(-50)}`;
-      const r=await sb.storage.from('files').upload(path,f,{contentType:f.type||'application/octet-stream',upsert:false});if(r.error)throw r.error;files.push({k,path,name:f0.name})}}
+      try{const r=await sb.storage.from('files').upload(path,f,{contentType:f.type||'application/octet-stream',upsert:false});if(r.error)throw r.error;files.push({k,path,name:f0.name})}catch(ue){console.error(ue);files.push({k,name:f0.name,failed:true})}}}
     const yes=id2=>$(id2).selectedIndex===0;
     const r=await sb.from('applications').insert({name:$('name').value.trim(),phone:$('phone').value.trim()||null,email:$('email').value.trim().toLowerCase()||null,city:$('city').value.trim()||null,zip:$('zip').value.trim()||null,vehicle:$('role').value==='van'?'Cargo van (empresa)':$('role').value==='driver'?'Box truck 14 ft (empresa)':$('role').value==='partner'?'Motorista de transportadora parceira'+($('coName').value.trim()?' — '+$('coName').value.trim():''):$('veh').value,
       has_mc:$('role').value==='owner'&&$('mc').value==='yes',mc:$('mcnum').value.trim()||null,experience:$('exp').options[$('exp').selectedIndex].textContent,cdl:$('cdl').selectedIndex===1,work_auth:yes('work'),
