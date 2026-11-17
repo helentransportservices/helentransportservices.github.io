@@ -106,6 +106,7 @@ nav.tabs .dot{position:absolute;top:4px;left:calc(50% + 10px);min-width:17px;hei
 .tbl table{border-collapse:collapse;width:100%;min-width:520px;font-size:14px}
 .tbl th,.tbl td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
 .tbl th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin:6px 0}.bar i{display:block;height:100%;background:var(--good)}
 .empty{border:2px dashed var(--line);border-radius:14px;padding:22px;text-align:center;color:var(--muted)}
 .auth{min-height:100vh;display:grid;place-items:center;padding:24px 16px}
 .auth .box{width:100%;max-width:420px;display:flex;flex-direction:column;gap:14px}
@@ -1158,10 +1159,10 @@ AUTHORIZED REPRESENTATIVE (Dispatcher): ${v(t.dispatcher)}, doing business as ${
 (function (H) {
   const { $, $$, esc, num, fmt, fmtI, iso, today, brDate, addMonths, daysTo } = H;
   const A = H.Admin = {};
-  const D = { hos: [], agr: [], bills: [], vehicles: [], vrecs: [], dvir: [], accidents: [], reviews: [], cdocs: [], companies: [], drivers: [], docs: [], loads: [], events: [], fuel: [], settlements: [], quickpay: [], ledger: [], apps: [] };
-  const NEWT = ['hos', 'agr', 'bills', 'vehicles', 'vrecs', 'dvir', 'accidents', 'reviews', 'cdocs'];
-  const TABLES = { hos: 'hos_logs', agr: 'agreements', bills: 'bills', vehicles: 'vehicles', vrecs: 'vehicle_records', dvir: 'dvir', accidents: 'accidents', reviews: 'annual_reviews', cdocs: 'company_docs', companies: 'companies', drivers: 'drivers', docs: 'driver_docs', loads: 'loads', events: 'load_events', fuel: 'fuel', settlements: 'settlements', quickpay: 'quickpay', ledger: 'ledger', apps: 'applications' };
-  const ORDER = { hos: 'week_start', agr: 'created_at', bills: 'due_on', vehicles: 'unit', vrecs: 'done_on', dvir: 'created_at', accidents: 'occurred_at', reviews: 'review_date', cdocs: 'created_at', companies: 'name', drivers: 'name', docs: 'created_at', loads: 'load_date', events: 'created_at', fuel: 'fuel_date', settlements: 'created_at', quickpay: 'requested_at', ledger: 'entry_date', apps: 'created_at' };
+  const D = { hos: [], agr: [], bills: [], vehicles: [], vrecs: [], dvir: [], accidents: [], reviews: [], cdocs: [], companies: [], drivers: [], docs: [], loads: [], events: [], fuel: [], settlements: [], quickpay: [], ledger: [], apps: [], pbills: [], pdebts: [], pgoals: [], ppay: [], pexp: [] };
+  const NEWT = ['hos', 'agr', 'bills', 'vehicles', 'vrecs', 'dvir', 'accidents', 'reviews', 'cdocs', 'pbills', 'pdebts', 'pgoals', 'ppay', 'pexp'];
+  const TABLES = { hos: 'hos_logs', agr: 'agreements', bills: 'bills', vehicles: 'vehicles', vrecs: 'vehicle_records', dvir: 'dvir', accidents: 'accidents', reviews: 'annual_reviews', cdocs: 'company_docs', companies: 'companies', drivers: 'drivers', docs: 'driver_docs', loads: 'loads', events: 'load_events', fuel: 'fuel', settlements: 'settlements', quickpay: 'quickpay', ledger: 'ledger', apps: 'applications', pbills: 'personal_bills', pdebts: 'personal_debts', pgoals: 'personal_goals', ppay: 'personal_payments', pexp: 'personal_expenses' };
+  const ORDER = { hos: 'week_start', agr: 'created_at', bills: 'due_on', vehicles: 'unit', vrecs: 'done_on', dvir: 'created_at', accidents: 'occurred_at', reviews: 'review_date', cdocs: 'created_at', companies: 'name', drivers: 'name', docs: 'created_at', loads: 'load_date', events: 'created_at', fuel: 'fuel_date', settlements: 'created_at', quickpay: 'requested_at', ledger: 'entry_date', apps: 'created_at', pbills: 'name', pdebts: 'order_no', pgoals: 'order_no', ppay: 'created_at', pexp: 'created_at' };
   const AD = {
     pt: { tabs: ['Painel', 'Cargas', 'Motoristas', 'Acertos', 'DOT', 'Mais'], panel: 'Painel', reload: 'Atualizar', out: 'Sair', loading: 'Carregando…',
       week: 'Semana', month: 'Mês', last: 'Mês passado', all: 'Tudo', allCo: 'Todas as empresas', allDrv: 'Todos os motoristas',
@@ -1320,6 +1321,7 @@ AUTHORIZED REPRESENTATIVE (Dispatcher): ${v(t.dispatcher)}, doing business as ${
   /* ================= pendências ================= */
   function pendings() {
     const out = [];
+    if (D.pbills.length) A.pDue(2).forEach(x => out.push({ s: x.n < 0 ? 'bad' : 'warn', t: `Conta pessoal: ${x.b.name} (${x.b.owner})`, d: (x.n < 0 ? 'Atrasada ' + (-x.n) + ' dia(s)' : x.n === 0 ? 'Vence hoje' : 'Vence em ' + x.n + ' dia(s)') + ' · ' + fmt(x.b.amount), go: 'mais/pessoal' }));
     D.events.filter(e => ['chegou_coleta', 'chegou_entrega'].includes(e.kind) && Date.now() - new Date(e.created_at) < 12 * 3600e3).forEach(e => { const l = D.loads.find(x => x.id === e.load_id) || {}; if (D.events.some(x => x.load_id === e.load_id && x.kind === (e.kind === 'chegou_coleta' ? 'pickup' : 'delivery'))) return;
       out.push({ s: 'info', t: `${drv(e.driver_id).name || '—'}: ${EVK[e.kind][0].replace(/^\S+ /, '').toLowerCase()} às ${new Date(e.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`, d: `${l.origin || ''} → ${l.destination || ''}`, go: 'cargas' }) });
     D.loads.filter(l => l.stage === 'oferta' && l.offer_response).forEach(l => out.push({ s: l.offer_response === 'recusada' ? 'bad' : 'gold', t: `${drv(l.driver_id).name || '—'}: ${RESP[l.offer_response][0].toLowerCase()}${l.offer_response === 'contraproposta' ? ' ' + fmt(l.counter_amount) : ''}`, d: `${l.origin} → ${l.destination}`, go: 'cargas' }));
@@ -1352,6 +1354,8 @@ AUTHORIZED REPRESENTATIVE (Dispatcher): ${v(t.dispatcher)}, doing business as ${
       return `<div class="stack"><a class="btn gold wide" href="#mapa">🗺 Mapa ao vivo dos motoristas</a>${filters(true)}
         <div class="hero"><span class="muted">${esc(t().revenue)}</span><div class="big">${fmt(rev)}</div>
           <div class="g2"><div><span class="muted">${esc(t().yours)}</span><div class="money" style="text-align:left;font-size:20px">${fmt(disp)}</div></div><div><span class="muted">${esc(t().drivers)}</span><div class="money" style="text-align:left;font-size:20px">${fmt(pay)}</div></div></div></div>
+        ${D.pbills.length ? (() => { const w = A.pessoalWeek(0); return `<button class="card tap" data-go="mais/pessoal"><div class="row between"><b>🚐 Van e contas pessoais · esta semana</b><span class="muted">›</span></div>
+          <div class="stats" style="margin:6px 0 0"><div class="stat"><span>Saldo da van</span><b class="${w.lucro >= 0 ? 'ok' : 'low'}">${fmt(w.lucro)}</b><span class="muted">cargas − comb. − manut. − alim.</span></div><div class="stat"><span>Contas da semana</span><b>${fmt(w.contas + w.desp)}</b></div><div class="stat"><span>Sobra</span><b class="${w.sobra >= 0 ? 'ok' : 'low'}">${fmt(w.sobra)}</b></div></div></button>` })() : ''}
         <div class="stats"><div class="stat"><span>${esc(t().loads)}</span><b>${L.length}</b></div><div class="stat"><span>${esc(t().rpm)}</span><b>${mi ? fmt(rev / mi) : '—'}</b></div><div class="stat"><span>${esc(t().miles)}</span><b>${fmtI(mi)}</b></div></div>
         <div class="row between"><h2>${esc(t().pend)}</h2><span class="muted">${P.length}</span></div>
         ${P.length ? P.slice(0, 25).map(p => `<button class="card tap sev ${p.s === 'info' ? 'gold' : p.s}" data-go="${esc(p.go)}"><b>${esc(p.t)}</b><span class="muted">${esc(p.d)}</span></button>`).join('') : `<div class="card sev good"><b>${esc(t().allGood)}</b><span class="muted">${esc(t().allGoodD)}</span></div>`}
@@ -1766,7 +1770,7 @@ AUTHORIZED REPRESENTATIVE (Dispatcher): ${v(t.dispatcher)}, doing business as ${
   }
 
   /* ================= MAIS ================= */
-  const SUBS = [['empresas', 'Empresas'], ['combustivel', 'Combustível'], ['contas', 'Contas'], ['candidatos', 'Candidatos'], ['alertas', 'Alertas'], ['backup', 'Backup']];
+  const SUBS = [['empresas', 'Empresas'], ['combustivel', 'Combustível'], ['contas', 'Contas das empresas'], ['pessoal', 'Contas pessoais'], ['candidatos', 'Candidatos'], ['alertas', 'Alertas'], ['backup', 'Backup']];
   const vMais = {
     html() { const s = SUBS.some(x => x[0] === st.sub) ? st.sub : 'empresas'; return `<div class="stack"><div class="chips">${SUBS.map(([k, l]) => `<button class="chip" data-sub="${k}" aria-pressed="${s === k}">${l}${k === 'candidatos' && D.apps.filter(a => a.status === 'novo').length ? ' (' + D.apps.filter(a => a.status === 'novo').length + ')' : ''}</button>`).join('')}</div>${SUBV[s].html()}</div>` },
     wire(v) { $$('[data-sub]', v).forEach(b => b.onclick = () => { location.hash = 'mais/' + b.dataset.sub }); const s = SUBS.some(x => x[0] === st.sub) ? st.sub : 'empresas'; SUBV[s].wire && SUBV[s].wire(v) }
@@ -1789,10 +1793,11 @@ AUTHORIZED REPRESENTATIVE (Dispatcher): ${v(t.dispatcher)}, doing business as ${
       <label class="f">MCS-150 atualizado em<input type="date" name="mcs150_date" value="${esc(c.mcs150_date)}"></label><label class="f">UCR pago para o ano<input type="number" name="ucr_year" value="${esc(c.ucr_year ?? '')}"></label>
       <label class="f">Seguro vence em<input type="date" name="insurance_exp" value="${esc(c.insurance_exp)}"></label><label class="f">Telefone<input name="phone" value="${esc(c.phone)}"></label>
       <label class="chk full"><input type="checkbox" name="dispatch_only" ${c.dispatch_only ? 'checked' : ''}> Só faço o dispatch: a pasta dos motoristas e dos veículos é da própria transportadora (o app não cobra documentos dos motoristas dela)</label>
+      <label class="f full">E-mail do dono (acesso ao relatório de cargas e combustível)<input type="email" name="owner_email" value="${esc(c.owner_email)}" placeholder="ex.: kalinka@phoenixtranslog.com"><span class="muted" style="font-size:12px">O dono entra em helentransportservices.github.io/empresa.html com este e-mail e vê só as cargas e o combustível dos motoristas desta empresa.</span></label>
       <label class="f full">Observações<textarea name="notes">${esc(c.notes)}</textarea></label></div>
       <button class="btn gold wide" id="cfGo">Salvar</button>${!isNew && c.type !== 'dispatch' ? '<button type="button" class="btn wide" id="cfDc">📄 Contrato de dispatch com esta empresa</button>' : ''}${!isNew ? '<button type="button" class="btn bad wide" id="cfDel">Apagar empresa</button>' : ''}</form>`, api => {
       const f = $('#cf', api.el); if ($('#cfDc', f)) $('#cfDc', f).onclick = () => { api.close(); dispatchForm(c) };
-      f.onsubmit = async e => { e.preventDefault(); const o = H.form(f); o.dispatch_only = !!o.dispatch_only; await H.busy($('#cfGo', f), async () => { if (isNew) await H.q(H.sb.from('companies').insert(o)); else await H.q(H.sb.from('companies').update(o).eq('id', c.id)); api.close(); H.toast('Empresa salva'); A.reload(['companies']) }) };
+      f.onsubmit = async e => { e.preventDefault(); const o = H.form(f); o.dispatch_only = !!o.dispatch_only; o.owner_email = (o.owner_email || '').trim().toLowerCase() || null; await H.busy($('#cfGo', f), async () => { if (isNew) await H.q(H.sb.from('companies').insert(o)); else await H.q(H.sb.from('companies').update(o).eq('id', c.id)); api.close(); H.toast('Empresa salva'); A.reload(['companies']) }) };
       if ($('#cfDel', f)) H.confirmBtn($('#cfDel', f), 'Toque de novo para apagar', async () => { await H.q(H.sb.from('companies').delete().eq('id', c.id)); api.close(); A.reload(['companies']) });
     });
   }
@@ -2037,6 +2042,317 @@ AUTHORIZED REPRESENTATIVE (Dispatcher): ${v(t.dispatcher)}, doing business as ${
   function drvQuote(d) { const v = d.vehicle || {}; const a = D.apps.find(x => (d.phone && x.phone && String(x.phone).replace(/\D/g, '').slice(-10) === String(d.phone).replace(/\D/g, '').slice(-10)) || (d.email && x.email && x.email.toLowerCase() === d.email.toLowerCase())) || {}; const x = a.details || {};
     return quoteMsg({ name: d.name, dob: d.dob || x.dob, addr: d.address || [x.address, a.city, a.zip || d.home_zip].filter(Boolean).join(', '), lic: d.license_no || x.license_no, licState: d.license_state || x.license_state, cdl: d.cdl, newVehicle: v.owner !== 'company',
       veh: { year: v.year || x.year, make: v.make, model: v.model || x.model, vin: v.vin || x.vin, value: v.value || x.value, gvwr: v.gvwr } }) }
+  /* ================= CONTAS PESSOAIS (Helen e Ruben) — separado das contas das empresas ================= */
+  const PS = { tab: 'semana', wk: 0 };
+  const MANUT = 0.05; /* reserva de manutenção por milha (óleo, pneus, freio) — do plano */
+  const PMON = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+  const pD = s => { const [y, m, d] = String(s).slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d) };
+  const pAdd = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x };
+  const pShort = d => d.getDate() + '/' + PMON[d.getMonth()];
+  const monthlyEq = b => b.freq === 'monthly' || b.freq === 'none' ? num(b.amount) : b.freq === 'biweekly' ? num(b.amount) * 26 / 12 : b.freq === 'weekly' ? num(b.amount) * 52 / 12 : 0;
+  const sgn = b => b.is_income ? -1 : 1;
+  /* datas de vencimento de uma conta entre duas datas */
+  function occ(b, from, to) {
+    const out = [];
+    if (b.freq === 'monthly' && b.due_day) {
+      for (let y = from.getFullYear(), m = from.getMonth(); new Date(y, m, 1) <= to; m++) { if (m > 11) { m = 0; y++ }
+        const last = new Date(y, m + 1, 0).getDate(), d = new Date(y, m, Math.min(b.due_day, last)); if (d >= from && d <= to) out.push(d) }
+    } else if (b.freq === 'weekly' && b.weekday !== null && b.weekday !== undefined) {
+      for (let d = new Date(from); d <= to; d = pAdd(d, 1)) if (d.getDay() === +b.weekday) out.push(new Date(d));
+    } else if (b.freq === 'biweekly' && b.anchor) {
+      let d = pD(b.anchor); while (d > from) d = pAdd(d, -14); while (d < from) d = pAdd(d, 14);
+      for (; d <= to; d = pAdd(d, 14)) out.push(new Date(d));
+    }
+    return out;
+  }
+  const billPaid = (b, d) => D.ppay.find(p => p.kind === 'bill' && p.ref_id === b.id && p.due === iso(d));
+  const weekRange = off => { const t0 = today(), dow = (t0.getDay() + 6) % 7, a = pAdd(t0, -dow + off * 7); return [a, pAdd(a, 6)] };
+  const vanDrvIds = () => { let ids = null; try { ids = JSON.parse(localStorage.getItem('hts-van-drv') || 'null') } catch (e) { }
+    if (!ids || !ids.length) ids = D.drivers.filter(d => /helen|ruben/i.test(d.name || '')).map(d => d.id); return ids };
+  const reservaSem = owner => D.pbills.filter(b => b.active !== false && (!owner || b.owner === owner)).reduce((a, b) => a + sgn(b) * monthlyEq(b), 0) * 12 / 52;
+  /* resumo da semana: cargas da van − combustível − contas − despesas */
+  function pessoalWeek(off) {
+    const [a, b] = weekRange(off), ia = iso(a), ib = iso(b), ids = vanDrvIds(), inW = s => s && String(s).slice(0, 10) >= ia && String(s).slice(0, 10) <= ib;
+    const L = D.loads.filter(l => ids.includes(l.driver_id) && l.stage !== 'cancelada' && l.stage !== 'oferta' && inW(l.load_date));
+    const cargas = L.reduce((s, l) => s + num(l.rate), 0), miles = L.reduce((s, l) => s + num(l.miles), 0);
+    const comb = D.fuel.filter(f => ids.includes(f.driver_id) && inW(f.fuel_date)).reduce((s, f) => s + num(f.total), 0);
+    const due = []; D.pbills.filter(x => x.active !== false).forEach(x => occ(x, a, b).forEach(d => due.push({ b: x, d })));
+    const contas = due.reduce((s, o) => s + sgn(o.b) * num(o.b.amount), 0);
+    const E = D.pexp.filter(e => inW(e.spent_on)), alim = E.filter(e => e.category === 'restaurante').reduce((s, e) => s + num(e.amount), 0), desp = E.filter(e => e.category !== 'restaurante').reduce((s, e) => s + num(e.amount), 0);
+    const manut = Math.round(miles * MANUT * 100) / 100;
+    const goals = D.pgoals.filter(g => !/refei/i.test(g.name)).reduce((s, g) => s + (g.target && num(g.saved) >= num(g.target) ? 0 : num(g.weekly)), 0);
+    const lucro = cargas - comb - manut - alim;   /* saldo da operação da van */
+    return { a, b, L, cargas, miles, comb, manut, alim, lucro, contas, desp, due, sobra: lucro - contas - desp, reserva: reservaSem(), goals, meta: reservaSem() + goals };
+  }
+  A.pessoalWeek = pessoalWeek;
+  /* alertas de vencimento (para o painel e a aba) */
+  function pDue(days) {
+    const t0 = today(), from = pAdd(t0, -30), to = pAdd(t0, days), out = [];
+    D.pbills.filter(x => x.active !== false && !x.is_income).forEach(x => occ(x, from, to).forEach(d => { if (!billPaid(x, d)) out.push({ b: x, d, n: Math.round((d - t0) / 864e5) }) }));
+    return out.sort((p, q) => p.d - q.d);
+  }
+  A.pDue = pDue;
+  const dueTxt = n => n < 0 ? `<span class="pill p-bad">Atrasada ${-n} dia${n === -1 ? '' : 's'}</span>` : n === 0 ? '<span class="pill p-bad">Vence hoje</span>' : n <= 3 ? `<span class="pill p-warn">Em ${n} dia${n === 1 ? '' : 's'}</span>` : `<span class="pill">Em ${n} dias</span>`;
+  const freqTxt = b => b.freq === 'weekly' ? 'toda ' + ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'][b.weekday] : b.freq === 'biweekly' ? 'a cada 15 dias' : b.due_day ? 'dia ' + b.due_day : 'sem data';
+
+  /* quanto tempo para pagar: média das últimas 4 semanas completas */
+  function pacing() {
+    const W = [1, 2, 3, 4].map(i => pessoalWeek(-i)).filter(w => w.cargas > 0);
+    if (!W.length) return '<div class="card"><b>Quanto tempo para pagar</b><span class="muted">Assim que tiver cargas lançadas nas semanas anteriores, o app calcula aqui a média e o tempo para pagar as contas e as dívidas.</span></div>';
+    const avg = W.reduce((s, w) => s + w.lucro, 0) / W.length, res = reservaSem(), sobra = avg - res - W.reduce((s, w) => s + w.desp, 0) / W.length;
+    const debt = D.pdebts.filter(d => num(d.balance) > 0 && d.kind !== 'depois'), tot = debt.reduce((s, d) => s + num(d.balance), 0), first = debt.sort((a, b) => a.order_no - b.order_no)[0];
+    const pct = res ? Math.min(999, avg / res * 100) : 0;
+    return `<div class="card ${sobra >= 0 ? 'sev good' : 'sev warn'}"><b>Quanto tempo para pagar</b>
+      <div class="row between"><span>Saldo médio da van (${W.length} semana${W.length > 1 ? 's' : ''})</span><span class="money">${fmt(avg)}/sem</span></div>
+      <div class="row between"><span>Contas dos dois (reserva)</span><span class="money">${fmt(res)}/sem</span></div>
+      <div class="row between"><span>O saldo cobre</span><span class="money ${pct >= 100 ? 'ok' : 'low'}">${pct.toFixed(0)}% das contas</span></div>
+      ${sobra > 0 ? `<div class="row between"><span>Sobra para as dívidas</span><span class="money ok">${fmt(sobra)}/sem</span></div>
+        ${first ? `<span class="muted">Nesse ritmo: <b>${esc(first.name)}</b> quitada em cerca de ${Math.ceil(num(first.balance) / sobra)} semana(s). Todas as dívidas (${fmt(tot)}, sem contar juros) em cerca de ${Math.ceil(tot / sobra)} semanas (${(tot / sobra / 4.33).toFixed(1)} meses).</span>` : ''}`
+      : `<span class="muted">Falta cerca de ${fmt(-sobra)} por semana só para as contas. Enquanto isso, as dívidas não diminuem: pague só os mínimos.</span>`}</div>`;
+  }
+  SUBV.pessoal = {
+    html() {
+      if (!D.pbills.length && !D.pdebts.length) return `<h1>Contas pessoais</h1><div class="card sev warn"><b>Falta 1 passo no Supabase</b><span class="muted">Rode a <b>Atualização 9</b> (update9.sql) no SQL Editor. Ela cria esta aba já com todas as contas, dívidas e metas do plano.</span></div>`;
+      const tabs = [['semana', 'Semana'], ['vencimentos', 'Vencimentos'], ['contas', 'Contas'], ['dividas', 'Dívidas'], ['metas', 'Metas'], ['despesas', 'Mercado e despesas']];
+      return `<div class="row between"><h1>Contas pessoais</h1><button class="btn gold" id="pNewExp">📷 + Despesa</button></div>
+        <p class="muted" style="margin-top:-6px">Helen e Ruben. Fica separado das contas das empresas (tax).</p>
+        <div class="chips">${tabs.map(([k, l]) => `<button class="chip" data-pt="${k}" aria-pressed="${PS.tab === k}">${l}</button>`).join('')}</div>
+        ${PV[PS.tab].html()}`;
+    },
+    wire(v) {
+      if (!$('[data-pt]', v)) return;
+      $$('[data-pt]', v).forEach(b => b.onclick = () => { PS.tab = b.dataset.pt; render() });
+      $('#pNewExp', v).onclick = () => expForm();
+      PV[PS.tab].wire && PV[PS.tab].wire(v);
+    }
+  };
+  const PV = {};
+  /* ---------- semana ---------- */
+  PV.semana = {
+    html() {
+      const w = pessoalWeek(PS.wk), late = pDue(0).filter(o => o.n < 0);
+      const line = (l, v, cls = '') => `<div class="row between"><span>${l}</span><span class="money ${cls}">${v}</span></div>`;
+      return `<div class="row between"><button class="btn sm" id="pPrev">‹</button><b>${pShort(w.a)} – ${pShort(w.b)}${PS.wk === 0 ? ' (esta semana)' : ''}</b><button class="btn sm" id="pNext">›</button></div>
+        ${late.length ? `<button class="card tap sev bad" data-pt2="vencimentos"><b>⚠️ ${late.length} conta(s) atrasada(s)</b><span class="muted">${late.map(o => esc(o.b.name)).join(' · ')}</span></button>` : ''}
+        <div class="hero"><span class="muted">Saldo da van (cargas − combustível − manutenção − alimentação)</span><div class="big ${w.lucro >= 0 ? '' : 'low'}">${fmt(w.lucro)}</div>
+          <div class="g2"><div><span class="muted">Contas e outras despesas</span><div class="money" style="text-align:left;font-size:20px">${fmt(w.contas + w.desp)}</div></div><div><span class="muted">Sobra</span><div class="money ${w.sobra >= 0 ? 'ok' : 'low'}" style="text-align:left;font-size:20px">${fmt(w.sobra)}</div></div></div></div>
+        <div class="card">
+          ${line(`Cargas da van (${w.L.length}${w.miles ? ' · ' + fmtI(w.miles) + ' mi' : ''})`, fmt(w.cargas), 'ok')}
+          ${line('− Combustível', fmt(w.comb))}
+          ${line('− Manutenção (reserva de $0,05/milha)', fmt(w.manut))}
+          ${line('− Alimentação na estrada', fmt(w.alim))}
+          ${line('<b>= Saldo da van</b>', '<b>' + fmt(w.lucro) + '</b>', w.lucro >= 0 ? 'ok' : 'low')}
+          ${line('− Contas que vencem na semana', fmt(w.contas))}
+          ${line('− Mercado e outras despesas', fmt(w.desp))}
+          ${line('<b>= Sobra da semana</b>', '<b>' + fmt(w.sobra) + '</b>', w.sobra >= 0 ? 'ok' : 'low')}
+        </div>
+        ${pacing()}
+        <details class="card"><summary><b>Meta da semana</b></summary>
+          ${line('Reserva para as contas (Ruben ' + fmt(reservaSem('Ruben')) + ' + Helen ' + fmt(reservaSem('Helen')) + ')', fmt(w.reserva))}
+          ${D.pgoals.map(g => line(esc(g.name), fmt(g.target && num(g.saved) >= num(g.target) ? 0 : g.weekly))).join('')}
+          ${line('<b>Saldo da van necessário</b>', '<b>' + fmt(w.meta) + '</b>')}
+          <div class="bar"><i style="width:${Math.min(100, w.meta ? w.lucro / w.meta * 100 : 0).toFixed(0)}%"></i></div>
+          <span class="muted">${w.lucro >= w.meta ? '✅ Meta batida! Divida a sobra 50/50.' : 'Falta ' + fmt(w.meta - w.lucro) + ' de saldo para fechar a semana.'}</span></details>
+        <h2>Contas desta semana</h2>
+        ${w.due.length ? w.due.sort((p, q) => p.d - q.d).map(o => billRow(o.b, o.d)).join('') : '<div class="empty">Nenhuma conta vence nesta semana.</div>'}
+        <details class="card"><summary>Quais motoristas contam como "a van"?</summary><div class="stack">${D.drivers.map(d => `<label class="chk"><input type="checkbox" data-vd="${d.id}" ${vanDrvIds().includes(d.id) ? 'checked' : ''}> ${esc(d.name)}</label>`).join('')}</div></details>`;
+    },
+    wire(v) {
+      $('#pPrev', v).onclick = () => { PS.wk--; render() }; $('#pNext', v).onclick = () => { PS.wk++; render() };
+      $$('[data-pt2]', v).forEach(b => b.onclick = () => { PS.tab = b.dataset.pt2; render() });
+      $$('[data-vd]', v).forEach(c => c.onchange = () => { const ids = $$('[data-vd]', v).filter(x => x.checked).map(x => x.dataset.vd); try { localStorage.setItem('hts-van-drv', JSON.stringify(ids)) } catch (e) { } render() });
+      wireBillRows(v);
+    }
+  };
+  function billRow(b, d) {
+    const p = d && billPaid(b, d), n = d ? Math.round((d - today()) / 864e5) : null;
+    return `<div class="card"><div class="top2"><div><b>${esc(b.name)}</b><div class="muted">${esc(b.owner)}${d ? ' · ' + pShort(d) : ' · ' + freqTxt(b)}${b.note ? ' · ' + esc(b.note) : ''}</div></div>
+      <div class="money ${b.is_income ? 'ok' : ''}">${b.is_income ? '+' : ''}${fmt(b.amount)}</div></div>
+      ${d ? `<div class="row between">${p ? `<span class="pill p-good">✓ Pago ${p.paid_on ? brDate(p.paid_on) : ''}${num(p.amount) !== num(b.amount) ? ' · ' + fmt(p.amount) : ''}</span><button class="btn sm" data-unpay="${p.id}">Desfazer</button>` : b.is_income ? '<span class="muted">Entrada</span>' + `<button class="btn sm" data-pay="${b.id}" data-d="${iso(d)}">Recebi</button>` : `${dueTxt(n)}<button class="btn sm gold" data-pay="${b.id}" data-d="${iso(d)}">Paguei</button>`}</div>` : ''}</div>`;
+  }
+  function wireBillRows(v) {
+    $$('[data-pay]', v).forEach(btn => btn.onclick = () => { const b = D.pbills.find(x => x.id === btn.dataset.pay); payForm('bill', b, btn.dataset.d) });
+    $$('[data-unpay]', v).forEach(btn => H.confirmBtn(btn, 'Toque de novo', async () => { await H.q(H.sb.from('personal_payments').delete().eq('id', btn.dataset.unpay)); A.reload(['ppay']) }));
+  }
+  /* ---------- vencimentos com alerta ---------- */
+  PV.vencimentos = {
+    html() {
+      const L = pDue(21), nod = D.pbills.filter(b => b.active !== false && !occ(b, today(), pAdd(today(), 400)).length);
+      return `<p class="muted">Contas atrasadas e as que vencem nos próximos 21 dias. Toque em <b>Paguei</b> quando pagar.</p>
+        ${L.length ? L.map(o => billRow(o.b, o.d)).join('') : '<div class="card sev good"><b>Tudo pago!</b><span class="muted">Nenhuma conta atrasada ou vencendo nos próximos 21 dias.</span></div>'}
+        ${nod.length ? `<h2>Sem data definida</h2><p class="muted">Toque na conta (aba Contas) para colocar a data e ela passa a ter alerta.</p>${nod.map(b => billRow(b)).join('')}` : ''}`;
+    },
+    wire: wireBillRows
+  };
+  /* ---------- todas as contas, por pessoa, com o quanto separar por semana ---------- */
+  PV.contas = {
+    html() {
+      const who = ['Ruben', 'Helen'];
+      return `<div class="row between"><p class="muted" style="margin:0">Toque numa conta para mudar valor ou data.</p><button class="btn sm" id="pNewBill">+ Conta</button></div>
+        <div class="stats">${who.map(o => `<div class="stat"><span>${o}: separar por semana</span><b>${fmt(reservaSem(o))}</b><span class="muted">${fmt(reservaSem(o) * 52 / 12)}/mês</span></div>`).join('')}<div class="stat"><span>Juntos por semana</span><b>${fmt(reservaSem())}</b></div></div>
+        ${who.map(o => `<h2>${o}</h2>${D.pbills.filter(b => b.owner === o).sort((p, q) => (p.due_day || 99) - (q.due_day || 99)).map(b => `<button class="card tap" data-eb="${b.id}" ${b.active === false ? 'style="opacity:.5"' : ''}><div class="top2"><div><b>${esc(b.name)}</b><div class="muted">${freqTxt(b)}${b.note ? ' · ' + esc(b.note) : ''}</div></div><div class="money ${b.is_income ? 'ok' : ''}">${b.is_income ? '+' : ''}${fmt(b.amount)}<div class="muted">${fmt(monthlyEq(b) * 12 / 52)}/sem</div></div></div></button>`).join('')}`).join('')}
+        <p class="note">Combustível (Love's, toda segunda) e refeições na estrada entram no resumo da semana como despesa da van, não aqui.</p>`;
+    },
+    wire(v) { $('#pNewBill', v).onclick = () => billForm(); $$('[data-eb]', v).forEach(b => b.onclick = () => billForm(D.pbills.find(x => x.id === b.dataset.eb))) }
+  };
+  function billForm(b) {
+    const isNew = !b; b = b || { owner: 'Helen', freq: 'monthly', amount: '' };
+    H.sheet(`<form id="pbf" class="stack"><div class="row between"><h2>${isNew ? 'Nova conta' : esc(b.name)}</h2><button type="button" class="btn sm" data-close>Fechar</button></div><div class="g2">
+      <label class="f full">Nome<input name="name" value="${esc(b.name)}" required></label>
+      <label class="f">De quem<select name="owner">${opt([['Helen', 'Helen'], ['Ruben', 'Ruben']], b.owner)}</select></label>
+      <label class="f">Valor $<input type="number" step="0.01" name="amount" value="${esc(b.amount)}" required></label>
+      <label class="f">Repete<select name="freq">${opt([['monthly', 'Todo mês'], ['biweekly', 'A cada 15 dias'], ['weekly', 'Toda semana'], ['none', 'Sem data']], b.freq)}</select></label>
+      <label class="f">Dia do mês<input type="number" min="1" max="31" name="due_day" value="${esc(b.due_day ?? '')}"></label>
+      <label class="f">Dia da semana<select name="weekday">${opt([0, 1, 2, 3, 4, 5, 6].map(i => [i, ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'][i]]), b.weekday ?? '', '—')}</select></label>
+      <label class="f">A cada 15 dias: próximo vencimento<input type="date" name="anchor" value="${esc(b.anchor || '')}"></label>
+      <label class="chk full"><input type="checkbox" name="is_income" ${b.is_income ? 'checked' : ''}> É dinheiro que entra (ex.: quarto da Kalinka)</label>
+      <label class="chk full"><input type="checkbox" name="active" ${b.active !== false ? 'checked' : ''}> Ativa</label>
+      <label class="f full">Observação<input name="note" value="${esc(b.note)}"></label></div>
+      <button class="btn gold wide" id="pbGo">Salvar</button>${isNew ? '' : '<button type="button" class="btn bad wide" id="pbDel">Apagar</button>'}</form>`, api => {
+      const f = $('#pbf', api.el);
+      f.onsubmit = async e => { e.preventDefault(); const o = H.form(f);
+        const r = { name: o.name, owner: o.owner, amount: num(o.amount), freq: o.freq, due_day: o.due_day ? +o.due_day : null, weekday: o.weekday === '' || o.weekday === undefined ? null : +o.weekday, anchor: o.anchor || null, is_income: !!o.is_income, active: !!o.active, note: o.note || null };
+        await H.busy($('#pbGo', f), async () => { if (isNew) await H.q(H.sb.from('personal_bills').insert(r)); else await H.q(H.sb.from('personal_bills').update(r).eq('id', b.id)); api.close(); H.toast('Salvo'); A.reload(['pbills']) }) };
+      if ($('#pbDel', f)) H.confirmBtn($('#pbDel', f), 'Toque de novo para apagar', async () => { await H.q(H.sb.from('personal_bills').delete().eq('id', b.id)); api.close(); A.reload(['pbills']) });
+    });
+  }
+  function payForm(kind, x, due) {
+    const def = kind === 'debt' ? (num(x.min_payment) || num(x.balance)) : num(x.amount);
+    H.sheet(`<form id="ppf" class="stack"><div class="row between"><h2>${kind === 'debt' ? 'Paguei a dívida' : x.is_income ? 'Recebi' : 'Paguei'}</h2><button type="button" class="btn sm" data-close>Fechar</button></div>
+      <p><b>${esc(x.name)}</b>${due ? ' · vencimento ' + brDate(due) : ''}${kind === 'debt' ? '<br><span class="muted">Saldo: ' + fmt(x.balance) + '</span>' : ''}</p>
+      <div class="g2"><label class="f">Valor pago $<input type="number" step="0.01" name="amount" value="${def.toFixed(2)}" required></label><label class="f">Data<input type="date" name="paid_on" value="${iso(today())}" required></label></div>
+      ${kind === 'debt' ? `<button type="button" class="btn sm" id="ppAll">Paguei tudo (${fmt(x.balance)})</button>` : ''}
+      <button class="btn gold wide" id="ppGo">Confirmar</button></form>`, api => {
+      const f = $('#ppf', api.el); if ($('#ppAll', f)) $('#ppAll', f).onclick = () => { $('[name=amount]', f).value = num(x.balance).toFixed(2) };
+      f.onsubmit = async e => { e.preventDefault(); const o = H.form(f), amt = num(o.amount);
+        await H.busy($('#ppGo', f), async () => {
+          await H.q(H.sb.from('personal_payments').insert({ kind, ref_id: x.id, due: due || null, amount: amt, paid_on: o.paid_on }));
+          if (kind === 'debt') { const nb = Math.max(0, Math.round((num(x.balance) - amt) * 100) / 100); await H.q(H.sb.from('personal_debts').update({ balance: nb, paid_off_on: nb <= 0 ? o.paid_on : null }).eq('id', x.id)); H.toast(nb <= 0 ? '🎉 Dívida quitada! O valor dela vai para a próxima.' : 'Pagamento lançado') }
+          else H.toast('Marcado como pago');
+          api.close(); A.reload(['ppay', 'pdebts']) }) };
+    });
+  }
+  /* ---------- dívidas na ordem da bola de neve ---------- */
+  PV.dividas = {
+    html() {
+      const all = D.pdebts.slice().sort((a, b) => a.order_no - b.order_no), open = all.filter(d => num(d.balance) > 0), done = all.filter(d => num(d.balance) <= 0);
+      const tot = open.reduce((s, d) => s + num(d.balance), 0), orig = all.reduce((s, d) => s + num(d.original || d.balance), 0), foco = open[0], extra = (D.pgoals.find(g => /dívida/i.test(g.name)) || {}).weekly || 0;
+      return `<div class="stats"><div class="stat"><span>Total das dívidas</span><b>${fmt(tot)}</b></div><div class="stat"><span>Já pago</span><b class="ok">${fmt(Math.max(0, orig - tot))}</b></div><div class="stat"><span>Quitadas</span><b>${done.length} de ${all.length}</b></div></div>
+        <div class="bar"><i style="width:${orig ? Math.min(100, (orig - tot) / orig * 100).toFixed(0) : 0}%"></i></div>
+        <p class="muted">Bola de neve: pague o mínimo de todas e coloque o extra (${fmt(extra)}/semana) na <b>primeira da lista</b>. Quando ela acabar, o valor vai para a próxima.</p>
+        ${open.map((d, i) => `<div class="card ${i === 0 ? 'sev gold' : ''}"><div class="top2"><div><b>${i + 1}. ${esc(d.name)}</b>${i === 0 ? ' <span class="pill p-gold">FOCO AGORA</span>' : ''}<div class="muted">${esc(d.owner)} · ${{ cartao: 'cartão', cobranca: 'em cobrança', pessoa: 'pessoa (sem juros)', depois: 'depois dos cartões' }[d.kind] || esc(d.kind)}${num(d.min_payment) ? ' · mínimo ' + fmt(d.min_payment) : ''}</div>${d.note ? `<div class="muted" style="font-size:13px">${esc(d.note)}</div>` : ''}</div><div class="money">${fmt(d.balance)}${d.original && num(d.original) !== num(d.balance) ? `<div class="muted">de ${fmt(d.original)}</div>` : ''}</div></div>
+          ${i === 0 && extra ? `<span class="muted">No ritmo de ${fmt(extra)}/semana: cerca de ${Math.ceil(num(d.balance) / extra)} semana(s) para quitar.</span>` : ''}
+          <div class="row"><button class="btn sm gold" data-dpay="${d.id}">Paguei</button><button class="btn sm" data-ded="${d.id}">Editar</button></div></div>`).join('') || '<div class="card sev good"><b>🎉 Todas as dívidas quitadas!</b></div>'}
+        ${done.length ? `<h2>Quitadas 🎉</h2>${done.map(d => `<div class="card" style="opacity:.6"><div class="row between"><b>✓ ${esc(d.name)}</b><span class="muted">${d.paid_off_on ? brDate(d.paid_off_on) : ''}</span></div></div>`).join('')}` : ''}
+        <button class="btn" id="pNewDebt">+ Dívida</button>`;
+    },
+    wire(v) {
+      $$('[data-dpay]', v).forEach(b => b.onclick = () => payForm('debt', D.pdebts.find(x => x.id === b.dataset.dpay)));
+      $$('[data-ded]', v).forEach(b => b.onclick = () => debtForm(D.pdebts.find(x => x.id === b.dataset.ded)));
+      $('#pNewDebt', v).onclick = () => debtForm();
+    }
+  };
+  function debtForm(d) {
+    const isNew = !d; d = d || { owner: 'Helen', kind: 'cartao', order_no: (Math.max(0, ...D.pdebts.map(x => x.order_no)) + 1) };
+    H.sheet(`<form id="pdf" class="stack"><div class="row between"><h2>${isNew ? 'Nova dívida' : esc(d.name)}</h2><button type="button" class="btn sm" data-close>Fechar</button></div><div class="g2">
+      <label class="f full">Nome<input name="name" value="${esc(d.name)}" required></label>
+      <label class="f">De quem<select name="owner">${opt([['Helen', 'Helen'], ['Ruben', 'Ruben']], d.owner)}</select></label>
+      <label class="f">Tipo<select name="kind">${opt([['cartao', 'Cartão'], ['cobranca', 'Em cobrança'], ['pessoa', 'Pessoa'], ['depois', 'Depois dos cartões']], d.kind)}</select></label>
+      <label class="f">Saldo atual $<input type="number" step="0.01" name="balance" value="${esc(d.balance ?? '')}" required></label>
+      <label class="f">Mínimo por mês $<input type="number" step="0.01" name="min_payment" value="${esc(d.min_payment ?? '')}"></label>
+      <label class="f">Ordem na bola de neve<input type="number" name="order_no" value="${esc(d.order_no)}"></label>
+      <label class="f full">Observação<input name="note" value="${esc(d.note)}"></label></div>
+      <button class="btn gold wide" id="pdGo">Salvar</button>${isNew ? '' : '<button type="button" class="btn bad wide" id="pdDel">Apagar</button>'}</form>`, api => {
+      const f = $('#pdf', api.el);
+      f.onsubmit = async e => { e.preventDefault(); const o = H.form(f);
+        const r = { name: o.name, owner: o.owner, kind: o.kind, balance: num(o.balance), min_payment: num(o.min_payment), order_no: +o.order_no || 99, note: o.note || null, ...(isNew ? { original: num(o.balance) } : {}), paid_off_on: num(o.balance) <= 0 ? (d.paid_off_on || iso(today())) : null };
+        await H.busy($('#pdGo', f), async () => { if (isNew) await H.q(H.sb.from('personal_debts').insert(r)); else await H.q(H.sb.from('personal_debts').update(r).eq('id', d.id)); api.close(); H.toast('Salvo'); A.reload(['pdebts']) }) };
+      if ($('#pdDel', f)) H.confirmBtn($('#pdDel', f), 'Toque de novo para apagar', async () => { await H.q(H.sb.from('personal_debts').delete().eq('id', d.id)); api.close(); A.reload(['pdebts']) });
+    });
+  }
+  /* ---------- metas ---------- */
+  PV.metas = {
+    html() {
+      const w = pessoalWeek(0);
+      return `<div class="card"><b>Meta de faturamento da van</b>
+          <div class="row between"><span>Por semana (contas + metas)</span><span class="money">${fmt(w.meta)} + combustível</span></div>
+          <div class="row between"><span>Por dia em dupla (7 dias)</span><span class="money">${fmt(w.meta / 7)}</span></div>
+          <span class="muted">Regra do plano: aceitar cargas de $1,80 ou mais por milha paga rodando sozinho (cerca de 3.000 mi/semana). Em dupla (5.000 mi/semana), o mínimo cai para cerca de $1,07/milha. Sempre conte as milhas vazias.</span></div>
+        ${D.pgoals.slice().sort((a, b) => a.order_no - b.order_no).map(g => `<div class="card"><div class="top2"><div><b>${esc(g.name)}</b><div class="muted">${fmt(g.weekly)} por semana${g.note ? ' · ' + esc(g.note) : ''}</div></div>${g.target ? `<div class="money">${fmt(g.saved)}<div class="muted">de ${fmt(g.target)}</div></div>` : ''}</div>
+          ${g.target ? `<div class="bar"><i style="width:${Math.min(100, num(g.saved) / num(g.target) * 100).toFixed(0)}%"></i></div>${num(g.saved) >= num(g.target) ? '<span class="pill p-good">✓ Meta completa</span>' : ''}` : ''}
+          <div class="row">${g.target ? `<button class="btn sm gold" data-gsave="${g.id}">Guardei</button>` : ''}<button class="btn sm" data-ged="${g.id}">Editar</button></div></div>`).join('')}`;
+    },
+    wire(v) {
+      $$('[data-gsave]', v).forEach(b => b.onclick = async () => { const g = D.pgoals.find(x => x.id === b.dataset.gsave), val = prompt('Quanto você guardou agora? ($)', String(num(g.weekly))); if (val === null || !num(val)) return;
+        try { await H.q(H.sb.from('personal_goals').update({ saved: num(g.saved) + num(val) }).eq('id', g.id)); await H.q(H.sb.from('personal_payments').insert({ kind: 'goal', ref_id: g.id, amount: num(val) })); H.toast('Guardado!'); A.reload(['pgoals', 'ppay']) } catch (e) { H.fail(e) } });
+      $$('[data-ged]', v).forEach(b => b.onclick = () => { const g = D.pgoals.find(x => x.id === b.dataset.ged);
+        H.sheet(`<form id="pgf" class="stack"><div class="row between"><h2>${esc(g.name)}</h2><button type="button" class="btn sm" data-close>Fechar</button></div><div class="g2">
+          <label class="f">Por semana $<input type="number" step="0.01" name="weekly" value="${esc(g.weekly)}"></label><label class="f">Meta total $ (opcional)<input type="number" step="0.01" name="target" value="${esc(g.target ?? '')}"></label>
+          <label class="f">Já guardado $<input type="number" step="0.01" name="saved" value="${esc(g.saved ?? 0)}"></label></div><button class="btn gold wide" id="pgGo">Salvar</button></form>`, api => {
+          const f = $('#pgf', api.el); f.onsubmit = async e => { e.preventDefault(); const o = H.form(f); await H.busy($('#pgGo', f), async () => { await H.q(H.sb.from('personal_goals').update({ weekly: num(o.weekly), target: o.target === '' ? null : num(o.target), saved: num(o.saved) }).eq('id', g.id)); api.close(); A.reload(['pgoals']) }) } }) });
+    }
+  };
+  /* ---------- mercado e despesas (foto do recibo → o app preenche) ---------- */
+  const ECATS = [['mercado', '🛒 Mercado'], ['restaurante', '🍔 Restaurante / refeição'], ['farmacia', '💊 Farmácia'], ['casa', '🏠 Casa'], ['carro', '🚗 Carro'], ['roupa', '👕 Roupas'], ['outros', '📦 Outros']];
+  PV.despesas = {
+    html() {
+      const [a] = weekRange(0), mStart = iso(new Date(today().getFullYear(), today().getMonth(), 1));
+      const E = D.pexp.slice().sort((p, q) => String(q.spent_on).localeCompare(String(p.spent_on)));
+      const wk = E.filter(e => e.spent_on >= iso(a)).reduce((s, e) => s + num(e.amount), 0), mo = E.filter(e => e.spent_on >= mStart).reduce((s, e) => s + num(e.amount), 0);
+      const byCat = {}; E.filter(e => e.spent_on >= mStart).forEach(e => byCat[e.category] = (byCat[e.category] || 0) + num(e.amount));
+      return `<div class="stats"><div class="stat"><span>Esta semana</span><b>${fmt(wk)}</b></div><div class="stat"><span>Este mês</span><b>${fmt(mo)}</b></div></div>
+        ${Object.keys(byCat).length ? `<div class="card">${ECATS.filter(c => byCat[c[0]]).map(c => `<div class="row between"><span>${c[1]}</span><span class="money">${fmt(byCat[c[0]])}</span></div>`).join('')}</div>` : ''}
+        <button class="btn gold wide" id="pNewExp2">📷 Tirar foto do recibo</button>
+        ${E.slice(0, 60).map(e => `<button class="card tap" data-ee="${e.id}"><div class="top2"><div><b>${esc(e.store || (ECATS.find(c => c[0] === e.category) || [, 'Despesa'])[1])}</b><div class="muted">${brDate(e.spent_on)} · ${esc((ECATS.find(c => c[0] === e.category) || [, e.category])[1])} · ${esc(e.owner)}${(e.photos || []).length ? ' · 📎' : ''}</div></div><div class="money">${fmt(e.amount)}</div></div></button>`).join('') || '<div class="empty">Nenhuma despesa ainda. Toque em <b>📷 Tirar foto do recibo</b>.</div>'}`;
+    },
+    wire(v) { $('#pNewExp2', v).onclick = () => expForm(); $$('[data-ee]', v).forEach(b => b.onclick = () => expForm(D.pexp.find(x => x.id === b.dataset.ee))) }
+  };
+  /* lê o recibo: loja, data e total */
+  H.parseReceipt = raw => {
+    const txt = String(raw || '').replace(/\r/g, ''), lines = txt.split('\n').map(s => s.trim()).filter(Boolean), out = {}, found = [];
+    const money = s => +String(s).replace(/[$\s]/g, '').replace(',', '.');
+    const totRe = /(grand\s*total|total\s*(?:due|amount|sale)?|amount\s*due|balance\s*due|total\s*a\s*pagar|importe)\s*[:=]?\s*\$?\s*(\d{1,4}[.,]\d{2})/i;
+    let tot = null; for (const l of lines) { if (/sub\s*-?\s*total|tax|savings|you\s*saved|change|cash\s*back/i.test(l)) continue; const m = totRe.exec(l); if (m) tot = money(m[2]) }
+    if (tot === null) { const all = [...txt.matchAll(/\$?\s*(\d{1,4}\.\d{2})\b/g)].map(m => money(m[1])).filter(n => n > 0 && n < 5000); if (all.length) tot = Math.max(...all) }
+    if (tot !== null) { out.amount = tot; found.push('total') }
+    const d = /\b(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4})\b/.exec(txt);
+    if (d) { let y = +d[3]; if (y < 100) y += 2000; const mo = +d[1], dd = +d[2]; if (mo >= 1 && mo <= 12 && dd >= 1 && dd <= 31) { out.spent_on = `${y}-${String(mo).padStart(2, '0')}-${String(dd).padStart(2, '0')}`; found.push('data') } }
+    const STORES = [['walmart', 'Walmart', 'mercado'], ['publix', 'Publix', 'mercado'], ['aldi', 'Aldi', 'mercado'], ['costco', 'Costco', 'mercado'], ["sam'?s\\s*club", "Sam's Club", 'mercado'], ['target', 'Target', 'mercado'], ['winn\\s*-?\\s*dixie', 'Winn-Dixie', 'mercado'], ['kroger', 'Kroger', 'mercado'], ['sedano', "Sedano's", 'mercado'], ['presidente', 'Presidente', 'mercado'], ['whole\\s*foods', 'Whole Foods', 'mercado'], ['trader\\s*joe', "Trader Joe's", 'mercado'], ['food\\s*lion', 'Food Lion', 'mercado'], ['h-?e-?b\\b', 'H-E-B', 'mercado'], ['dollar\\s*general', 'Dollar General', 'mercado'], ['dollar\\s*tree', 'Dollar Tree', 'mercado'], ['family\\s*dollar', 'Family Dollar', 'mercado'], ['love\'?s', "Love's", 'restaurante'], ['pilot|flying\\s*j', 'Pilot / Flying J', 'restaurante'], ['mcdonald', "McDonald's", 'restaurante'], ['subway', 'Subway', 'restaurante'], ['wendy', "Wendy's", 'restaurante'], ['burger\\s*king', 'Burger King', 'restaurante'], ['taco\\s*bell', 'Taco Bell', 'restaurante'], ['chick-?fil-?a', 'Chick-fil-A', 'restaurante'], ['starbucks', 'Starbucks', 'restaurante'], ['cvs', 'CVS', 'farmacia'], ['walgreens', 'Walgreens', 'farmacia'], ['home\\s*depot', 'Home Depot', 'casa'], ['lowe\'?s', "Lowe's", 'casa'], ['autozone', 'AutoZone', 'carro'], ['o\'?reilly', "O'Reilly", 'carro'], ['ross', 'Ross', 'roupa'], ['marshalls', 'Marshalls', 'roupa'], ['tj\\s*maxx', 'TJ Maxx', 'roupa']];
+    const st = STORES.find(s => new RegExp('\\b(' + s[0] + ')', 'i').test(txt));
+    if (st) { out.store = st[1]; out.category = st[2]; found.push('loja') }
+    else { const first = lines.find(l => /[a-z]{3,}/i.test(l) && !/receipt|welcome|thank|store\s*#|tel|phone|www|\d{3}[-) ]\d{3}/i.test(l)); if (first) { out.store = first.replace(/[^\w &'.-]/g, '').trim().slice(0, 40); found.push('loja') } }
+    return { data: out, found };
+  };
+  function expForm(x) {
+    const isNew = !x; x = x || { spent_on: iso(today()), owner: 'Juntos', category: 'mercado', photos: [] }; let photos = (x.photos || []).slice();
+    H.sheet(`<form id="pef" class="stack"><div class="row between"><h2>${isNew ? 'Nova despesa' : 'Despesa'}</h2><button type="button" class="btn sm" data-close>Fechar</button></div>
+      ${isNew ? `<div class="card sev gold"><b>📷 Foto do recibo</b><span class="muted">Tire a foto do recibo inteiro, bem reto e com luz. O app lê a loja, a data e o total e preenche para você. Confira antes de salvar.</span>
+        <div class="row"><span class="btn gold upl">📷 Tirar foto<input type="file" id="peCam" accept="image/*" capture="environment"></span><span class="btn upl">🖼 Galeria<input type="file" id="peGal" accept="image/*"></span></div><span class="muted" id="peMsg"></span></div>` : ''}
+      <div class="g2">
+      <label class="f">Valor total $<input type="number" step="0.01" name="amount" value="${esc(x.amount ?? '')}" required></label>
+      <label class="f">Data<input type="date" name="spent_on" value="${esc(x.spent_on)}" required></label>
+      <label class="f full">Loja<input name="store" value="${esc(x.store)}"></label>
+      <label class="f">Tipo<select name="category">${opt(ECATS, x.category)}</select></label>
+      <label class="f">De quem<select name="owner">${opt([['Juntos', 'Juntos'], ['Helen', 'Helen'], ['Ruben', 'Ruben']], x.owner)}</select></label>
+      <label class="f full">Observação<input name="note" value="${esc(x.note)}"></label></div>
+      <div class="thumbs" id="peT"></div>${isNew ? '' : '<span class="btn sm upl">Anexar foto<input type="file" id="peAdd" accept="image/*,application/pdf"></span>'}
+      <button class="btn gold wide" id="peGo">Salvar</button>${isNew ? '' : '<button type="button" class="btn bad wide" id="peDel">Apagar</button>'}</form>`, api => {
+      const f = $('#pef', api.el), msg = $('#peMsg', f); H.thumbs($('#peT', f), photos);
+      const up = async file => { const r = await H.upload('files', 'pessoal/despesas', file); photos.push(r.path); H.thumbs($('#peT', f), photos) };
+      const read = async e => { const file = e.target.files[0]; e.target.value = ''; if (!file) return;
+        try { msg.textContent = 'Enviando a foto…'; await up(file); msg.textContent = 'Lendo o recibo…';
+          const txt = await H.ocr(file, p => { msg.textContent = 'Lendo o recibo… ' + p + '%' }); const r = H.parseReceipt(txt);
+          Object.entries(r.data).forEach(([k, v]) => { const el = $(`[name=${k}]`, f); if (el && v !== undefined && v !== null) el.value = typeof v === 'number' ? v.toFixed(2) : v });
+          msg.textContent = r.found.length ? '✅ Preenchido: ' + r.found.join(', ') + '. Confira o valor antes de salvar.' : 'Não consegui ler. Escreva o valor à mão (a foto ficou salva).';
+        } catch (er) { msg.textContent = 'Não consegui ler a foto. Preencha à mão.'; H.fail(er) } };
+      if ($('#peCam', f)) { $('#peCam', f).onchange = read; $('#peGal', f).onchange = read }
+      if ($('#peAdd', f)) $('#peAdd', f).onchange = async e => { const file = e.target.files[0]; e.target.value = ''; if (file) try { await up(file) } catch (er) { H.fail(er) } };
+      f.onsubmit = async e => { e.preventDefault(); const o = H.form(f); const r = { amount: num(o.amount), spent_on: o.spent_on, store: o.store || null, category: o.category, owner: o.owner, note: o.note || null, photos };
+        await H.busy($('#peGo', f), async () => { if (isNew) await H.q(H.sb.from('personal_expenses').insert(r)); else await H.q(H.sb.from('personal_expenses').update(r).eq('id', x.id)); api.close(); H.toast('Despesa salva'); A.reload(['pexp']) }) };
+      if ($('#peDel', f)) H.confirmBtn($('#peDel', f), 'Toque de novo para apagar', async () => { await H.q(H.sb.from('personal_expenses').delete().eq('id', x.id)); api.close(); A.reload(['pexp']) });
+    });
+  }
+  A.expForm = expForm;
   SUBV.candidatos = {
     html: () => `<h1>Candidatos</h1><p class="note">Quem se cadastrou pela página pública. Link para divulgar: <b>${esc(location.origin + location.pathname.replace(/[^/]*$/, ''))}cadastro.html</b></p>
       <button class="btn" id="cpLink">Copiar o link de cadastro</button>
@@ -2510,6 +2826,7 @@ AUTHORIZED REPRESENTATIVE (Dispatcher): ${v(t.dispatcher)}, doing business as ${
     const uid = H.user.id;
     S.me = await H.q(H.sb.from('my_driver').select('*').maybeSingle());
     if (!S.me) return;
+    try { const r = await H.sb.rpc('can_personal'); S.pexpOk = !r.error && r.data === true; if (S.pexpOk) { const e = await H.sb.from('personal_expenses').select('*').order('spent_on', { ascending: false }).limit(20); S.pexp = e.data || [] } } catch (e) { S.pexpOk = false }
     const [loads, docs, fuel, sets, qp] = await Promise.all([
       H.q(H.sb.from('my_loads').select('*').order('load_date', { ascending: false }).limit(500)),
       H.q(H.sb.from('driver_docs').select('*').order('created_at', { ascending: false })),
@@ -2935,10 +3252,34 @@ AUTHORIZED REPRESENTATIVE (Dispatcher): ${v(t.dispatcher)}, doing business as ${
   }
   /* ---------------- combustível ---------------- */
   VIEWS.combustivel = {
-    html: () => `<div class="stack"><button class="btn gold wide" id="fAdd">${esc(t().fuelAdd)}</button>
+    html: () => `<div class="stack"><button class="btn gold wide" id="fAdd">${esc(t().fuelAdd)}</button>${pxBlock()}
       ${S.fuel.length ? S.fuel.map(x => `<div class="card"><div class="top2"><div><b>${brDate(x.fuel_date)}</b><div class="muted">${esc(x.station || '')}${x.gallons ? ' · ' + num(x.gallons).toFixed(1) + ' gal' : ''}${x.odometer ? ' · ' + fmtI(x.odometer) : ''}</div></div><div class="money">${fmt(x.total)}<div class="muted">${x.payer === 'cartao' ? esc(t().card) + (x.settled ? ' ✓' : '') : esc(t().mine)}</div></div></div></div>`).join('') : ''}</div>`,
-    wire(v) { $('#fAdd', v).onclick = fuelSheet }
+    wire(v) { $('#fAdd', v).onclick = fuelSheet; const pb = $('#pxAdd', v); if (pb) pb.onclick = pexpSheet }
   };
+  /* despesas pessoais da casa (mercado, comida) — só para quem a Helen liberou (ex.: Ruben) */
+  const PX = { pt: ['🧾 Despesa pessoal (mercado, comida)', 'Tire a foto do recibo inteiro: o app lê a loja, a data e o total. Confira antes de salvar.', 'Valor total $', 'Data', 'Loja', 'Tipo', 'Salvar', 'Despesas pessoais', 'Lendo o recibo…', 'Preenchido: ', 'Não consegui ler. Escreva o valor.', 'Despesa salva', [['mercado', '🛒 Mercado'], ['restaurante', '🍔 Comida na estrada'], ['farmacia', '💊 Farmácia'], ['casa', '🏠 Casa'], ['carro', '🚗 Carro'], ['outros', '📦 Outros']]],
+    es: ['🧾 Gasto personal (mercado, comida)', 'Toma la foto del recibo completo: la app lee la tienda, la fecha y el total. Revisa antes de guardar.', 'Total $', 'Fecha', 'Tienda', 'Tipo', 'Guardar', 'Gastos personales', 'Leyendo el recibo…', 'Llenado: ', 'No pude leerlo. Escribe el valor.', 'Gasto guardado', [['mercado', '🛒 Mercado'], ['restaurante', '🍔 Comida en la carretera'], ['farmacia', '💊 Farmacia'], ['casa', '🏠 Casa'], ['carro', '🚗 Carro'], ['outros', '📦 Otros']]],
+    en: ['🧾 Personal expense (groceries, food)', 'Take a photo of the whole receipt: the app reads the store, date and total. Check before saving.', 'Total $', 'Date', 'Store', 'Type', 'Save', 'Personal expenses', 'Reading the receipt…', 'Filled in: ', "Couldn't read it. Type the amount.", 'Expense saved', [['mercado', '🛒 Groceries'], ['restaurante', '🍔 Food on the road'], ['farmacia', '💊 Pharmacy'], ['casa', '🏠 Home'], ['carro', '🚗 Car'], ['outros', '📦 Other']]] };
+  const px = () => PX[lang()] || PX.pt;
+  const pxBlock = () => !S.pexpOk ? '' : `<button class="btn wide" id="pxAdd">${esc(px()[0])}</button>${(S.pexp || []).length ? `<h2>${esc(px()[7])}</h2>` + S.pexp.slice(0, 10).map(e => `<div class="card"><div class="top2"><div><b>${esc(e.store || '—')}</b><div class="muted">${brDate(e.spent_on)} · ${esc((px()[12].find(c => c[0] === e.category) || [, e.category])[1])}</div></div><div class="money">${fmt(e.amount)}</div></div></div>`).join('') : ''}`;
+  function pexpSheet() {
+    const P = px(), photos = [];
+    H.sheet(`<form id="pxf" class="stack"><div class="row between"><h2>${esc(P[0])}</h2><button type="button" class="btn sm" data-close>✕</button></div><p class="note">${esc(P[1])}</p>
+      <div class="thumbs" id="pxT"></div>${H.camBtns(lang(), 'data-px', { gold: true, accept: 'image/*' })}<p class="note" id="pxRead" role="status"></p>
+      <div class="g2"><label class="f">${esc(P[2])}<input type="number" inputmode="decimal" step="0.01" name="amount" required></label><label class="f">${esc(P[3])}<input type="date" name="spent_on" value="${iso(today())}" required></label>
+      <label class="f full">${esc(P[4])}<input name="store"></label><label class="f full">${esc(P[5])}<select name="category">${P[12].map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join('')}</select></label></div>
+      <button class="btn gold wide" id="pxGo">${esc(P[6])}</button></form>`, api => {
+      const f = $('#pxf', api.el), msg = $('#pxRead', f);
+      $$('input[data-px]', f).forEach(inp => inp.onchange = async e => { const file = e.target.files[0]; e.target.value = ''; if (!file) return;
+        try { H.toast('…'); photos.push((await H.upload('files', `${S.me.id}/despesas`, file)).path); await H.thumbs($('#pxT', f), photos);
+          msg.textContent = P[8]; const txt = await H.ocr(file, p => { msg.textContent = P[8] + ' ' + p + '%' }); const r = H.parseReceipt(txt);
+          Object.entries(r.data).forEach(([k, v]) => { const i = $(`[name="${k}"]`, f); if (i && v != null) i.value = typeof v === 'number' ? v.toFixed(2) : v });
+          msg.textContent = r.found.length ? P[9] + r.found.join(', ') : P[10] } catch (x) { msg.textContent = P[10] } });
+      f.onsubmit = async e => { e.preventDefault(); const o = H.form(f);
+        await H.busy($('#pxGo', f), async () => { await H.q(H.sb.from('personal_expenses').insert({ amount: num(o.amount), spent_on: o.spent_on, store: o.store || null, category: o.category, owner: String(S.me.name || '').split(' ')[0] || 'Juntos', photos }));
+          api.close(); H.toast(P[11]); const e2 = await H.sb.from('personal_expenses').select('*').order('spent_on', { ascending: false }).limit(20); S.pexp = e2.data || []; render() }) };
+    });
+  }
   function fuelSheet() {
     const photos = [];
     H.sheet(`<form id="fs" class="stack"><div class="row between"><h2>${esc(t().fuel)}</h2><button type="button" class="btn sm" data-close>✕</button></div><p class="note">${esc(t().fuelHelp)}</p>
