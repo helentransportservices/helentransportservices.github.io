@@ -2088,7 +2088,7 @@ AUTHORIZED REPRESENTATIVE (Dispatcher): ${v(t.dispatcher)}, doing business as ${
   /* alertas de vencimento (para o painel e a aba) */
   function pDue(days) {
     const t0 = today(), from = pAdd(t0, -30), to = pAdd(t0, days), out = [];
-    D.pbills.filter(x => x.active !== false && !x.is_income).forEach(x => occ(x, from, to).forEach(d => { if (!billPaid(x, d)) out.push({ b: x, d, n: Math.round((d - t0) / 864e5) }) }));
+    D.pbills.filter(x => x.active !== false && !x.is_income).forEach(x => { let f = from; if (x.created_at) { const c = new Date(x.created_at); c.setHours(0, 0, 0, 0); if (c > f) f = c } occ(x, f, to).forEach(d => { if (!billPaid(x, d)) out.push({ b: x, d, n: Math.round((d - t0) / 864e5) }) }) });
     return out.sort((p, q) => p.d - q.d);
   }
   A.pDue = pDue;
