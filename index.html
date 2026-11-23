@@ -1159,10 +1159,10 @@ AUTHORIZED REPRESENTATIVE (Dispatcher): ${v(t.dispatcher)}, doing business as ${
 (function (H) {
   const { $, $$, esc, num, fmt, fmtI, iso, today, brDate, addMonths, daysTo } = H;
   const A = H.Admin = {};
-  const D = { hos: [], agr: [], bills: [], vehicles: [], vrecs: [], dvir: [], accidents: [], reviews: [], cdocs: [], companies: [], drivers: [], docs: [], loads: [], events: [], fuel: [], settlements: [], quickpay: [], ledger: [], apps: [], pbills: [], pdebts: [], pgoals: [], ppay: [], pexp: [] };
-  const NEWT = ['hos', 'agr', 'bills', 'vehicles', 'vrecs', 'dvir', 'accidents', 'reviews', 'cdocs', 'pbills', 'pdebts', 'pgoals', 'ppay', 'pexp'];
-  const TABLES = { hos: 'hos_logs', agr: 'agreements', bills: 'bills', vehicles: 'vehicles', vrecs: 'vehicle_records', dvir: 'dvir', accidents: 'accidents', reviews: 'annual_reviews', cdocs: 'company_docs', companies: 'companies', drivers: 'drivers', docs: 'driver_docs', loads: 'loads', events: 'load_events', fuel: 'fuel', settlements: 'settlements', quickpay: 'quickpay', ledger: 'ledger', apps: 'applications', pbills: 'personal_bills', pdebts: 'personal_debts', pgoals: 'personal_goals', ppay: 'personal_payments', pexp: 'personal_expenses' };
-  const ORDER = { hos: 'week_start', agr: 'created_at', bills: 'due_on', vehicles: 'unit', vrecs: 'done_on', dvir: 'created_at', accidents: 'occurred_at', reviews: 'review_date', cdocs: 'created_at', companies: 'name', drivers: 'name', docs: 'created_at', loads: 'load_date', events: 'created_at', fuel: 'fuel_date', settlements: 'created_at', quickpay: 'requested_at', ledger: 'entry_date', apps: 'created_at', pbills: 'name', pdebts: 'order_no', pgoals: 'order_no', ppay: 'created_at', pexp: 'created_at' };
+  const D = { hos: [], agr: [], bills: [], vehicles: [], vrecs: [], dvir: [], accidents: [], reviews: [], cdocs: [], companies: [], drivers: [], docs: [], loads: [], events: [], fuel: [], settlements: [], quickpay: [], ledger: [], apps: [], pbills: [], pdebts: [], pgoals: [], ppay: [], pexp: [], rquotes: [] };
+  const NEWT = ['hos', 'agr', 'bills', 'vehicles', 'vrecs', 'dvir', 'accidents', 'reviews', 'cdocs', 'pbills', 'pdebts', 'pgoals', 'ppay', 'pexp', 'rquotes'];
+  const TABLES = { hos: 'hos_logs', agr: 'agreements', bills: 'bills', vehicles: 'vehicles', vrecs: 'vehicle_records', dvir: 'dvir', accidents: 'accidents', reviews: 'annual_reviews', cdocs: 'company_docs', companies: 'companies', drivers: 'drivers', docs: 'driver_docs', loads: 'loads', events: 'load_events', fuel: 'fuel', settlements: 'settlements', quickpay: 'quickpay', ledger: 'ledger', apps: 'applications', pbills: 'personal_bills', pdebts: 'personal_debts', pgoals: 'personal_goals', ppay: 'personal_payments', pexp: 'personal_expenses', rquotes: 'rate_quotes' };
+  const ORDER = { hos: 'week_start', agr: 'created_at', bills: 'due_on', vehicles: 'unit', vrecs: 'done_on', dvir: 'created_at', accidents: 'occurred_at', reviews: 'review_date', cdocs: 'created_at', companies: 'name', drivers: 'name', docs: 'created_at', loads: 'load_date', events: 'created_at', fuel: 'fuel_date', settlements: 'created_at', quickpay: 'requested_at', ledger: 'entry_date', apps: 'created_at', pbills: 'name', pdebts: 'order_no', pgoals: 'order_no', ppay: 'created_at', pexp: 'created_at', rquotes: 'quoted_on' };
   const AD = {
     pt: { tabs: ['Painel', 'Cargas', 'Motoristas', 'Acertos', 'DOT', 'Mais'], panel: 'Painel', reload: 'Atualizar', out: 'Sair', loading: 'Carregando…',
       week: 'Semana', month: 'Mês', last: 'Mês passado', all: 'Tudo', allCo: 'Todas as empresas', allDrv: 'Todos os motoristas',
@@ -1194,8 +1194,8 @@ AUTHORIZED REPRESENTATIVE (Dispatcher): ${v(t.dispatcher)}, doing business as ${
   async function load(keys) {
     keys = keys || Object.keys(TABLES);
     await Promise.all(keys.map(async k => {
-      try { D[k] = await H.q(H.sb.from(TABLES[k]).select('*').order(ORDER[k], { ascending: !['week_start', 'created_at', 'load_date', 'fuel_date', 'requested_at', 'entry_date', 'done_on', 'occurred_at', 'review_date'].includes(ORDER[k]) }).limit(5000)) }
-      catch (e) { if (NEWT.includes(k)) { D[k] = []; A.needSql = true } else throw e }
+      try { D[k] = await H.q(H.sb.from(TABLES[k]).select('*').order(ORDER[k], { ascending: !['week_start', 'created_at', 'load_date', 'fuel_date', 'requested_at', 'entry_date', 'done_on', 'occurred_at', 'review_date', 'quoted_on'].includes(ORDER[k]) }).limit(5000)) }
+      catch (e) { if (NEWT.includes(k)) { D[k] = []; A.needSql = true; (A.missing = A.missing || {})[k] = true } else throw e }
     }));
   }
   A.reload = async keys => { try { await load(keys); render() } catch (e) { H.fail(e) } };
@@ -1354,6 +1354,7 @@ AUTHORIZED REPRESENTATIVE (Dispatcher): ${v(t.dispatcher)}, doing business as ${
       return `<div class="stack"><a class="btn gold wide" href="#mapa">🗺 Mapa ao vivo dos motoristas</a>${filters(true)}
         <div class="hero"><span class="muted">${esc(t().revenue)}</span><div class="big">${fmt(rev)}</div>
           <div class="g2"><div><span class="muted">${esc(t().yours)}</span><div class="money" style="text-align:left;font-size:20px">${fmt(disp)}</div></div><div><span class="muted">${esc(t().drivers)}</span><div class="money" style="text-align:left;font-size:20px">${fmt(pay)}</div></div></div></div>
+        ${A.nextOutCard()}
         ${D.pbills.length ? (() => { const w = A.pessoalWeek(0); return `<button class="card tap" data-go="mais/pessoal"><div class="row between"><b>🚐 Van e contas pessoais · esta semana</b><span class="muted">›</span></div>
           <div class="stats" style="margin:6px 0 0"><div class="stat"><span>Saldo da van</span><b class="${w.lucro >= 0 ? 'ok' : 'low'}">${fmt(w.lucro)}</b><span class="muted">cargas − comb. − manut. − alim.</span></div><div class="stat"><span>Contas da semana</span><b>${fmt(w.contas + w.desp)}</b></div><div class="stat"><span>Sobra</span><b class="${w.sobra >= 0 ? 'ok' : 'low'}">${fmt(w.sobra)}</b></div></div></button>` })() : ''}
         <div class="stats"><div class="stat"><span>${esc(t().loads)}</span><b>${L.length}</b></div><div class="stat"><span>${esc(t().rpm)}</span><b>${mi ? fmt(rev / mi) : '—'}</b></div><div class="stat"><span>${esc(t().miles)}</span><b>${fmtI(mi)}</b></div></div>
@@ -1455,6 +1456,7 @@ AUTHORIZED REPRESENTATIVE (Dispatcher): ${v(t.dispatcher)}, doing business as ${
         <label class="f">Nº da carga<input name="ref" value="${esc(l.ref)}"></label>
         <label class="f">Origem<input name="origin" value="${esc(l.origin)}" placeholder="Orlando, FL" required></label>
         <label class="f">Destino<input name="destination" value="${esc(l.destination)}" placeholder="Atlanta, GA" required></label>
+        <div class="full" id="lfTip"></div>
         <label class="f">ZIP da coleta<input name="pickup_zip" value="${esc(l.pickup_zip)}" inputmode="numeric" maxlength="5"></label>
         <label class="f">ZIP da entrega<input name="delivery_zip" value="${esc(l.delivery_zip)}" inputmode="numeric" maxlength="5"></label>
         <label class="f">Janela de coleta<input name="pickup_window" value="${esc(l.pickup_window)}" placeholder="10/20 8:00–12:00"></label>
@@ -1476,6 +1478,9 @@ AUTHORIZED REPRESENTATIVE (Dispatcher): ${v(t.dispatcher)}, doing business as ${
       <button class="btn gold wide" id="lfSave">Salvar</button>
       ${!isNew ? '<button type="button" class="btn bad wide" id="lfDel">Apagar carga</button>' : ''}</form>`, api => {
       const f = $('#lf', api.el), dSel = $('#lfD', f), pIn = $('#lfP', f);
+      const tipUpd = () => { const o = A.stOf(f.origin.value), d = A.stOf(f.destination.value), m = num(f.miles.value), r = num(f.rate.value);
+        $('#lfTip', f).innerHTML = (o ? A.stTip(o, m && r ? r / m : 0) : '') + (d && d !== o ? A.stTip(d, 0, 'Depois de entregar em ' + d + ' (para sair de lá)') : '') };
+      ['origin', 'destination', 'miles', 'rate'].forEach(k => f[k].addEventListener('input', tipUpd)); tipUpd();
       const syncDrv = () => { const d = drv(dSel.value); if (isNew || pIn.value === '') pIn.value = d.dispatch_pct ?? 10; };
       dSel.onchange = () => { syncDrv(); calc() }; if (pIn.value === '') syncDrv();
       $('#lfOcr', f).onchange = async e => { const fls = [...e.target.files]; e.target.value = ''; if (!fls.length) return; const msg = $('#lfFound', f);
@@ -1770,7 +1775,7 @@ AUTHORIZED REPRESENTATIVE (Dispatcher): ${v(t.dispatcher)}, doing business as ${
   }
 
   /* ================= MAIS ================= */
-  const SUBS = [['empresas', 'Empresas'], ['combustivel', 'Combustível'], ['contas', 'Contas das empresas'], ['pessoal', 'Contas pessoais'], ['candidatos', 'Candidatos'], ['alertas', 'Alertas'], ['backup', 'Backup']];
+  const SUBS = [['empresas', 'Empresas'], ['combustivel', 'Combustível'], ['contas', 'Contas das empresas'], ['pessoal', 'Contas pessoais'], ['taxas', 'Histórico de taxas'], ['candidatos', 'Candidatos'], ['alertas', 'Alertas'], ['backup', 'Backup']];
   const vMais = {
     html() { const s = SUBS.some(x => x[0] === st.sub) ? st.sub : 'empresas'; return `<div class="stack"><div class="chips">${SUBS.map(([k, l]) => `<button class="chip" data-sub="${k}" aria-pressed="${s === k}">${l}${k === 'candidatos' && D.apps.filter(a => a.status === 'novo').length ? ' (' + D.apps.filter(a => a.status === 'novo').length + ')' : ''}</button>`).join('')}</div>${SUBV[s].html()}</div>` },
     wire(v) { $$('[data-sub]', v).forEach(b => b.onclick = () => { location.hash = 'mais/' + b.dataset.sub }); const s = SUBS.some(x => x[0] === st.sub) ? st.sub : 'empresas'; SUBV[s].wire && SUBV[s].wire(v) }
@@ -2110,6 +2115,112 @@ AUTHORIZED REPRESENTATIVE (Dispatcher): ${v(t.dispatcher)}, doing business as ${
         ${first ? `<span class="muted">Nesse ritmo: <b>${esc(first.name)}</b> quitada em cerca de ${Math.ceil(num(first.balance) / sobra)} semana(s). Todas as dívidas (${fmt(tot)}, sem contar juros) em cerca de ${Math.ceil(tot / sobra)} semanas (${(tot / sobra / 4.33).toFixed(1)} meses).</span>` : ''}`
       : `<span class="muted">Falta cerca de ${fmt(-sobra)} por semana só para as contas. Enquanto isso, as dívidas não diminuem: pague só os mínimos.</span>`}</div>`;
   }
+  /* ===== Histórico de taxas por estado: quanto e quão rápido saímos de cada estado ===== */
+  const ST_NAMES = { alabama: 'AL', alaska: 'AK', arizona: 'AZ', arkansas: 'AR', california: 'CA', colorado: 'CO', connecticut: 'CT', delaware: 'DE', florida: 'FL', georgia: 'GA', idaho: 'ID', illinois: 'IL', indiana: 'IN', iowa: 'IA', kansas: 'KS', kentucky: 'KY', louisiana: 'LA', maine: 'ME', maryland: 'MD', massachusetts: 'MA', michigan: 'MI', minnesota: 'MN', mississippi: 'MS', missouri: 'MO', montana: 'MT', nebraska: 'NE', nevada: 'NV', 'new hampshire': 'NH', 'new jersey': 'NJ', 'new mexico': 'NM', 'new york': 'NY', 'north carolina': 'NC', 'north dakota': 'ND', ohio: 'OH', oklahoma: 'OK', oregon: 'OR', pennsylvania: 'PA', 'rhode island': 'RI', 'south carolina': 'SC', 'south dakota': 'SD', tennessee: 'TN', texas: 'TX', utah: 'UT', vermont: 'VT', virginia: 'VA', washington: 'WA', 'west virginia': 'WV', wisconsin: 'WI', wyoming: 'WY' };
+  const ST_CODES = new Set(Object.values(ST_NAMES).concat(['DC']));
+  const stOf = s => { s = String(s || '').trim(); const all = [...s.matchAll(/(?:,|\s)\s*([A-Za-z]{2})(?=\s*(?:\d{5}(?:-\d{4})?)?\s*$|\s*,)/g)].map(m => m[1].toUpperCase()).filter(c => ST_CODES.has(c)); if (all.length) return all[all.length - 1];
+    if (/^[A-Za-z]{2}$/.test(s) && ST_CODES.has(s.toUpperCase())) return s.toUpperCase();
+    const low = s.toLowerCase(); let best = ''; Object.entries(ST_NAMES).forEach(([n, c]) => { if (low.includes(n) && n.length > best.length) best = n }); return best ? ST_NAMES[best] : '' };
+  const AVOID = ['FL', 'GA', 'TX'];
+  const pm = x => '$' + (x || 0).toFixed(2);
+  const med = a => { if (!a.length) return 0; const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2 };
+  const hrs = h => h == null ? '—' : h < 1 ? 'menos de 1 h' : h < 36 ? Math.round(h) + ' h' : (Math.round(h / 24 * 10) / 10).toString().replace('.', ',') + ' dias';
+  const evT = (l, k) => { const e = D.events.filter(x => x.load_id === l.id && x.kind === k).sort((a, b) => a.created_at.localeCompare(b.created_at))[0]; return e ? new Date(e.created_at) : null };
+  const puT = l => evT(l, 'pickup') || new Date((l.load_date || iso(today())) + 'T08:00:00');
+  const delT = l => evT(l, 'delivery') || new Date(new Date((l.load_date || iso(today())) + 'T08:00:00').getTime() + Math.max(1, Math.ceil(num(l.miles) / 500)) * 864e5);
+  const perOf = d => { const h = new Date(d).getHours(); return h >= 6 && h < 19 ? 'dia' : 'noite' };
+  function rateHist() {
+    const done = D.loads.filter(l => !['cancelada', 'oferta'].includes(l.stage) && num(l.miles) > 0 && num(l.rate) > 0), byDrv = {}, recs = [];
+    done.forEach(l => (byDrv[l.driver_id] = byDrv[l.driver_id] || []).push(l));
+    Object.values(byDrv).forEach(arr => { arr.sort((a, b) => puT(a) - puT(b)); arr.forEach((l, i) => { const o = stOf(l.origin); if (!o) return; const prev = arr[i - 1]; let wait = null;
+      if (prev && stOf(prev.destination) === o) { wait = Math.max(0, (puT(l) - delT(prev)) / 36e5); if (wait > 24 * 7) wait = null }
+      recs.push({ src: 'load', o, d: stOf(l.destination), miles: num(l.miles), rate: num(l.rate), rpm: num(l.rate) / num(l.miles), wait, per: l.created_at ? perOf(l.created_at) : '', date: l.load_date, won: true }) }) });
+    (D.rquotes || []).forEach(q => { const o = stOf(q.origin); if (!o || !num(q.miles) || !num(q.amount)) return;
+      recs.push({ src: 'quote', o, d: stOf(q.destination), miles: num(q.miles), rate: num(q.amount), rpm: num(q.amount) / num(q.miles), wait: q.wait_hours == null || q.wait_hours === '' ? null : num(q.wait_hours), per: q.period || '', date: q.quoted_on, won: !!q.won, board: q.board, note: q.note }) });
+    return recs.sort((a, b) => String(b.date).localeCompare(String(a.date)));
+  }
+  function stStats(st, recs) {
+    const R = recs.filter(r => r.o === st), W = R.filter(r => r.won), L = R.filter(r => !r.won), waits = W.filter(r => r.wait != null);
+    const fast = waits.filter(r => r.wait <= 24), slow = waits.filter(r => r.wait > 24), rpms = W.map(r => r.rpm);
+    const rec = fast.length ? med(fast.map(r => r.rpm)) : rpms.length ? Math.min(...rpms) : 0;
+    return { st, W, L, n: W.length, rpms, med: med(rpms), avgWait: waits.length ? waits.reduce((s, r) => s + r.wait, 0) / waits.length : null, rec, fast, slow,
+      dia: med(W.filter(r => r.per === 'dia').map(r => r.rpm)), noite: med(W.filter(r => r.per === 'noite').map(r => r.rpm)) };
+  }
+  /* cartão com o histórico de saída de um estado; cur = $/milha da carga que está sendo digitada (opcional) */
+  function stTip(st, cur, title) {
+    if (!st) return '';
+    const s = stStats(st, rateHist()), avoid = AVOID.includes(st);
+    const head = `<b>📍 ${esc(title || 'Saindo de ' + st)}</b>`;
+    if (!s.n && !s.L.length) return `<div class="card ${avoid ? 'sev bad' : ''}" style="gap:4px">${head}${avoid ? '<span class="muted">⚠️ Estado para evitar: costuma ser difícil sair e o valor é baixo.</span>' : ''}<span class="muted">Ainda sem histórico. Quando sair (ou não sair), registre em Mais → Histórico de taxas.</span></div>`;
+    const lines = [];
+    if (s.n) lines.push(`Já saímos ${s.n} ${s.n === 1 ? 'vez' : 'vezes'}: ${s.W.slice(0, 6).map(r => pm(r.rpm) + (r.d ? ' → ' + r.d : '')).join(' · ')} por milha`);
+    if (s.rec) lines.push(`💡 <b>Para sair rápido: por volta de ${pm(s.rec)}/milha</b>${s.fast.length ? ` (saiu em até 24 h ${s.fast.length}×)` : ' (o menor valor que já saiu)'}`);
+    if (s.avgWait != null) lines.push(`⏱️ Tempo médio parado esperando carga aqui: ${hrs(s.avgWait)}`);
+    if (s.slow.length) lines.push(`🐢 Quando esperamos mais de 1 dia, foi a ${s.slow.map(r => pm(r.rpm)).join(', ')}/milha (${hrs(med(s.slow.map(r => r.wait)))} parados)`);
+    if (s.dia && s.noite) lines.push(`☀️ De dia: ${pm(s.dia)} · 🌙 De noite: ${pm(s.noite)} por milha`);
+    s.L.slice(0, 4).forEach(r => lines.push(`❌ Não saiu: ${pm(r.rpm)}/milha${r.d ? ' → ' + r.d : ''} (${Math.round(r.miles).toLocaleString('pt-BR')} mi${r.per ? ', ' + r.per : ''}${r.board ? ', ' + esc(r.board) : ''})`));
+    if (cur && s.rec) lines.push(cur >= s.rec * 1.15 ? `⚠️ <b>Este valor (${pm(cur)}/mi) está bem acima do que costuma sair.</b> Pode demorar.` : cur >= s.rec ? `✅ Este valor (${pm(cur)}/mi) está bom e dentro do que já saiu.` : `👍 Este valor (${pm(cur)}/mi) está abaixo do histórico: deve sair rápido.`);
+    if (avoid) lines.push('⚠️ Estado para evitar: costuma ser difícil sair.');
+    return `<div class="card ${avoid ? 'sev bad' : 'sev good'}" style="gap:4px">${head}${lines.map(x => `<span class="muted">${x}</span>`).join('')}</div>`;
+  }
+  A.stTip = stTip; A.stOf = stOf;
+  function quoteForm(x) {
+    const isNew = !x; x = x || { quoted_on: iso(today()), won: false, period: perOf(new Date()) };
+    H.sheet(`<form id="qf" class="stack"><div class="row between"><h2>${isNew ? 'Registrar valor' : 'Editar'}</h2><button type="button" class="btn sm" data-close>Fechar</button></div>
+      <p class="note">Registre cargas que <b>não saíram</b> (lance recusado) ou que saíram fora do app, para o histórico ficar completo.</p>
+      <div class="g2">
+        <label class="f full">Resultado<select name="won">${opt([['false', '❌ Não saiu (recusaram)'], ['true', '✅ Saiu (fechamos)']], String(!!x.won))}</select></label>
+        <label class="f">Data<input type="date" name="quoted_on" value="${esc(x.quoted_on)}" required></label>
+        <label class="f">Período<select name="period">${opt([['dia', '☀️ Dia'], ['noite', '🌙 Noite']], x.period)}</select></label>
+        <label class="f">Saindo de (cidade, estado)<input name="origin" value="${esc(x.origin)}" placeholder="Harrisburg, PA" required></label>
+        <label class="f">Para<input name="destination" value="${esc(x.destination)}" placeholder="Minneapolis, MN"></label>
+        <label class="f">Milhas<input type="number" inputmode="numeric" name="miles" value="${esc(x.miles ?? '')}" required></label>
+        <label class="f">Valor oferecido $<input type="number" inputmode="decimal" step="0.01" name="amount" value="${esc(x.amount ?? '')}" required></label>
+        <label class="f">Horas que esperamos (se saiu)<input type="number" inputmode="decimal" name="wait_hours" value="${esc(x.wait_hours ?? '')}" placeholder="ex.: 48"></label>
+        <label class="f">Plataforma<select name="board">${opt([['Ursa', 'Ursa'], ['OVN', 'OVN'], ['DAT', 'DAT'], ['Direto', 'Direto com o broker'], ['Outra', 'Outra']], x.board)}</select></label>
+        <label class="f full">Observação<input name="note" value="${esc(x.note)}"></label></div>
+      <p class="note" id="qfRpm"></p>
+      <button class="btn gold wide" id="qfGo">Salvar</button>${!isNew ? '<button type="button" class="btn bad wide" id="qfDel">Apagar</button>' : ''}</form>`, api => {
+      const f = $('#qf', api.el), upd = () => { const m = num(f.miles.value), a = num(f.amount.value); $('#qfRpm', f).textContent = m && a ? 'Isso dá ' + pm(a / m) + ' por milha.' : '' };
+      f.miles.oninput = f.amount.oninput = upd; upd();
+      f.onsubmit = async e => { e.preventDefault(); const o = H.form(f); o.won = o.won === 'true'; o.miles = num(o.miles); o.amount = num(o.amount); o.wait_hours = o.wait_hours === '' ? null : num(o.wait_hours);
+        await H.busy($('#qfGo', f), async () => { if (isNew) await H.q(H.sb.from('rate_quotes').insert(o)); else await H.q(H.sb.from('rate_quotes').update(o).eq('id', x.id)); api.close(); A.reload(['rquotes']) }) };
+      if ($('#qfDel', f)) H.confirmBtn($('#qfDel', f), 'Toque de novo para apagar', async () => { await H.q(H.sb.from('rate_quotes').delete().eq('id', x.id)); api.close(); A.reload(['rquotes']) });
+    });
+  }
+  SUBV.taxas = {
+    html: () => {
+      const recs = rateHist(), sts = [...new Set(recs.map(r => r.o))], S = sts.map(s => stStats(s, recs));
+      const ranked = S.filter(s => s.n).sort((a, b) => (b.med - (b.avgWait ?? 24) / 240) - (a.med - (a.avgWait ?? 24) / 240));
+      const autoAvoid = S.filter(s => !AVOID.includes(s.st) && ((s.avgWait != null && s.avgWait >= 36) || (s.L.length >= 2 && !s.n))).map(s => s.st);
+      const noTable = !!(A.missing && A.missing.rquotes);
+      return `<h1>Histórico de taxas</h1>
+      <p class="note">Mostra, para cada estado, por quanto já saímos, quanto tempo ficamos parados e os lances que não saíram. Assim, ao chegar num estado, vocês já sabem o valor para sair rápido sem perder dias.</p>
+      ${noTable ? '<div class="card sev bad"><b>Falta 1 passo</b><span class="muted">Para registrar lances que não saíram, rode o arquivo update10.sql no Supabase. O histórico das cargas do app já funciona.</span></div>' : '<button class="btn gold wide" id="txAdd">➕ Registrar valor (saiu ou não saiu)</button>'}
+      <div class="card" style="gap:6px"><b>🚫 Estados para evitar</b><div class="row">${AVOID.map(s => `<span class="pill p-bad">${s} · comprovado</span>`).join('')}${autoAvoid.map(s => `<span class="pill p-warn">${s} · demorou para sair</span>`).join('')}</div></div>
+      <label class="f">Ver um estado<select id="txSel">${opt([['', 'Escolha…']].concat([...new Set(sts.concat(AVOID))].sort().map(s => [s, s])))}</select></label>
+      <div id="txTip"></div>
+      <h2>Melhores estados para ir</h2>
+      ${ranked.length ? `<div class="card" style="gap:0">${ranked.map((s, i) => `<button class="row between tap" data-st="${s.st}" style="padding:8px 0;border-bottom:1px solid var(--line);background:none;border-left:0;border-right:0;border-top:0;color:inherit;text-align:left;width:100%"><span><b>${i + 1}. ${s.st}</b> <span class="muted">· ${s.n} carga${s.n === 1 ? '' : 's'}${s.avgWait != null ? ' · parado ' + hrs(s.avgWait) : ''}</span></span><span class="money">${pm(s.med)}/mi</span></button>`).join('')}</div>` : '<div class="empty">Ainda sem cargas com milhas e valor. Assim que as cargas forem lançadas no app, o ranking aparece aqui.</div>'}
+      ${(D.rquotes || []).length ? `<h2>Valores registrados</h2>${D.rquotes.slice(0, 30).map(q => `<button class="card tap" data-q="${q.id}" style="text-align:left"><div class="row between"><b>${q.won ? '✅' : '❌'} ${esc(stOf(q.origin) || q.origin)} → ${esc(stOf(q.destination) || q.destination || '—')}</b><span class="money">${num(q.miles) ? pm(num(q.amount) / num(q.miles)) + '/mi' : ''}</span></div><span class="muted">${brDate(q.quoted_on)} · ${fmt(q.amount)} · ${Math.round(num(q.miles))} mi${q.period ? ' · ' + q.period : ''}${q.board ? ' · ' + esc(q.board) : ''}</span></button>`).join('')}` : ''}`;
+    },
+    wire(v) {
+      const sel = $('#txSel', v), show = st => { $('#txTip', v).innerHTML = stTip(st); if (st) sel.value = st };
+      sel.onchange = () => show(sel.value);
+      $$('[data-st]', v).forEach(b => b.onclick = () => { show(b.dataset.st); $('#txTip', v).scrollIntoView({ behavior: 'smooth', block: 'center' }) });
+      if ($('#txAdd', v)) $('#txAdd', v).onclick = () => quoteForm();
+      $$('[data-q]', v).forEach(b => b.onclick = () => quoteForm(D.rquotes.find(q => q.id === b.dataset.q)));
+    }
+  };
+  /* cartão do painel: para onde cada motorista vai e o valor para sair rápido de lá */
+  A.nextOutCard = () => {
+    const out = [];
+    D.drivers.filter(d => d.status !== 'inativo').forEach(d => { const L = D.loads.filter(l => l.driver_id === d.id && ['confirmada', 'coletada', 'entregue'].includes(l.stage)).sort((a, b) => puT(b) - puT(a))[0];
+      if (!L || Date.now() - puT(L) > 7 * 864e5) return; const st = stOf(L.destination); if (!st) return;
+      const s = stStats(st, rateHist()); out.push(`<span class="muted"><b>${esc(String(d.name).split(' ')[0])}</b> → ${st}: ${s.rec ? 'sair a ~' + pm(s.rec) + '/mi' : 'sem histórico'}${s.avgWait != null ? ' · parado ' + hrs(s.avgWait) : ''}${AVOID.includes(st) ? ' ⚠️ evitar' : ''}</span>`) });
+    return out.length ? `<button class="card tap" data-go="mais/taxas" style="text-align:left;gap:4px"><div class="row between"><b>📍 Próxima saída</b><span class="muted">›</span></div>${out.join('')}</button>` : '';
+  };
+
   SUBV.pessoal = {
     html() {
       if (!D.pbills.length && !D.pdebts.length) return `<h1>Contas pessoais</h1><div class="card sev warn"><b>Falta 1 passo no Supabase</b><span class="muted">Rode a <b>Atualização 9</b> (update9.sql) no SQL Editor. Ela cria esta aba já com todas as contas, dívidas e metas do plano.</span></div>`;
